@@ -13,7 +13,7 @@ updated, replaced or obsoleted by other documents at any time.
 
 FHISO's **Basic Concepts for Genealogical Standards** standard defines
 various low-level concepts that will be used in many FHISO standards,
-and whose definitions do no logically belong in any one particular
+and whose definitions do not logically belong in any one particular
 higher-level standard.
 
 The definition of a *string* which is used in multiple FHISO standards
