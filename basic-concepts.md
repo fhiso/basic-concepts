@@ -55,9 +55,8 @@ If a *conformant* application encounters data that does not conform to
 this standard, it *may* issue a warning or error message, and *may*
 terminate processing of the document or data fragment.
 
-Indented text in grey or coloured boxes, such as preceding paragraph,
-does not form a normative part of this standard, and is labelled as
-either an example or a note.  
+Indented text in grey or coloured boxes does not form a normative part
+of this standard, and is labelled as either an example or a note.  
 
 {.ednote} Editorial notes, such as this, are used to record outstanding
 issues, or points where there is not yet consensus; they will be
