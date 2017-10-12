@@ -199,6 +199,6 @@ latest edition of XML 1.1 specification are definitive.
 
 ----
 Copyright © 2017, [Family History Information Standards Organisation,
-Inc](http://fhiso.org/).  
+Inc](https://fhiso.org/).  
 The text of this standard is available under the [Creative Commons
 Attribution License](https://creativecommons.org/licenses/by/4.0/).
