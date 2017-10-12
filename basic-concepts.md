@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 11 October 2017
+date: 12 October 2017
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -12,12 +12,12 @@ updated, replaced or obsoleted by other documents at any time.
 {/}
 
 FHISO's **Basic Concepts for Genealogical Standards** standard defines
-various low-level concepts that will be used in multiple FHISO
-standards, and whose definitions do no logically belong in any one
-particular higher-level standard.
+various low-level concepts that will be used in many FHISO standards,
+and whose definitions do no logically belong in any one particular
+higher-level standard.
 
-The definition of a *string* which is used in many FHISO standards is
-given in §2 of this standard, together with various related concepts
+The definition of a *string* which is used in multiple FHISO standards
+is given in §2 of this standard, together with various related concepts
 such as *characters* and *whitespace*.
 
 {.ednote} At present, this standard only includes definitions associated
@@ -155,6 +155,11 @@ latest edition of XML 1.1 specification are definitive.
 
 ### Normative references
 
+[ISO 10646]
+:   ISO (International Organization for Standardization).  *ISO/IEC
+    10646:2014. Information technology &mdash; Universal Coded Character
+    Set (UCS).*  2014.
+
 [RFC 2119]
 :   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
     use in RFCs to Indicate Requirement Levels.*  Scott Bradner, 1997.
@@ -193,7 +198,7 @@ latest edition of XML 1.1 specification are definitive.
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
 
 
----
+----
 Copyright © 2017, [Family History Information Standards Organisation,
 Inc](http://fhiso.org/).  
 The text of this standard is available under the [Creative Commons
