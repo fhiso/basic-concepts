@@ -92,12 +92,25 @@ surrogates (which are reserved for encodings such as UTF-16 and not
 characters in their own right), and the invalid characters U+FFFE and
 U+FFFF.
 
-A **string** is a sequence of zero or more *characters*.
+A **string** is a sequence of zero or more *characters*, and *should*
+only be used to encode textual data.
 
-{.note} The definition of a *string* is identical to the definition of
-the `string` datatype defined in 
+{.note ...} This definition of a *string* is identical to the definition
+of the `string` datatype defined in 
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)], used in many XML
 and Semantic Web technologies.
+
+This definition of a *string* differs very slightly from JSON's
+definition of a string, as defined in 
+&#x5B;[RFC 7159](https://tools.ietf.org/html/rfc7159)], as a JSON string
+may include the null *character* (U+0000).  This is the only difference
+between a JSON string and FHISO's definition of a *string*.  As a
+*string* *should not* be used to contain raw binary data, this
+difference is not anticipated to cause a problem.  If an application
+needs to store binary data in *string*, it *should* encode it in a
+textual form, for example with the Base64 data encoding scheme defined in 
+&#x5B;[RFC 4648](https://tools.ietf.org/html/rfc4648)].
+{/}
 
 Applications *may* convert any *string* into Unicode Normalization Form
 C, as defined in any version of Unicode Standard Annex #15 &#x5B;[UAX
@@ -189,6 +202,16 @@ latest edition of XML 1.1 specification are definitive.
 [GEDCOM]
 :   The Church of Jesus Christ of Latter-day Saints.
     *The GEDCOM Standard*, draft release 5.5.1.  2 Oct 1999.
+
+[RFC 4648]
+:   IETF (Internet Engineering Task Force).  *RFC 4648:  The Base16,
+    Base32, and Base64 Data Encodings*.   S. Josefsson, ed., 2006.
+    (See <https://tools.ietf.org/html/rfc4648>.)
+
+[RFC 7159]
+:   IETF (Internet Engineering Task Force).  *RFC 7159:  The JavaScript
+    Object Notation (JSON) Data Interchange Format*.  T. Bray, ed., 2014.
+    (See <https://tools.ietf.org/html/rfc7159>.)
 
 [XSD Pt2]
 :   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language 
