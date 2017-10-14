@@ -151,6 +151,12 @@ production `S` from &#x5B;[XML](https://www.w3.org/TR/xml11/)].
 
     S  ::=  (#x20 | #x9 | #xD | #xA)+
 
+{.note}  This definition only includes common ASCII whitespace
+*characters* and does not include every *character* in [ISO 10646] that
+could be considered to be a whitespace.  For example, the vertical tab
+(U+000B), no-break space (U+00A0) and em space (U+2003) are all
+excluded.
+
 **Whitespace normalisation** is the process of discarding any leading
 or trailing *whitespace*, and replacing other *whitespace* with a single
 space (U+0020) *character*.  
