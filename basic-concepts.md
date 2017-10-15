@@ -18,11 +18,13 @@ higher-level standard.
 
 The definition of a *string* which is used in multiple FHISO standards
 is given in §2 of this standard, together with various related concepts
-such as *characters* and *whitespace*.
+such as *characters* and *whitespace*.  *Terms* are defined in §3 as a
+form of extensible identifier using IRIs; a shorthand notation for
+*terms* known as *prefix notation* is described in §3.1, and a §3.2
+discusses information that may be be retrieved from these IRI.
 
-{.ednote} At present, this standard only includes definitions associated
-with *characters* and *strings*.  It is anticipated that a future draft
-will add definitions for *terms*, *datatypes* and *language tags*.
+{.ednote} It is anticipated that a future draft will add definitions for
+*datatypes* and *language tags*.
 
 ## Conventions used
 
@@ -169,6 +171,167 @@ In the event of a difference between the definitions of the `Char`,
 &#x5B;[XML](https://www.w3.org/TR/xml11/)], the definitions in the
 latest edition of XML 1.1 specification are definitive.
 
+## Terms
+
+A **term** consists of a unique, machine-readable identifier, known as
+the **term name**, paired with a clearly-defined meaning for the concept
+or idea that it represents.  *Term names* *shall* take the form of an IRI
+matching the `IRI` production in §2.2 of
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
+
+{.ednote ...} Add an example of what a term name is used for.  Once
+*datatypes* are moved here, we can add the following sentence to the
+previous paragraph
+
+> This standard uses *terms* as *datatypes*, as defined in §X of this
+> standard.
+{/}
+
+{.note} IRIs have been chosen in preference to URIs because it is
+recognised that certain culture-specific genealogical concepts may not
+have English names, and in such cases the human-legibility of IRIs is
+advantageous.  URIs are a subset of IRIs, and all the *terms* defined in
+this suite of standard are also URIs.
+
+*Term names* are compared using the "simple string comparison" algorithm
+given in §5.3.1 of 
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)].  If a *term
+name* does not compare equal to an IRI known to the application,
+the application *must not* make any assumptions about the
+*term*, its meaning or intended use, based on the form of the IRI or any
+similarity to other IRIs.
+
+{.note} This comparison is a simple character-by-character comparison,
+with no normalisation carried out on the IRIs prior to comparison.  It
+is also how XML namespace names are compared in 
+&#x5B;[XML Names](https://www.w3.org/TR/xml-names11/)].
+
+{.example ...}  The following IRIs are all distinct for the purpose of
+the "simple string comparison" algorithm given in §5.3.1 of 
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)], , even though an
+HTTP request to them would fetch the same resource.
+
+    https://éléments.example.com/nationalité
+    HTTPS://ÉLÉMENTS.EXAMPLE.COM/nationalit%C3%A9
+    https://xn--lments-9uab.example.com/nationalit%c3%a9
+
+{/}
+
+An IRI *must not* be used as a *term name* unless it can be converted to
+a URI using the algorithm specified in §3.1 of 
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)], and back to a IRI
+again using the algorithm specified in §3.2 of 
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)], to yield the
+original IRI.
+
+{.note}  This requirement ensures that *term names* can be used in a
+context where a URI is required, and that the original IRI can be
+regenerated, for example for comparison with a list of known IRIs.  The
+vast majority of IRIs, including those in non-Latin scripts, have this
+property.  The effect of this requirement is to prohibit the use of IRIs
+that are already partly converted to a URI, for example through the use
+of unnecessary percent or punycode encoding.
+
+{.example}  Of the three IRIs given in the previous example on how to
+compare IRIs, only the first may be used as a *term name*.  The second
+and third are prohibited as a result of the unnecessary
+percent-encoding, and the third is additionally prohibited as a result
+of unnecessary punycode-encoding.
+
+The *terms* defined in FHISO standards all have *term names* that begin
+`https://terms.fhiso.org/`.  Subject to the requirements in the
+applicable standards, third parties may also define additional *terms*.
+It is *recommended* that any such *terms* use either the `http` or
+preferably the `https` IRI scheme defined in §2.7.1 and §2.7.2 of
+&#x5B;[RFC 7230](https://tools.ietf.org/html/rfc7230)] respectively, and
+an authority component consisting of just a domain name or subdomain
+under the control of the party defining the *term*.
+
+{.note ...} An `http` or `https` IRI scheme is *recommended* because the
+IRI is used to fetch a resource during *discovery*, and it is desirable
+that applications implementing *discovery* should only need to support a
+minimal number of transport protocols.  URN schemes like the `uuid`
+scheme of &#x5B;[RFC 4122](https://tools.ietf.org/html/rfc4122)] are
+*not recommended* as they do not have transport protocols that can be
+used during *discovery*.
+
+The preference for a `https` IRI is because of security considerations
+during *discovery*.  A man-in-the-middle attack during *discovery* could
+insert malicious content into the response, which, if undetected, could
+cause an application to process user data incorrectly, potentially
+discarding parts of it or otherwise compromising its integrity.  It is
+harder to stage a man-in-the-middle attack over TLS, especially if
+public key pinning is used per 
+&#x5B;[RFC 7469](https://tools.ietf.org/html/rfc7469)].
+{/}
+
+### Prefix notation
+
+*Term names* are sometimes referred using **prefix notation**.  This is
+a system whereby **prefixes** are assigned to IRIs that occur frequently
+as the leading portion of a *term name*.  Then, instead of writing the
+*term name* in full, the leading portion of the *term name* is replaced
+by its *prefix* followed by a colon (U+003A) separator.
+
+{.example}  The *term name* `https://terms.fhiso.org/sources/title` is
+used in several of the examples in this standard.  Instead of writing
+this in full, if the `cev` *prefix* is bound to the IRI
+`https://terms.fhiso.org/sources/`, then this IRI can be written in
+*prefix form* as `cev:title`.
+
+{.ednote ...}  We may need to add this text back once we add *datatypes*.
+
+> The following *prefix* bindings are assumed in this standard:
+> 
+> ------           -----------------------------------------------
+> `rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
+> `rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
+> `xsd`            `http://www.w3.org/2001/XMLSchema#`
+> ------           -----------------------------------------------
+{/}
+
+{.note}  The particular *prefixes* assigned above have no relevance
+outside this standard document as *prefix notation* is not used in the
+formal data model defined by this standard.  This notation is simply a
+notational convenience to make the standard easier to read.
+Nevertheless, some FHISO serialisation formats do make use of a form of
+*prefix notation* to shorten the serialised form of data.
+
+### IRI resolution
+ 
+It is *recommended* that an HTTP `GET` request to a *term name* IRI with
+an `http` or `https` scheme (once converted to a URI per §4.1 of
+&#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]), *should* result
+in a 303 "See Other" redirect to a document containing a human-readable
+definition of the *term* if the request was made without an `Accept`
+header or with an `Accept` header matching the format of the
+human-readable definition.  It is further *recommended* that this
+format should be HTML, and that documentation in alternative formats
+*may* be made available via HTTP content negotiation when the request
+includes a suitable `Accept` header, per §5.3.2 of 
+&#x5B;[RFC 7231](//tools.ietf.org/html/rfc7231)].
+
+{.note}  A 303 redirect is considered best practice for &#x5B;[Linked
+Data](http://linkeddatabook.com/editions/1.0/)], so as to avoid
+confusing the *term name* IRI with the document containing its
+definition, which is found at the post-redirect URL.  The *terms*
+defined in this suite of standards are not specifically designed for
+use in Linked Data, but the same considerations apply.
+
+Parties defining *terms* *may* arrange for their *term name* to
+support **discovery**.  This when an HTTP `GET` request to a *term name*
+IRI with an `http` or `https` scheme, made with an appropriate `Accept`
+header, yields 303 redirect to a machine-readable definition of the 
+*term*. 
+
+{.ednote}  FHISO does not currently define a *discovery* mechanism, but
+anticipate doing so in a future standard.  If such a standard is
+included in the initial suite of standards, it is likely to be
+*recommended* that parties defining *terms* *should* arrange for them to
+support *discovery*, while application support for it would be
+*optional*.
+
+
 ## References
 
 ### Normative references
@@ -182,6 +345,23 @@ latest edition of XML 1.1 specification are definitive.
 :   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
     use in RFCs to Indicate Requirement Levels.*  Scott Bradner, 1997.
     (See <https://tools.ietf.org/html/rfc2119>.)
+
+[RFC 3987]
+:   IETF (Internet Engineering Task Force).  *RFC 3987:
+    Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
+    Michel Suignard, 2005. (See <https://tools.ietf.org/html/rfc3987>.)
+
+[RFC 7230]
+:   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
+    Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
+    Fieldind and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7230>.)
+
+[RFC 7231]
+:   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
+    Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
+    Fieldind and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7231>.)
 
 [UAX 15]
 :   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
@@ -218,6 +398,11 @@ latest edition of XML 1.1 specification are definitive.
 :   IETF (Internet Engineering Task Force).  *RFC 7159:  The JavaScript
     Object Notation (JSON) Data Interchange Format*.  T. Bray, ed., 2014.
     (See <https://tools.ietf.org/html/rfc7159>.)
+
+[XML Names]
+:   W3 (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
+    Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
+    W3C Recommendation.  (See <https://www.w3.org/TR/xml-names11/>.)
 
 [XSD Pt2]
 :   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language 
