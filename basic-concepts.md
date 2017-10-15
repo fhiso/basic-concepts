@@ -290,13 +290,6 @@ this in full, if the `cev` *prefix* is bound to the IRI
 > ------           -----------------------------------------------
 {/}
 
-{.note}  The particular *prefixes* assigned above have no relevance
-outside this standard document as *prefix notation* is not used in the
-formal data model defined by this standard.  This notation is simply a
-notational convenience to make the standard easier to read.
-Nevertheless, some FHISO serialisation formats do make use of a form of
-*prefix notation* to shorten the serialised form of data.
-
 ### IRI resolution
  
 It is *recommended* that an HTTP `GET` request to a *term name* IRI with
