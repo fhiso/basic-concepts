@@ -74,6 +74,10 @@ here, but non-conforming syntax *may* be accepted and processed by a
 
 ## Characters and strings
 
+{.ednote}  The concepts related to *strings* were originally defined in
+the CEV Concepts draft.  This section has been moved here to be more
+generally usable.
+
 **Characters** are specified by reference to their *code point* number
 in [ISO 10646], without regard to any particular character encoding.  In
 this standard, *characters* may be identified in this standard by their
@@ -173,9 +177,15 @@ latest edition of XML 1.1 specification are definitive.
 
 ## Terms
 
-A **term** consists of a unique, machine-readable identifier, known as
-the **term name**, paired with a clearly-defined meaning for the concept
-or idea that it represents.  *Term names* *shall* take the form of an IRI
+{.ednote}  The concept of a *term* was originally defined in the CEV
+Concepts draft.  It has been moved here to be more generally usable.
+The material in §3.3 is new in the first draft of Basic Concepts.
+
+A **term** is a form of identifier used in FHISO standards to represent
+a concepts which it is useful to be able to reference.  A *term*
+consists of a unique, machine-readable identifier, known as the **term
+name**, paired with a clearly-defined meaning for the concept or idea
+that it represents.  *Term names* *shall* take the form of an IRI
 matching the `IRI` production in §2.2 of
 &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
 
@@ -279,16 +289,19 @@ this in full, if the `cev` *prefix* is bound to the IRI
 `https://terms.fhiso.org/sources/`, then this IRI can be written in
 *prefix form* as `cev:title`.
 
-{.ednote ...}  We may need to add this text back once we add *datatypes*.
+The following *prefix* binding is assumed in this standard:
+ 
+------           -----------------------------------------------
+`rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
+------           -----------------------------------------------
 
-> The following *prefix* bindings are assumed in this standard:
-> 
-> ------           -----------------------------------------------
-> `rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
-> `rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
-> `xsd`            `http://www.w3.org/2001/XMLSchema#`
-> ------           -----------------------------------------------
-{/}
+{.note}  The particular *prefix* assigned above have no relevance
+outside this standard document as *prefix notation* is not used in the
+formal data model defined by this standard.  This notation is simply a
+notational convenience to make the standard easier to read.
+
+{.ednote} If *prefix notation* is used outside this section of the
+standard, the bindings above should be moved to §1.
 
 ### IRI resolution
  
@@ -324,6 +337,76 @@ included in the initial suite of standards, it is likely to be
 support *discovery*, while application support for it would be
 *optional*.
 
+### Classes
+
+{.note}  This section defines a basic type system for *terms*.  It is
+provided primarily for use in *discovery*, support for which is
+*optional*.
+
+*Terms* are used in many contexts in FHISO standards and it can be
+useful to have a concise, machine-readable way of stating the use for
+which it was defined.  
+
+A **class** is a *term* used to denote a particular context or use for
+which other *terms* may be defined.  Standards defining such contexts
+*should* define a *class* to represent that context, and *must* do so if
+the third parties are permitted to define their own *terms* for use in
+that context.
+
+{.example ...}  A hypothetical standard might defined various *terms*
+representing events of genealogical interest that might occur during a
+person's lifetime.  Examples might include:
+
+    https://example.com/events/Baptism  
+    https://example.com/events/Ordination
+    https://example.com/events/Emigration
+    https://example.com/events/Death
+
+The standard *should* provide a *class* to represent the abstract
+concept of an event type, and as the *class* is itself a *term*, it must
+have an IRI as its *term name*.  Perhaps it might be:
+
+    https://example.com/events/EventType
+
+If the hypothetical standard allows third parties to define additional
+event types, then the standard *must* define such a *class* and IRI.
+{/}
+
+The *term name* of a *class* is also referred to as its **class name**.
+
+When a *term* has been defined for use in the context denoted by some
+*class*, that *class* is referred to as the **type** of the *term*.
+
+{.example}  In *prefix notation*, with the *prefix* `ex` bound to
+`https://example.com/events/`, the *type* of `ex:Baptism` from the
+previous example is `ex:EventType`.
+
+As a *class* is itself a *term*, a *class* is itself a use for which a
+*term* may be defined, this means the general concept of a *class* needs
+a *term* defining.  This standard uses the `rdfs:Class` *term* for this
+purpose:
+
+    http://www.w3.org/2000/01/rdf-schema#Class
+
+{.note}  This is not merely an arcane abstraction: it serves a useful
+role in *discovery*.  If *discovery* is carried out on the *term
+name* of a *class*, it is useful to be able to indicate that the *term*
+is a *class*.  This can be done by saying the *type* of the *term* is
+`rdfs:Class`.
+
+{.note}  Although the `rdfs:Class` *class* is defined in [RDF Schema],
+this standard does not require support for any of the facilities in [RDF
+Schema], nor are parties defining *classes* or *terms* required to do so
+in a manner compatible with RDF.  An implementer may safely use the
+`rdfs:Class` *class* using just the information given in this section
+without reading [RDF Schema].
+
+The *type* of any *class* is therefore `rdfs:Class`.
+
+{.note}  There is no need for a further level of abstraction to
+represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
+*class*, albeit a fairly special one, the *type* of `rdfs:Class` is
+`rdfs:Class`.
 
 ## References
 
@@ -336,13 +419,13 @@ support *discovery*, while application support for it would be
 
 [RFC 2119]
 :   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
-    use in RFCs to Indicate Requirement Levels.*  Scott Bradner, 1997.
+    use in RFCs to Indicate Requirement Levels.*  Scott Bradner, eds., 1997.
     (See <https://tools.ietf.org/html/rfc2119>.)
 
 [RFC 3987]
 :   IETF (Internet Engineering Task Force).  *RFC 3987:
     Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
-    Michel Suignard, 2005. (See <https://tools.ietf.org/html/rfc3987>.)
+    Michel Suignard, eds., 2005. (See <https://tools.ietf.org/html/rfc3987>.)
 
 [RFC 7230]
 :   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
@@ -381,6 +464,11 @@ support *discovery*, while application support for it would be
 [GEDCOM]
 :   The Church of Jesus Christ of Latter-day Saints.
     *The GEDCOM Standard*, draft release 5.5.1.  2 Oct 1999.
+
+[RDF Schema]
+:   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
+    Dan Brickley and R.&nbsp;V. Guha, eds., 2014.
+    W3C Recommendation.  (See <https://www.w3.org/TR/rdf-schema>.)
 
 [RFC 4648]
 :   IETF (Internet Engineering Task Force).  *RFC 4648:  The Base16,
