@@ -392,6 +392,12 @@ support *discovery*, while application support for it would be
     Object Notation (JSON) Data Interchange Format*.  T. Bray, ed., 2014.
     (See <https://tools.ietf.org/html/rfc7159>.)
 
+[RFC 7469]
+:   IETF (Internet Engineering Task Force).  *Public Key Pinning
+    Extension for HTTP*.  C. Evans, C. Palmer and R. Sleevi, ed., 2015.
+    (See <https://tools.ietf.org/html/rfc7469>.)
+
+
 [XML Names]
 :   W3 (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
     Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
