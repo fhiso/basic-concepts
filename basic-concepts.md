@@ -381,10 +381,10 @@ When a *term* has been defined for use in the context denoted by some
 `https://example.com/events/`, the *type* of `ex:Baptism` from the
 previous example is `ex:EventType`.
 
-As a *class* is itself a *term*, a *class* is itself a use for which a
-*term* may be defined, this means the general concept of a *class* needs
-a *term* defining.  This standard uses the `rdfs:Class` *term* for this
-purpose:
+As a *class* is a *term*, defining a *class* is itself a context in
+which *terms* are defined, including by third parties.  This means the
+general concept of a *class* needs a *term* defining to represent it.
+This standard uses the `rdfs:Class` *term* for this purpose:
 
     http://www.w3.org/2000/01/rdf-schema#Class
 
