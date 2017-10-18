@@ -388,11 +388,11 @@ purpose:
 
     http://www.w3.org/2000/01/rdf-schema#Class
 
-{.note}  This is not merely an arcane abstraction: it serves a useful
-role in *discovery*.  If *discovery* is carried out on the *term
-name* of a *class*, it is useful to be able to indicate that the *term*
-is a *class*.  This can be done by saying the *type* of the *term* is
-`rdfs:Class`.
+{.note}  This can be thought of as a *class* of *classes*.  It is not
+merely an arcane abstraction: it serves a useful role in *discovery*.
+If *discovery* is carried out on the *term name* of a *class*, it is
+useful to be able to indicate that the *term* is a *class*.  This can be
+done by saying the *type* of the *term* is `rdfs:Class`.
 
 {.note}  Although the `rdfs:Class` *class* is defined in [RDF Schema],
 this standard does not require support for any of the facilities in [RDF
