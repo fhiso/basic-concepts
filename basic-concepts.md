@@ -368,8 +368,7 @@ have an IRI as its *term name*.  Perhaps it might be:
 
     https://example.com/events/EventType
 
-If the hypothetical standard allows third parties to define additional
-event types, then the standard *must* define such a *class* and IRI.
+This *class* might be referred to as the *class* of event types.
 {/}
 
 The *term name* of a *class* is also referred to as its **class name**.
