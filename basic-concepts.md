@@ -371,6 +371,13 @@ have an IRI as its *term name*.  Perhaps it might be:
 This *class* might be referred to as the *class* of event types.
 {/}
 
+{.note} The words "class" and "type" are used in many contexts in
+computing.  As used here, a *class* is similar to a datatype of which
+*terms* are values, or a class of which *terms* are instances, or a
+named enumeration type of which *terms* are values.  FHISO's use of this
+word does not mean that the other notions associated with the word
+"class" in object-oriented programming apply here.
+
 The *term name* of a *class* is also referred to as its **class name**.
 
 When a *term* has been defined for use in the context denoted by some
