@@ -75,8 +75,8 @@ here, but non-conforming syntax *may* be accepted and processed by a
 ## Characters and strings
 
 {.ednote}  The concepts related to *strings* were originally defined in
-the CEV Concepts draft.  This section has been moved here to be more
-generally usable.
+the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
+section has been moved here to be more generally usable.
 
 **Characters** are specified by reference to their *code point* number
 in [ISO 10646], without regard to any particular character encoding.  In
@@ -177,9 +177,11 @@ latest edition of XML 1.1 specification are definitive.
 
 ## Terms
 
-{.ednote}  The concept of a *term* was originally defined in the CEV
-Concepts draft.  It has been moved here to be more generally usable.
-The material in §3.3 is new in the first draft of Basic Concepts.
+{.ednote}  The concept of a *term* was originally defined in the 
+[CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  It has
+been moved here to be more generally usable.  The material in §3.3 and
+§3.4 is new in this draft of Basic Concepts, but draws heavily on FHISO's
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
 A **term** is a form of identifier used in FHISO standards to represent
 a concepts which it is useful to be able to reference.  A *term*
@@ -289,9 +291,10 @@ this in full, if the `cev` *prefix* is bound to the IRI
 `https://terms.fhiso.org/sources/`, then this IRI can be written in
 *prefix form* as `cev:title`.
 
-The following *prefix* binding is assumed in this standard:
+The following *prefix* bindings are assumed in this standard:
  
 ------           -----------------------------------------------
+`rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
 `rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
 ------           -----------------------------------------------
 
@@ -381,7 +384,7 @@ word does not mean that the other notions associated with the word
 The *term name* of a *class* is also referred to as its **class name**.
 
 When a *term* has been defined for use in the context denoted by some
-*class*, that *class* is referred to as the **type** of the *term*.
+*class*, that *class* is referred to as the **type** of the *term*.  
 
 {.example}  In *prefix notation*, with the *prefix* `ex` bound to
 `https://example.com/events/`, the *type* of `ex:Baptism` from the
@@ -400,12 +403,19 @@ If *discovery* is carried out on the *term name* of a *class*, it is
 useful to be able to indicate that the *term* is a *class*.  This can be
 done by saying the *type* of the *term* is `rdfs:Class`.
 
-{.note}  Although the `rdfs:Class` *class* is defined in [RDF Schema],
-this standard does not require support for any of the facilities in [RDF
-Schema], nor are parties defining *classes* or *terms* required to do so
-in a manner compatible with RDF.  An implementer may safely use the
-`rdfs:Class` *class* using just the information given in this section
-without reading [RDF Schema].
+{.note ...}  Although the `rdfs:Class` *class* is defined in §2.2 of [RDF
+Schema], this standard does not require support for any of the
+facilities in [RDF Schema], nor are parties defining *classes* or
+*terms* required to do so in a manner compatible with RDF.  An
+implementer may safely use the `rdfs:Class` *class* for the purposes of
+this standard using just the information given in this section without
+reading [RDF Schema] or otherwise being familiar with RDF.  
+
+The decision to use `rdfs:Class` and other *terms* from [RDF Schema] is
+due to FHISO's policy of reusing facilities from existing standards when
+they are a good match for our requirements, rather than inventing our
+own versions with similar functionality.
+{/}
 
 The *type* of any *class* is therefore `rdfs:Class`.
 
@@ -413,6 +423,74 @@ The *type* of any *class* is therefore `rdfs:Class`.
 represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
 *class*, albeit a fairly special one, the *type* of `rdfs:Class` is
 `rdfs:Class`.
+
+### Properties
+
+{.note}  This section defines a simple vocabulary for describing *terms*.
+It is provided primarily for use in *discovery*, support for which is
+*optional*.
+
+During *discovery*, and in other situations when a formal definition of a
+particular *term* is needed, it is useful to have a formalism for
+providing information on the *term*.  
+
+A **property** is a *term* used to denote a particular piece of
+information that might be provided when defining another *term*.
+Standards which introduce such pieces of information *should* define a
+*property* to represent them, and *must* do so if third parties are
+permitted to define their own *terms* and if it is *recommended* or
+*required* that these third parties document or otherwise make available
+the information represented by the *property*.
+
+{.example ...} An earlier example introduced several hypothetical
+*terms* for events of genealogical interest, such as birth, baptism,
+ordination, emigration and death.  Many events can occur multiple times
+during a person's life: for example, a person might emigrate more than
+once.  But other events cannot by definition occur more than once:
+birth and death are obvious examples.  The number of times something is
+permitted to occur is sometimes called its cardinality, and if the
+authors of this hypothetical standard considered it a relevant concept,
+they *should* define a *term* to represent the concept of cardinality:
+
+    https://example.com/events/cardinality
+
+If the hypothetical standard allows third parties to define additional
+types of event, and either recommends or requires that they state the
+cardinality of the new events, then the standard *must* define a *term
+property* representing cardinality.
+{/}
+
+The *term name* of a *property* is also referred to as its *property
+name*.
+
+The *type* of a *term*, as introduced in §3.3, is a piece of information
+which *should* normally be provided, albeit often implicitly, when
+defining a *term*.  As such it needs a *property* to represent it.
+This standard uses the `rdf:type` *term* for this purpose:
+
+    http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+
+The *class* of *properties* has the following *class name*:
+
+    http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
+
+{.note}  The `rdf:type` *property* and `rdf:Property` *class* are
+defined §3.3 and §2.8 of [RDF Schema], respectively.  The fact that
+their *term name* IRIs begin differently to the `rdfs:Class` *term name*
+used in §3.3 of this standard is due to historical reasons.  As with the
+`rdfs:Class` *term*, an implementer may safely use the `rdf:type` and
+`rdf:Property` *terms* for the purposes of this standard without reading
+[RDF Schema].
+
+{.ednote}  We may need to introduce the concepts of the **range** and
+**domain** of a *property*, currently in our 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+However the *range* needs concepts associated with *datatypes*, which
+are currently still in the 
+[CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.
+Careful consideration will be needed before the *domain* is introduced
+to ensure it does not cause forwards compatibility problems if new uses
+are found for the *property*.
 
 ## References
 
