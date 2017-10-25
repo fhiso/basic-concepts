@@ -412,7 +412,7 @@ this standard using just the information given in this section without
 reading [RDF Schema] or otherwise being familiar with RDF.  
 
 The decision to use `rdfs:Class` and other *terms* from [RDF Schema] is
-due to FHISO's policy of reusing facilities from existing standards when
+due to FHISO's practice of reusing facilities from existing standards when
 they are a good match for our requirements, rather than inventing our
 own versions with similar functionality.
 {/}
