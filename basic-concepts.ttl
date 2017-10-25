@@ -1,0 +1,12 @@
+# This file is written in the [RDF 1.1 Turtle] language.  
+# It contains all the RDF triples implied by [Basic Concepts].
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# These triples are all true, either axiomatically or by entailment,
+# according to [RDF 1.1 Semantics].
+
+rdfs:Class rdf:type rdfs:Class .
+rdf:type rdf:type rdf:Property .
+rdf:Property rdf:type rdfs:Class .
