@@ -414,7 +414,10 @@ reading [RDF Schema] or otherwise being familiar with RDF.
 The decision to use `rdfs:Class` and other *terms* from [RDF Schema] is
 due to FHISO's practice of reusing facilities from existing standards when
 they are a good match for our requirements, rather than inventing our
-own versions with similar functionality.
+own versions with similar functionality.  It also allows future
+standards and vendor extensions the option of reusing existing
+third-party vocabularies where appropriate, as most such vocabularies
+are also aligned with RDF.
 {/}
 
 The *type* of any *class* is therefore `rdfs:Class`.
