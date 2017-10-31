@@ -78,10 +78,10 @@ here, but non-conforming syntax *may* be accepted and processed by a
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
 section has been moved here to be more generally usable.
 
-**Characters** are specified by reference to their *code point* number
+**Characters** are specified by reference to their **code point** number
 in [ISO 10646], without regard to any particular character encoding.  In
 this standard, *characters* may be identified in this standard by their
-hexadecimal code point prefixed with "U+".
+hexadecimal *code point* prefixed with "U+".
 
 {.note} The character encoding is a property of the serialisation, and
 not defined in this standard.  Non-Unicode encodings are not precluded,
@@ -150,6 +150,22 @@ Windows-1252 quotation marks in data masquerading as Unicode.
 Applications *must not* treat non-ASCII characters (other than C1
 control characters) as ANSEL, the character set properly used in [GEDCOM],
 as [ANSEL]'s non-ASCII characters do not correspond to `RestrictedChar`s.
+
+*Conformant* applications *must* be able to store and process *strings*
+containing arbitrary *characters* other than those matching the
+`RestrictedChar`.  In particular, applications *must* be able to handle
+*characters* which correspond to unassigned Unicode *code points* as
+they may be assigned in future versions of [ISO 10646].  Applications
+*must* also be able to handle *characters* outside Unicode's Basic
+Multilingual Plane &mdash; that is, *characters* with a *code point*
+of U+10000 or higher.
+
+{.note} This means applications *must not* represent *strings*
+internally in the UCS-2 encoding which does not accommodate *characters*
+outside the Basic Multilingual Plane.  The UTF-16 encoding defined in
+§2.6 of [ISO 10646] provides a 16-bit encoding that is backwards
+compatible with UCS-2 but allows arbitrary *characters* to be
+represented through the use of Unicode surrogate pairs.
 
 **Whitespace** is defined as a sequence of one or more space
 *characters*, carriage returns, line feeds, or tabs.  It matches the
