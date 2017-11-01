@@ -269,37 +269,6 @@ country in &#x5B;[IANA Lang
 Subtags](http://www.iana.org/assignments/language-subtag-registry)].
 {/}
 
-*Language tags* *should* contain a script subtag per §2.2.3 of
-&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] when the *string*
-has been transliterated from the script in which it originally appeared.
-
-{.example}  The works of Andalusian historian <span dir="rtl">صاعد
-الأندلسي</span> (Ṣā‘id al-Andalusī) are primarily written in Arabic, his
-native language.  In a *citation layer* pertaining to the original work,
-the original Arabic form of his name *should* be tagged `ar`, while the
-Latin transliteration *should* be tagged `ar-Latn`.  A *layered
-citation* *should* be used when citing a translation of al-Andalusī's
-work, and al-Andalusī's name would normally only appearing in the
-*citation layer* pertaining to the original.  If the particular
-translation used was the English translation by Sema‘an I. Salem and
-Alok Kumar, the names of these translators *should* be tagged `en`, the
-code of English, even though the first translator is a Lebanese man with
-an Arabic name.  This is because these are the forms of their names the
-translators chose to use when writing in English.
-
-{.note} There is difference between this and §4.1 of &#x5B;[RFC
-5646](https://tools.ietf.org/html/rfc5646)] which says a *language tag*
-*should not* include a script subtag when the script is the default
-script for the language, as defined by a `Suppress-Script` field in
-[IANA Lang Subtags].  If a source is written in an unorthodox script,
-there may be a need to transliterate back to the conventional script.
-Such cases are expected to be rare.  When such a case arises, this
-standard recommends the use of a script subtag on the transliteration,
-while &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] recommends
-against one because the transliteration is to the default script.  Both
-are recommendations rather than requirements, meaning that after careful
-consideration they may be ignored in particular circumstances.
-
 A *conformant* application *may* convert any *language tag* into its
 canonical form, as defined by §4.5 of &#x5B;[RFC
 5646](https://tools.ietf.org/html/rfc5646)] or an equivalent section of
