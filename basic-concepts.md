@@ -191,6 +191,10 @@ In the event of a difference between the definitions of the `Char`,
 &#x5B;[XML](https://www.w3.org/TR/xml11/)], the definitions in the
 latest edition of XML 1.1 specification are definitive.
 
+## Language tags
+
+{.ednote}  Placeholder to get section numbers right.
+
 ## Terms
 
 {.ednote}  The concept of a *term* was originally defined in the 
