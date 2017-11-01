@@ -193,7 +193,144 @@ latest edition of XML 1.1 specification are definitive.
 
 ## Language tags
 
-{.ednote}  Placeholder to get section numbers right.
+A **language tag** is a *string* that is used to represent a human
+language, and where appropriate the script and regional variant or
+dialect used.  They are commonly used to tag other *strings* to
+identify their language in a machine-readable manner.
+
+The *language tag* *shall* match the `Language-Tag`
+production from &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)],
+or from any future RFC published by the IEFT that obsoletes
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] (hereinafter
+referred to as RFC 5646's successor RFC), and *should* be valid, as
+defined in §2.2.9 of &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)].
+
+Valid *language tags* have the meaning that is assigned to them by
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] and any successor
+RFC.  Applications *may* discard any *language tag* that is not
+well-formed and replace it with `und`, meaning a undetermined language,
+but *must not* discard any *language tag* that is well-formed even if it
+is not valid.  
+
+{.note ...} &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] says
+that to be valid, a *language tag* *must* consist of tags that have
+been registered in the &#x5B;[IANA Lang 
+Subtags](http://www.iana.org/assignments/language-subtag-registry)]
+registry.  This is freely available online in a machine-readable form
+defined in §3.1.1 of 
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)], and gives the
+meaning of every tag.  Currently it includes:
+
+*  two-letter language tags from [ISO 639-1];
+*  three-letter language tags from [ISO 639-2]  (the "terminology" codes
+   where they differ from the "bibliographic" codes), [ISO 639-3] and 
+   [ISO 639-5] for languages with no two-letter code; 
+*  four-letter script tags from [ISO 15924]; 
+*  two-letter country codes currently assigned in [ISO 3166-1], together
+   with certain formerly assigned or reserved codes; 
+*  three-digit codes for supranational geographical areas and
+   exceptionally countries from [UN M.49]; and
+*  a small number of legacy tags that have been grandfathered into the
+   scheme.
+
+The meanings of codes in the source ISO standards may change over time,
+but the procedure set out in §3.4 of &#x5B;[RFC
+5646](https://tools.ietf.org/html/rfc5646)] governing the addition of
+tags to &#x5B;[IANA Lang
+Subtags](http://www.iana.org/assignments/language-subtag-registry)]
+ensures the meanings there stable.  This particularly affects 
+[ISO 3166-1] country codes which historically have been reused, and may 
+result in a gradual divergence between and &#x5B;[IANA Lang
+Subtags](http://www.iana.org/assignments/language-subtag-registry)].
+Applications *should* therefore avoid using [ISO 3166-1] codes that have
+not been registered in &#x5B;[IANA Lang
+Subtags](http://www.iana.org/assignments/language-subtag-registry)]. 
+{/}
+
+{.example ...} A *string* tagged with the *language tag* `hu-CS` *must*
+be interpreted by a *conformant* application as being in the Hungarian
+language localised for use in the former state of Serbia and Montenegro,
+because this is how `hu` and `CS` are listed in &#x5B;[IANA Lang
+Subtags](http://www.iana.org/assignments/language-subtag-registry)].
+The code `CS` is perhaps better known as representing the former state
+of Czechoslovakia and appears in older lists of [ISO 3166-1] country
+codes as such, but neither IANA nor FHISO recognise this former meaning.
+
+This is one of five country codes whose meaning has materially changed
+in [ISO 3166-1], the other four being `AI`, `BQ`, `GE` and `SK`.  In
+each case, because the reuse occurred before the creation of &#x5B;[IANA Lang
+Subtags](http://www.iana.org/assignments/language-subtag-registry)], it
+is the current meaning that is listed in &#x5B;[IANA Lang 
+Subtags](http://www.iana.org/assignments/language-subtag-registry)].
+If there is further reuse of country codes in the future, &#x5B;[RFC
+5646](https://tools.ietf.org/html/rfc5646)] requires that the current
+meaning of the tag be retained and a numeric code be given to the new
+country in &#x5B;[IANA Lang 
+Subtags](http://www.iana.org/assignments/language-subtag-registry)].
+{/}
+
+*Language tags* *should* contain a script subtag per §2.2.3 of
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] when the *string*
+has been transliterated from the script in which it originally appeared.
+
+{.example}  The works of Andalusian historian <span dir="rtl">صاعد
+الأندلسي</span> (Ṣā‘id al-Andalusī) are primarily written in Arabic, his
+native language.  In a *citation layer* pertaining to the original work,
+the original Arabic form of his name *should* be tagged `ar`, while the
+Latin transliteration *should* be tagged `ar-Latn`.  A *layered
+citation* *should* be used when citing a translation of al-Andalusī's
+work, and al-Andalusī's name would normally only appearing in the
+*citation layer* pertaining to the original.  If the particular
+translation used was the English translation by Sema‘an I. Salem and
+Alok Kumar, the names of these translators *should* be tagged `en`, the
+code of English, even though the first translator is a Lebanese man with
+an Arabic name.  This is because these are the forms of their names the
+translators chose to use when writing in English.
+
+{.note} There is difference between this and §4.1 of &#x5B;[RFC
+5646](https://tools.ietf.org/html/rfc5646)] which says a *language tag*
+*should not* include a script subtag when the script is the default
+script for the language, as defined by a `Suppress-Script` field in
+[IANA Lang Subtags].  If a source is written in an unorthodox script,
+there may be a need to transliterate back to the conventional script.
+Such cases are expected to be rare.  When such a case arises, this
+standard recommends the use of a script subtag on the transliteration,
+while &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] recommends
+against one because the transliteration is to the default script.  Both
+are recommendations rather than requirements, meaning that after careful
+consideration they may be ignored in particular circumstances.
+
+A *conformant* application *may* convert any *language tag* into its
+canonical form, as defined by §4.5 of &#x5B;[RFC
+5646](https://tools.ietf.org/html/rfc5646)] or an equivalent section of
+a successor RFC.  
+
+{.note} The chief purpose of canonical form is to replace deprecated
+language codes and other subtags with the value found in the
+`Preferred-Value` field in [IANA Lang Subtags].  It never result in the
+removal of script subtag, even when they are the default script for the
+language as defined by a `Suppress-Script` field.
+
+{.example}  The *language tag* `iw` is listed in [IANA Lang Subtags] as
+a deprecated language code for Hebrew which has now been removed from
+[ISO 639-1].  Its `Preferred-Value` field is `he`, so an application
+*may* replace `iw` with `he`.
+
+A *conformant* application *may* alter a *language tag* in any other way
+that leaves its canonical form unchanged when compared in a
+case-insensitive manner.
+
+{.note}  Such changes are permitted for three reasons.  First, it allows
+applications to revert new tags to older deprecated forms when exporting
+data to an older application.  Secondly, it allows applications to
+remain *conformant* even if they are basing conversions on an outdated
+copy of the [IANA Lang Subtags] registry.  This is because §3.4 of
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)] only allows
+certain compatible changes to the registry.  Thirdly, it allows
+applications to apply the conventional capitalisation of *language tags*
+defined in §2.1.1 of 
+&#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)].
+
 
 ## Terms
 
@@ -534,6 +671,11 @@ are found for the *property*.
     Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
     Michel Suignard, eds., 2005. (See <https://tools.ietf.org/html/rfc3987>.)
 
+[RFC 5646]
+:   IETF (Internet Engineering Task Force).  *RFC 5646:
+    Tags for Identifying Languages.*  Addison Phillips and Mark Davis,
+    eds., 2009.  (See <https://tools.ietf.org/html/rfc5646>.)
+
 [RFC 7230]
 :   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
     Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
@@ -572,6 +714,45 @@ are found for the *property*.
 :   The Church of Jesus Christ of Latter-day Saints.
     *The GEDCOM Standard*, draft release 5.5.1.  2 Oct 1999.
 
+[IANA Lang Subtags]
+:   IANA (Internet Assigned Numbers Authority).  *Language Subtag
+    Registry*.  Online data file.  (See
+    <http://www.iana.org/assignments/language-subtag-registry>.)
+
+[ISO 639-1]
+:   ISO (International Organization for Standardization).  *ISO
+    639-1:2002.  Codes for the representation of names of languages
+    &mdash; Part 1: Alpha-2 code*.  2002.
+
+[ISO 639-2]
+:   ISO (International Organization for Standardization).  *ISO
+    639-2:1998.  Codes for the representation of names of languages
+    &mdash; Part 2: Alpha-3 code*.  1998.  (See
+    <http://www.loc.gov/standards/iso639-2/>.)
+
+[ISO 639-3]
+:   ISO (International Organization for Standardization).  *ISO
+    639-3:2007.  Codes for the representation of names of languages
+    &mdash; Part 3: Alpha-3 code for comprehensive coverage of
+    languages*.  2007.  
+
+[ISO 639-5]
+:   ISO (International Organization for Standardization).  *ISO
+    639-5:2007.  Codes for the representation of names of languages
+    &mdash; Part 5: Alpha-3 code for language families and groups*.
+    2008.  
+
+[ISO 3166-1]
+:   ISO (International Organization for Standardization).  *ISO
+    3166-1:2006.  Codes for the representation of names of countries and
+    their subdivisions -- Part 1: Country codes*.  2006.
+    (See <https://www.iso.org/iso-3166-country-codes.html>.)
+
+[ISO 15924]
+:   ISO (International Organization for Standardization).  *ISO
+    15924:2004.  Codes for the representation of names of scripts.*
+    2004.
+
 [RDF Schema]
 :   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
     Dan Brickley and R.&nbsp;V. Guha, eds., 2014.
@@ -592,6 +773,10 @@ are found for the *property*.
     Extension for HTTP*.  C. Evans, C. Palmer and R. Sleevi, ed., 2015.
     (See <https://tools.ietf.org/html/rfc7469>.)
 
+[UN M.49]
+:   United Nations, Statistics Division.  *Standard Country or Area
+    Codes for Statistical Use*, revision 4.  United Nations publication,
+    Sales No. 98.XVII.9, 1999.
 
 [XML Names]
 :   W3 (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
@@ -603,7 +788,6 @@ are found for the *property*.
     (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
     Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
-
 
 ----
 Copyright © 2017, [Family History Information Standards Organisation,
