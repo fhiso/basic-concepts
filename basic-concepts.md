@@ -773,6 +773,63 @@ A *datatype* with a *pattern* other than `.*` is known as a **structured
 datatype**, while one with a *pattern* of `.*` is known as an
 **unstructured datatype**.
 
+### Subtypes
+
+A *datatype* *may* be defined as a **subtype** of another *datatype*
+which is referred to as its **supertype**.  This is used to provide a
+more specific version of a more general *datatype*.  The *lexical space*
+of the *subtype* *shall* be a subset of the *lexical space* of the
+*supertype*, and if an application is unfamiliar with the *subtype* it
+*may* process it as if it were the *supertype*.  The *subtype* *must* be
+defined in such a way that at most this results in some loss of meaning
+but does not introduce any false implications about the dataset.  
+
+{.note}  This does not require a *subtype* to define a *pattern* if
+the *supertype* does.  Because the *lexical space* of the *subtype*
+*must* be a subset of that of the *supertype*, the *pattern* of the
+*supertype* may be used if the *subtype* does not define one.  This
+might be done if additional restrictions made on *lexical space* of the
+*subtype* cannot readily be expressed using a regular expression.
+
+{.note}  It is only the *lexical space* of the *subtype* that is
+required to be a subset of the *lexical space* of the *supertype*.  The
+set of *strings* that match the *pattern* of the *subtype* might not
+necessarily be a subset of that of the *supertype*.  This is because the
+*pattern* is permitted to match *strings* outside the *lexical space*,
+as in the example of the date "`1999-02-31`".
+
+The *property* representing the *supertype* of a *datatype* has the
+following *property name*:
+
+    https://terms.fhiso.org/types/subTypeOf
+
+{.ednote ...}  An alternative option is to use the `rdfs:subClassOf`
+*property*, however it is anticipated that it will be desirable to have
+a *property* whose *domain* is exactly `rdfs:Datatype`.  The *domain* of
+`rdfs:subClassOf` is `rdfs:Class`; nevertheless, it is possible to apply
+`rdfs:subClassOf` to *datatypes* because
+
+    rdfs:Datatype rdfs:subClassOf rdfs:Class .
+
+In order to make our `subTypeOf` *property* accessible to RDF reasoners,
+we should document that
+
+    </types/subTypeOf> rdfs:subPropertyOf rdfs:subClassOf .
+
+We will need a way of explicitly saying that a *datatype* has no
+*supertype*.  In RDF, all *datatypes* are subtypes of `rdfs:Literal`,
+so this *datatype* can be used as a special value to signify that.
+{/}
+
+{.note} The concept of a *subtype* in this standard corresponds to
+XML Schema's concept of derivation of a simple type by restriction per
+§3.16 of &#x5B;[XSD Pt1](https://www.w3.org/TR/xmlschema11-1/)].  XML
+Schema does not have concept compatible with this standard's notion of
+an *abstract datatype*, as in XML Schema only complex types can be
+abstract.  If it is desirable to describe a FHISO *abstract datatype* in
+XML Schema, it should be defined as a normal simple type, with the
+information that it is abstract conveyed by another means. 
+
 ## References
 
 ### Normative references
@@ -913,6 +970,12 @@ datatype**, while one with a *pattern* of `.*` is known as an
 :   W3 (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
     Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
     W3C Recommendation.  (See <https://www.w3.org/TR/xml-names11/>.)
+
+[XSD Pt1]
+:   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language
+    (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝), C. M. 
+    Sperberg-McQueen and Henry S. Thompson, ed., 2012.  
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
 
 [XSD Pt2]
 :   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language 
