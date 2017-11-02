@@ -14,3 +14,4 @@ rdf:Property rdf:type rdfs:Class .
 rdfs:Datatype rdf:type rdfs:Class .
 
 types:pattern rdf:type rdf:Property .
+types:subTypeOf rdf:type rdf:Property .
