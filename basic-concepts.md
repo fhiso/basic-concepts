@@ -734,25 +734,19 @@ an application to find out about the *lexical space* of a unfamiliar
 *datatype* through *discovery*.  They are used during the *datatype
 correction* process defined in §4.4.
 
-{.ednote}  We need to specify a particular dialect of regular
-expression.  One option is the form defined in §21.2 of [ECMAScript]
-which has the advantage of being supported in most programming
-languages.  It currently has relatively poor Unicode support (e.g. it
-lacks `\p`), though it seems likely this will improve in the next
-version of ECMAScript.  Another option is to use the form defined in
-Appendix G of [XSD Pt2] which is much less widely supported, but has the
-advantage of being the standard form for defining *datatypes* in XML and
-RDF.
+{.ednote ...}  Our current intention is to define our own dialect of
+regular expression.
 
-{.ednote} We also need to specify exactly what *matching* a *pattern*
+We also need to specify exactly what *matching* a *pattern*
 means.  In particular we want the complete *string* to match the
 *pattern*, so that "`Sept 2017`" does not match the *pattern*
-`[0-9]{4}`, despite the lack of `^`...`$` around the *pattern*.  
+`[0-9]{4}`, despite the lack of `^`...`$` around the *pattern*.
+{/}
 
 {.example ...}  The XML Schema `date` type mentioned in the previous
 example has the following *pattern* (here split onto two lines for
 readability &mdash; the second line is an optional timezone which the
-XML Schema `data` type allows).  
+XML Schema `date` type allows).
 
     -?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])
     (Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))? 
@@ -767,13 +761,13 @@ following *property name*:
 
     https://terms.fhiso.org/types/pattern
 
-{.ednote}  An alternative option is to use `xsd:pattern`, which is
+{.ednote}  This standard does not use `xsd:pattern`, which is
 used as a *property* in [OWL 2](https://www.w3.org/TR/owl2-syntax/).
 This poses a difficulty because none of the relevant W3 specifications
 indicate what the `rdfs:domain` of `xsd:pattern` is supposed to be.
 Possibly it is an `owl:Restriction`, which would be incompatible with
-this use.  Using `xsd:pattern` would also require us to use the form of
-regular expression defined in Appendix G of [XSD Pt2].
+this use.  Using `xsd:pattern` would also require us to use precisely
+the form of regular expression defined in Appendix G of [XSD Pt2].
 
 A *datatype* with a *pattern* other than `.*` is known as a **structured
 datatype**, while one with a *pattern* of `.*` is known as an
