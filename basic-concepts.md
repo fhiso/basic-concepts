@@ -193,6 +193,8 @@ latest edition of XML 1.1 specification are definitive.
 
 ## Language tags
 
+{.ednote}  The material in this section is new in this draft.
+
 A **language tag** is a *string* that is used to represent a human
 language, and where appropriate the script and regional variant or
 dialect used.  They are commonly used to tag other *strings* to
@@ -623,6 +625,10 @@ are found for the *property*.
 
 ## Datatypes
 
+{.ednote}  The concepts related to *datatypes* were originally defined in
+the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
+section has been moved here to be more generally usable.
+
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
 *datatype* is identified by a *term name* which is an IRI.  The *term
@@ -713,6 +719,65 @@ formatting dates.
 The *class* of *datatypes* has the *class name* `rdfs:Datatype`:
 
     http://www.w3.org/2000/01/rdf-schema#Datatype
+
+### Datatype patterns
+
+A party defining a *datatype* *shall* specify a **pattern** for that
+*datatype*.  This is a regular expression which provides a constraint on
+the *lexical space* of the *datatype*.  Matching the *pattern* might not
+be sufficient to validate a *string* as being in the *lexical space* of
+the *datatype*, but a *string* that fails to match the *pattern* is
+guaranteed not to be in the *lexical space*.
+
+{.note}  Patterns are included in this standard to provide a way for
+an application to find out about the *lexical space* of a unfamiliar
+*datatype* through *discovery*.  They are used during the *datatype
+correction* process defined in §4.4.
+
+{.ednote}  We need to specify a particular dialect of regular
+expression.  One option is the form defined in §21.2 of [ECMAScript]
+which has the advantage of being supported in most programming
+languages.  It currently has relatively poor Unicode support (e.g. it
+lacks `\p`), though it seems likely this will improve in the next
+version of ECMAScript.  Another option is to use the form defined in
+Appendix G of [XSD Pt2] which is much less widely supported, but has the
+advantage of being the standard form for defining *datatypes* in XML and
+RDF.
+
+{.ednote} We also need to specify exactly what *matching* a *pattern*
+means.  In particular we want the complete *string* to match the
+*pattern*, so that "`Sept 2017`" does not match the *pattern*
+`[0-9]{4}`, despite the lack of `^`...`$` around the *pattern*.  
+
+{.example ...}  The XML Schema `date` type mentioned in the previous
+example has the following *pattern* (here split onto two lines for
+readability &mdash; the second line is an optional timezone which the
+XML Schema `data` type allows).  
+
+    -?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])
+    (Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))? 
+
+This *pattern* matches *strings* like "`1999-02-31`".  Despite matching
+the *pattern*, this *string* is not part of the *lexical space* of this
+`date` type as 31 February is not a valid date.
+{/}
+
+The *property* representing the *pattern* of a *datatype* has the
+following *property name*:
+
+    https://terms.fhiso.org/types/pattern
+
+{.ednote}  An alternative option is to use `xsd:pattern`, which is
+used as a *property* in [OWL 2](https://www.w3.org/TR/owl2-syntax/).
+This poses a difficulty because none of the relevant W3 specifications
+indicate what the `rdfs:domain` of `xsd:pattern` is supposed to be.
+Possibly it is an `owl:Restriction`, which would be incompatible with
+this use.  Using `xsd:pattern` would also require us to use the form of
+regular expression defined in Appendix G of [XSD Pt2].
+
+A *datatype* with a *pattern* other than `.*` is known as a **structured
+datatype**, while one with a *pattern* of `.*` is known as an
+**unstructured datatype**.
 
 ## References
 
