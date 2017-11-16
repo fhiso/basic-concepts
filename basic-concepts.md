@@ -22,7 +22,7 @@ such as *characters* and *whitespace*, and §3 defines briefly how FHISO
 standards use *language tags*.  *Terms* are defined in §4 as a
 form of extensible identifier using IRIs; a shorthand notation for
 *terms* known as *prefix notation* is described in §4.1, and §4.2
-discusses information that may be be retrieved from these IRI.
+discusses information that may be retrieved from these IRIs.
 The notion of a *datatype* is defined in §5, and §5.2 and §5.3 include
 details on how to specify a new *datatype*.
 
@@ -33,7 +33,7 @@ FHISO standards and new, compatible standards in such a way that
 applications can use a *discovery* mechanism to find out about unknown
 components, allowing them to be processed.  The facilities in these
 sections will primarily be of use to parties defining extensions or
-implmenting *discovery*.
+implementing *discovery*.
 
 {.ednote} It is anticipated that a future draft will include some
 standard, low-level *datatypes* for *strings*, integers and booleans.  A
@@ -806,7 +806,7 @@ the `Cardinality` *class*.  Having a *property* and the *class* that
 serves as its *range* only differing in capitalisation is a common
 idiom.
 
-A second option is to use two *strings* to represent the possibile
+A second option is to use two *strings* to represent the possible
 cardinalities, perhaps "`1`" and "`unbounded`".  A *datatype* would 
 then be defined whose *lexical space* consisted of just these two
 *strings*, and the *datatype* given a name like:
