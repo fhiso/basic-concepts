@@ -18,13 +18,27 @@ higher-level standard.
 
 The definition of a *string* which is used in multiple FHISO standards
 is given in §2 of this standard, together with various related concepts
-such as *characters* and *whitespace*.  *Terms* are defined in §3 as a
+such as *characters* and *whitespace*, and §3 defines briefly how FHISO
+standards use *language tags*.  *Terms* are defined in §4 as a
 form of extensible identifier using IRIs; a shorthand notation for
-*terms* known as *prefix notation* is described in §3.1, and a §3.2
+*terms* known as *prefix notation* is described in §4.1, and a §4.2
 discusses information that may be be retrieved from these IRI.
+The notion of a *datatype* is defined in §5, and §5.2 and §5.3 include
+details on how to specify a new *datatype*.
 
-{.ednote} It is anticipated that a future draft will add definitions for
-*datatypes* and *language tags*.
+The concepts of a *classes*, *properties*, the *type* of a *term*, and
+the *range* of a *property* are defined in §4.3, §4.4, §4.5 and §5.1,
+respectively.  They provide an infrastructure for defining extensions to
+FHISO standards and new, compatible standards in such a way that
+applications can use a *discovery* mechanism to find out about unknown
+components, allowing them to be processed.  The facilities in these
+sections will primarily be of use to parties defining extensions or
+implmenting *discovery*.
+
+{.ednote} It is anticipated that a future draft will include some
+standard, low-level *datatypes* for *strings*, integers and booleans.  A
+*pattern* *datatype* will also be needed for the purpose of §5.3.  The
+notion of *cardinality* may also be moved here from [CEV Concepts].
 
 ## Conventions used
 
@@ -336,13 +350,11 @@ that it represents.  *Term names* *shall* take the form of an IRI
 matching the `IRI` production in §2.2 of
 &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
 
-{.ednote ...} Add an example of what a term name is used for.  Once
-*datatypes* are moved here, we can add the following sentence to the
-previous paragraph
+{.example} This standard uses *terms* to name *datatypes*, as defined in
+§5 of this standard, and also for *classes* and *properties*, defined in
+§4.3 and §4.4.
 
-> This standard uses *terms* as *datatypes*, as defined in §X of this
-> standard.
-{/}
+{.ednote}  Give an actual example, e.g. `xsd:string`.
 
 {.note} IRIs have been chosen in preference to URIs because it is
 recognised that certain culture-specific genealogical concepts may not
@@ -472,9 +484,10 @@ support *discovery*, while application support for it would be
 
 ### Classes
 
-{.note}  This section defines a basic type system for *terms*.  It is
-provided primarily for use in *discovery*, support for which is
-*optional*.
+{.note}  This section defines a basic type system for *terms*.  
+It is part of the infrastructure for defining extensions to FHISO
+standards or new, compatible standards, and is used by applications
+during *discovery*, support for which is *optional*.
 
 *Terms* are used in many contexts in FHISO standards and it can be
 useful to have a concise, machine-readable way of stating the use for
@@ -567,8 +580,9 @@ Type             `http://www.w3.org/2000/01/rdf-schema#Class`
 ### Properties
 
 {.note}  This section defines a simple vocabulary for describing *terms*.
-It is provided primarily for use in *discovery*, support for which is
-*optional*.
+It is part of the infrastructure for defining extensions to FHISO
+standards or new, compatible standards, and is used by applications
+during *discovery*, support for which is *optional*.
 
 During *discovery*, and in other situations when a formal definition of a
 particular *term* is needed, it is useful to have a formalism for
@@ -620,6 +634,11 @@ As with the `rdfs:Class` *term*, an implementer may safely use the
 [RDF Schema].
 
 ### The type property
+
+{.note}  This section defines a *property* to denote *type* of a *term*.
+It is part of the infrastructure for defining extensions to FHISO
+standards or new, compatible standards, and is used by applications
+during *discovery*, support for which is *optional*.
 
 The *type* of a *term*, as introduced in §4.3, is a piece of information
 which *should* normally be provided, albeit often implicitly, when
@@ -745,6 +764,12 @@ Type             `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
 ### Range
+
+{.note}  This section defines a *property* to describe way other
+*properties* are to be used.
+It is part of the infrastructure for defining extensions to FHISO
+standards or new, compatible standards, and is used by applications
+during *discovery*, support for which is *optional*.
 
 The **range** of a *property* is a formal specification of allowable
 values for that *property*.  It *shall* be a *class name* or a *datatype
