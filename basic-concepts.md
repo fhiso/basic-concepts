@@ -338,8 +338,8 @@ defined in §2.1.1 of
 
 {.ednote}  The concept of a *term* was originally defined in the 
 [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  It has
-been moved here to be more generally usable.  The material in §3.3 and
-§3.4 is new in this draft of Basic Concepts, but draws heavily on FHISO's
+been moved here to be more generally usable.  The material in §4.3 and
+§4.4 is new in this draft, but draws heavily on FHISO's
 [Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
 A **term** is a form of identifier used in FHISO standards to represent
@@ -628,7 +628,7 @@ Type             `http://www.w3.org/2000/01/rdf-schema#Class`
 
 {.note}  The `rdf:Property` *class* is defined §2.8 of [RDF Schema].
 The fact that its *term name* IRI begin differently to the `rdfs:Class`
-*term name* used in §3.3 of this standard is due to historical reasons.
+*term name* used in §4.3 of this standard is due to historical reasons.
 As with the `rdfs:Class` *term*, an implementer may safely use the
 `rdf:Property` *terms* for the purposes of this standard without reading
 [RDF Schema].
@@ -664,7 +664,10 @@ this standard without reading [RDF Schema].
 
 {.ednote}  The concepts related to *datatypes* were originally defined in
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
-section has been moved here to be more generally usable.
+section, including §5.2 and §5.3 on *patterns* and *subtypes* has been
+moved here to be more generally usable.  The material in §5.1 is new in
+this draft, but draws heavily on FHISO's 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
