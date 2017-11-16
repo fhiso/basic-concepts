@@ -72,6 +72,23 @@ applications *must not* generate data not conforming to the syntax given
 here, but non-conforming syntax *may* be accepted and processed by a
 *conforming* application in an implementation-defined manner.
 
+This standard uses *prefix notation*, as defined in §4.1 of this
+standard, when discussing specific *terms*.  The following *prefix*
+bindings are assumed in this standard:
+
+------           -----------------------------------------------
+`rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
+`rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
+`xsd`            `http://www.w3.org/2001/XMLSchema#`
+`types`          `https://terms.fhiso.org/types/`
+------           -----------------------------------------------
+
+{.note}  The particular *prefix* assigned above have no relevance
+outside this standard document as *prefix notation* is not used in the
+formal data model defined by this standard.  This notation is simply a
+notational convenience to make the standard easier to read.
+
+
 ## Characters and strings
 
 {.ednote}  The concepts related to *strings* were originally defined in
@@ -419,21 +436,6 @@ this in full, if the `cev` *prefix* is bound to the IRI
 `https://terms.fhiso.org/sources/`, then this IRI can be written in
 *prefix form* as `cev:title`.
 
-The following *prefix* bindings are assumed in this standard:
- 
-------           -----------------------------------------------
-`rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
-`rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
-------           -----------------------------------------------
-
-{.note}  The particular *prefix* assigned above have no relevance
-outside this standard document as *prefix notation* is not used in the
-formal data model defined by this standard.  This notation is simply a
-notational convenience to make the standard easier to read.
-
-{.ednote} If *prefix notation* is used outside this section of the
-standard, the bindings above should be moved to §1.
-
 ### IRI resolution
  
 It is *recommended* that an HTTP `GET` request to a *term name* IRI with
@@ -555,6 +557,13 @@ represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
 *class*, albeit a fairly special one, the *type* of `rdfs:Class` is
 `rdfs:Class`.
 
+: Class definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#Class`
+Type             `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
 ### Properties
 
 {.note}  This section defines a simple vocabulary for describing *terms*.
@@ -587,41 +596,50 @@ they *should* define a *term* to represent the concept of cardinality:
 
 If the hypothetical standard allows third parties to define additional
 types of event, and either recommends or requires that they state the
-cardinality of the new events, then the standard *must* define a *term
-property* representing cardinality.
+cardinality of the new events, then the standard *must* define a
+*property* representing cardinality.
 {/}
 
 The *term name* of a *property* is also referred to as its *property
 name*.
 
-The *type* of a *term*, as introduced in §3.3, is a piece of information
+The *class* of *properties* has the following *class name*:
+
+: Class definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Type             `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note}  The `rdf:Property` *class* is defined §2.8 of [RDF Schema].
+The fact that its *term name* IRI begin differently to the `rdfs:Class`
+*term name* used in §3.3 of this standard is due to historical reasons.
+As with the `rdfs:Class` *term*, an implementer may safely use the
+`rdf:Property` *terms* for the purposes of this standard without reading
+[RDF Schema].
+
+### The type property
+
+The *type* of a *term*, as introduced in §4.3, is a piece of information
 which *should* normally be provided, albeit often implicitly, when
 defining a *term*.  As such it needs a *property* to represent it.
 This standard uses the `rdf:type` *term* for this purpose:
 
-    http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+: Property definition
 
-The *class* of *properties* has the following *class name*:
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
 
-    http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
+{.note}  The meaning of the *range* given in the *property* definition
+table above is given in §5.1 of this standard.
 
-{.note}  The `rdf:type` *property* and `rdf:Property` *class* are
-defined §3.3 and §2.8 of [RDF Schema], respectively.  The fact that
-their *term name* IRIs begin differently to the `rdfs:Class` *term name*
-used in §3.3 of this standard is due to historical reasons.  As with the
-`rdfs:Class` *term*, an implementer may safely use the `rdf:type` and
-`rdf:Property` *terms* for the purposes of this standard without reading
-[RDF Schema].
-
-{.ednote}  We may need to introduce the concepts of the **range** and
-**domain** of a *property*, currently in our 
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
-However the *range* needs concepts associated with *datatypes*, which
-are currently still in the 
-[CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.
-Careful consideration will be needed before the *domain* is introduced
-to ensure it does not cause forwards compatibility problems if new uses
-are found for the *property*.
+{.note}  The `rdf:type` *property* is defined §3.3 of [RDF Schema],
+however implementers may safely use this *property* for the purposes of
+this standard without reading [RDF Schema].
 
 ## Datatypes
 
@@ -716,11 +734,100 @@ this case, information that the document is in English is not sufficient
 as different English-speaking countries have different conventions for
 formatting dates.
 
-The *class* of *datatypes* has the *class name* `rdfs:Datatype`:
+This standard uses the `rdfs:Datatype` *class* as the *class* of
+*datatypes*, defined as follows:
 
-    http://www.w3.org/2000/01/rdf-schema#Datatype
+: Class definition
 
-### Datatype patterns
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Type             `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+### Range
+
+The **range** of a *property* is a formal specification of allowable
+values for that *property*.  It *shall* be a *class name* or a *datatype
+name*.  When the *range* of a *property* is a *class name*, the value
+associated with the property shall be a *term* whose *type* is that
+*class*; when the *range* of a *property* is a *datatype name*, the
+value associated with the property shall be a *string* in the *lexical
+space* of that *datatype*.
+
+{.example ...}  An earlier example gave a hypothetical `cardinality`
+*property* that might be used when defining genealogical events.
+Most likely, the value of this hypothetical *property* would be required
+to be "one" or "unbounded", depending on whether the event is one that
+can occur just once, or whether it can occur multiple times.  The party
+defining this *property* would need to consider how these two values
+were to be represented.  
+
+One option is to define two *terms* to represent these options, say:
+
+    https://example.com/events/SinglyOccurring
+    https://example.com/events/MultiplyOccurring
+
+The context in which these two *terms* can be used is when specifying a
+cardinality, so a `Cardinality` *class* would be defined:
+
+    https://example.com/events/Cardinality
+
+The *type* of `SinglyOccuring` and `MultiplyOccuring` would be
+`Cardinality`, and the *range* of the `cardinality` *property* would be
+the `Cardinality` *class*.  Having a *property* and the *class* that
+serves as its *range* only differing in capitalisation is a common
+idiom.
+
+A second option is to use two *strings* to represent the possibile
+cardinalities, perhaps "`1`" and "`unbounded`".  A *datatype* would 
+then be defined whose *lexical space* consisted of just these two
+*strings*, and the *datatype* given a name like:
+
+    https://example.com/events/Cardinality
+
+As in the first option, the *range* of the `cardinality` *property*
+would be the `Cardinality` *class*. 
+
+A third and likely preferable option would be to name the `cardinality`
+*property* differently, say `canOccurMultiply`, so that its *range*
+could be a standard boolean *datatype* like `xsd:boolean`.  
+{/}
+
+{.note} This standard has already defined one *property*, namely the
+*type* *property* in §4.5.  The *type* of *term* is the *class* denoting
+the content in which it can be used.  Therefore the *range* of the
+*type* *property* is `rdfs:Class`, as shown in the *property* definition
+table in §4.5.
+
+Standards which define *properties* *should* specify their *range*, and
+*must* do so if third parties are permitted to define their own *terms*
+and if it is *recommended* or *required* that these third parties
+document or otherwise make available the information represented by the
+*property*.
+
+{.note} This is the same wording that is used in §4.4 to specify when a
+*property* *must* be defined.  In circumstances where a *property*
+*must* be defined, its *range* *must* also be defined.
+
+The *range* of a *property* is itself a *property* of the *property*,
+defined as follows:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.ednote}  We may need to introduce the concepts of the
+**domain** of a *property*, currently in our 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+Careful consideration will be needed before the *domain* is introduced
+to ensure it does not cause forwards compatibility problems if new uses
+are found for the *property*.
+
+### Patterns
 
 A party defining a *datatype* *shall* specify a **pattern** for that
 *datatype*.  This is a regular expression which provides a constraint on
@@ -731,8 +838,7 @@ guaranteed not to be in the *lexical space*.
 
 {.note}  Patterns are included in this standard to provide a way for
 an application to find out about the *lexical space* of a unfamiliar
-*datatype* through *discovery*.  They are used during the *datatype
-correction* process defined in §4.4.
+*datatype* through *discovery*.
 
 {.ednote ...}  Our current intention is to define our own dialect of
 regular expression.
@@ -756,14 +862,25 @@ the *pattern*, this *string* is not part of the *lexical space* of this
 `date` type as 31 February is not a valid date.
 {/}
 
-The *property* representing the *pattern* of a *datatype* has the
-following *property name*:
+The *property* representing the *pattern* of a *datatype* is defined as
+follows:
 
-    https://terms.fhiso.org/types/pattern
+: Property definition
 
-{.ednote}  This standard does not use `xsd:pattern`, which is
-used as a *property* in [OWL 2](https://www.w3.org/TR/owl2-syntax/).
-This poses a difficulty because none of the relevant W3 specifications
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/pattern`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `https://terms.fhiso.org/types/Pattern`
+------           -----------------------------------------------
+
+{.ednote} The *range* (as defined in §5.1) of `types:pattern` is
+`types:Pattern`, which will be the *datatype* for FHISO's regular
+expression dialect.
+
+{.ednote}  This standard does not use `xsd:pattern` as the *property*,
+even though it is used as a *property* in 
+[OWL 2](https://www.w3.org/TR/owl2-syntax/).  Its use would pose a
+difficulty because none of the relevant W3 specifications
 indicate what the `rdfs:domain` of `xsd:pattern` is supposed to be.
 Possibly it is an `owl:Restriction`, which would be incompatible with
 this use.  Using `xsd:pattern` would also require us to use precisely
@@ -798,10 +915,16 @@ necessarily be a subset of that of the *supertype*.  This is because the
 *pattern* is permitted to match *strings* outside the *lexical space*,
 as in the example of the date "`1999-02-31`".
 
-The *property* representing the *supertype* of a *datatype* has the
-following *property name*:
+The *property* representing the *supertype* of a *datatype* is defined
+as follows:
 
-    https://terms.fhiso.org/types/subTypeOf
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/subTypeOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
 
 {.ednote ...}  An alternative option is to use the `rdfs:subClassOf`
 *property*, however it is anticipated that it will be desirable to have

@@ -9,9 +9,19 @@
 # according to [RDF 1.1 Semantics].
 
 rdfs:Class rdf:type rdfs:Class .
-rdf:type rdf:type rdf:Property .
+
 rdf:Property rdf:type rdfs:Class .
+
+rdf:type rdf:type rdf:Property .
+rdf:type rdfs:range rdf:Class .
+
 rdfs:Datatype rdf:type rdfs:Class .
 
 types:pattern rdf:type rdf:Property .
+types:pattern rdf:range types:Pattern .
+
 types:subTypeOf rdf:type rdf:Property .
+types:subTypeOf rdf:range rdfs:Datatype .
+
+rdfs:range rdf:type rdf:Property .
+rdfs:range rdfs:range rdfs:Class .
