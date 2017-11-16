@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 1 November 2017
+date: 16 November 2017
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
