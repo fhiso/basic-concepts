@@ -21,7 +21,7 @@ is given in §2 of this standard, together with various related concepts
 such as *characters* and *whitespace*, and §3 defines briefly how FHISO
 standards use *language tags*.  *Terms* are defined in §4 as a
 form of extensible identifier using IRIs; a shorthand notation for
-*terms* known as *prefix notation* is described in §4.1, and a §4.2
+*terms* known as *prefix notation* is described in §4.1, and §4.2
 discusses information that may be be retrieved from these IRI.
 The notion of a *datatype* is defined in §5, and §5.2 and §5.3 include
 details on how to specify a new *datatype*.
