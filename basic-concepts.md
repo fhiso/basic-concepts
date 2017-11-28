@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 16 November 2017
+date: 26 November 2017
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -333,6 +333,12 @@ applications to apply the conventional capitalisation of *language tags*
 defined in §2.1.1 of 
 &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)].
 
+A *string* which is accompanied by a *language tag* which identifies the
+language in which the *string* is written is called a **language-tagged
+string**.
+
+{.note} The *language tag* is not itself part of *string*, but is stored
+alongside it.  
 
 ## Terms
 
@@ -442,11 +448,11 @@ as the leading portion of a *term name*.  Then, instead of writing the
 *term name* in full, the leading portion of the *term name* is replaced
 by its *prefix* followed by a colon (U+003A) separator.
 
-{.example}  The *term name* `https://terms.fhiso.org/sources/title` is
-used in several of the examples in this standard.  Instead of writing
-this in full, if the `cev` *prefix* is bound to the IRI
-`https://terms.fhiso.org/sources/`, then this IRI can be written in
-*prefix form* as `cev:title`.
+{.example}  The *term name* `http://www.w3.org/2000/01/rdf-schema#Class`
+is used in several places in this standard.  Instead of writing
+this in full, if the `rdfs` *prefix* is bound to the IRI
+`http://www.w3.org/2000/01/rdf-schema#`, then this IRI can be written in
+*prefix form* as `rdfs:Class`.
 
 ### IRI resolution
  
@@ -469,18 +475,77 @@ definition, which is found at the post-redirect URL.  The *terms*
 defined in this suite of standards are not specifically designed for
 use in Linked Data, but the same considerations apply.
 
-Parties defining *terms* *may* arrange for their *term name* to
+Parties defining *terms* *should* arrange for their *term name* to
 support **discovery**.  This when an HTTP `GET` request to a *term name*
 IRI with an `http` or `https` scheme, made with an appropriate `Accept`
-header, yields 303 redirect to a machine-readable definition of the 
-*term*. 
+header, yields 303 redirect to a machine-readable definition of the
+*term*.  
 
-{.ednote}  FHISO does not currently define a *discovery* mechanism, but
-anticipate doing so in a future standard.  If such a standard is
-included in the initial suite of standards, it is likely to be
-*recommended* that parties defining *terms* *should* arrange for them to
-support *discovery*, while application support for it would be
-*optional*.
+{.note}  This standard does not specify a specific version of HTTP, but
+at the current time, even though HTTP/2 is becoming more popular, HTTP
+1.1 is the most widely implemented version of HTTP.  While this remains
+true, applications and discovery servers are encouraged to support HTTP
+1.1.
+
+This standard does not define a *discovery* mechanism, but it
+is *recommended* that parties defining *terms* support FHISO's [Triples
+Discovery] mechanism, and *may* additionally support other mechanisms.
+Support for *discovery* by applications is *optional*.
+
+{.example ...}  Suppose an application wants to perform *discovery* on 
+the hypothetical `https://example.com/events/Baptism` *term* used in
+several later examples in this standard.  If the application supports 
+FHISO's [Triples Discovery] mechanism, which uses [N-Triples] as its
+serialisation format, together with some other hypothetical *discovery*
+mechanism using the `application/x-discovery` MIME type, but prefers to
+use [Triples Discovery], it might make the following HTTP request:
+
+    GET /events/Baptism HTTP/1.1
+    Host: example.com
+    Accept: application/n-triples, application/x-discovery; q=0.9
+
+In this example, the `q=0.9` in the `Accept` header is a quality value
+which, per §5.3 of &#x5B;[RFC 7231](//tools.ietf.org/html/rfc7231)],
+indicates that the `x-discovery` format is less preferred than
+`n-triples` which by default has a quality value of 1.0.
+
+If the server supports `n-triples`, it *must* respond with a 303
+redirect:
+
+    HTTP/1.1 303 See Other
+    Location: https://example.com/events/Baptism.n3
+    Vary: Accept
+
+In this case the redirect is to the original IRI but with `.n3`
+appended, however the actual choice of IRI is up to the party defining
+the *term* and running the `example.com` web server.  When a server's
+response is dependent on the contents of an `Accept` header, §7.1.4 of
+&#x5B;[RFC 7231](//tools.ietf.org/html/rfc7231)] says that this *should*
+be recorded in a `Vary` header, as it is in this example.
+
+The application would normally then make a second HTTP request to follow
+the redirect:
+
+    GET /events/Baptism.n3 HTTP/1.1
+    Host: example.com
+    Accept: application/n-triples, application/x-discovery; q=0.9
+
+This request uses the same `Accept` header as the first, as HTTP
+redirects contain no information about the MIME type of the destination
+resource, so at this point the application does not know which
+*discovery* mechanism the server is using, or whether the server does
+not support *discovery* or HTTP content negotiation and is serving a
+human-readable definition.
+
+The server's response to this request should be an N-Triples file
+containing information about the `Baptism` *term*.
+{/}
+
+A party defining a *term* *may* support *discovery* without using HTTP
+content negotiation on their web server by serving a 303 redirect to a
+machine-readable definition of the *term* unconditionally, however it is
+*recommended* that such servers implement HTTP content negotiation 
+respecting the `Accept` header.
 
 ### Classes
 
@@ -586,12 +651,42 @@ during *discovery*, support for which is *optional*.
 
 During *discovery*, and in other situations when a formal definition of a
 particular *term* is needed, it is useful to have a formalism for
-providing information on the *term*.  
+providing information about that *term*.  
 
-A **property** is a *term* used to denote a particular piece of
-information that might be provided when defining another *term*.
+A **property** is a particular piece of information that might be
+provided when defining another entity.  The thing being defined is
+typically a *term*, and is called the **subject** of the *property*.
+
+{.ednote} The *subject* of the *property* is only said to be typically a
+*term* so that *citation elements terms* (in CEV Concepts) can be made a
+subclass of *property terms*.  The *subject* of a *citation element* is
+a *source* which is not a *term* as we don't require them to be
+identified by an IRI.  It is likely that other genealogical concepts,
+possibly including individual attributes in ELF, may also be treated as
+*properties* whose *subjects* are not *terms*.  In the case of
+individual attributes, the subject is an individual which is likely not
+identified by an IRI. 
+
+The *property* consists of two parts, both of which are *required* to be
+present:
+
+*  a **property name**, which identifies the nature of the information
+   in the *property*; and
+*  a **property value**, which contains the data about the *subject* of
+   the *property*.
+
+The *property name* *shall* be a *term* that has been defined to be used
+as a *property name* in the manner required by this standard; a *term*
+defined for this purpose is called a **property term**.
+
+{.note}  This nomenclature draws a distinction between a *property name*
+and a *property term*.  The former is part of a *property*, and is
+therefore part of the description of the *subject* of the *property*,
+while the latter is an item of vocabulary reference by that description.
+The *property name* is a *property term*.
+
 Standards which introduce such pieces of information *should* define a
-*property* to represent them, and *must* do so if third parties are
+*property terms* to represent them, and *must* do so if third parties are
 permitted to define their own *terms* and if it is *recommended* or
 *required* that these third parties document or otherwise make available
 the information represented by the *property*.
@@ -604,20 +699,21 @@ once.  But other events cannot by definition occur more than once:
 birth and death are obvious examples.  The number of times something is
 permitted to occur is sometimes called its cardinality, and if the
 authors of this hypothetical standard considered it a relevant concept,
-they *should* define a *term* to represent the concept of cardinality:
+they *should* define a *property term* to represent the concept of
+cardinality:
 
     https://example.com/events/cardinality
 
 If the hypothetical standard allows third parties to define additional
 types of event, and either recommends or requires that they state the
 cardinality of the new events, then the standard *must* define a
-*property* representing cardinality.
+*property term* representing cardinality.
 {/}
 
-The *term name* of a *property* is also referred to as its *property
-name*.
+The *term name* of a *property term* is also referred to as its *property
+term name*.
 
-The *class* of *properties* has the following *class name*:
+The *class* of *property terms* has the following *class name*:
 
 : Class definition
 
@@ -635,14 +731,14 @@ As with the `rdfs:Class` *term*, an implementer may safely use the
 
 ### The type property
 
-{.note}  This section defines a *property* to denote *type* of a *term*.
-It is part of the infrastructure for defining extensions to FHISO
-standards or new, compatible standards, and is used by applications
-during *discovery*, support for which is *optional*.
+{.note}  This section defines a *property term* to denote *type* of
+*subject*.  It is part of the infrastructure for defining extensions to
+FHISO standards or new, compatible standards, and is used by
+applications during *discovery*, support for which is *optional*.
 
 The *type* of a *term*, as introduced in §4.3, is a piece of information
 which *should* normally be provided, albeit often implicitly, when
-defining a *term*.  As such it needs a *property* to represent it.
+defining a *term*.  As such it needs a *property term* to represent it.
 This standard uses the `rdf:type` *term* for this purpose:
 
 : Property definition
@@ -656,18 +752,18 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 {.note}  The meaning of the *range* given in the *property* definition
 table above is given in §5.1 of this standard.
 
-{.note}  The `rdf:type` *property* is defined §3.3 of [RDF Schema],
-however implementers may safely use this *property* for the purposes of
-this standard without reading [RDF Schema].
+{.note}  The `rdf:type` *property term* is defined §3.3 of [RDF Schema],
+however implementers may safely use this *property term* for the
+purposes of this standard without reading [RDF Schema].
 
 ## Datatypes
 
 {.ednote}  The concepts related to *datatypes* were originally defined in
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
-section, including §5.2 and §5.3 on *patterns* and *subtypes* has been
-moved here to be more generally usable.  The material in §5.1 is new in
-this draft, but draws heavily on FHISO's 
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+section, including §5.2, §5.3 and §5.4 on *patterns*, *subtypes* and 
+*language-tagged datatypes*, has been moved here to be more generally
+usable.  The material in §5.1 is new in this draft, but draws heavily on
+FHISO's [Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
@@ -768,27 +864,27 @@ Type             `http://www.w3.org/2000/01/rdf-schema#Class`
 
 ### Range
 
-{.note}  This section defines a *property* to describe way other
+{.note}  This section defines a *property term* to describe way other
 *properties* are to be used.
 It is part of the infrastructure for defining extensions to FHISO
 standards or new, compatible standards, and is used by applications
 during *discovery*, support for which is *optional*.
 
-The **range** of a *property* is a formal specification of allowable
-values for that *property*.  It *shall* be a *class name* or a *datatype
-name*.  When the *range* of a *property* is a *class name*, the value
-associated with the property shall be a *term* whose *type* is that
-*class*; when the *range* of a *property* is a *datatype name*, the
-value associated with the property shall be a *string* in the *lexical
-space* of that *datatype*.
+The **range** of a *property term* is a formal specification of
+allowable *property values* for a *property* whose *property name* is
+that *property term*.  It *shall* be a *class* or a *datatype*.  When
+the *range* is a *class*, the *property value* *shall* be a *term* whose
+*type* is that *class*; when the *range* is a *datatype*, the value
+associated with the property shall be a *string* in the *lexical space*
+of that *datatype*.
 
 {.example ...}  An earlier example gave a hypothetical `cardinality`
-*property* that might be used when defining genealogical events.
-Most likely, the value of this hypothetical *property* would be required
-to be "one" or "unbounded", depending on whether the event is one that
-can occur just once, or whether it can occur multiple times.  The party
-defining this *property* would need to consider how these two values
-were to be represented.  
+*property term* that might be used when defining genealogical events.
+Most likely, the *property value* of this *property* would be a
+representation of "one" or "unbounded", depending on whether the event
+is one that can occur just once, or whether it can occur multiple times.
+The party defining this *property* would need to consider how best to
+represent these two values.  
 
 One option is to define two *terms* to represent these options, say:
 
@@ -821,23 +917,23 @@ A third and likely preferable option would be to name the `cardinality`
 could be a standard boolean *datatype* like `xsd:boolean`.  
 {/}
 
-{.note} This standard has already defined one *property*, namely the
-*type* *property* in §4.5.  The *type* of *term* is the *class* denoting
-the content in which it can be used.  Therefore the *range* of the
-*type* *property* is `rdfs:Class`, as shown in the *property* definition
-table in §4.5.
+{.note} This standard has already defined one *property term*, namely
+the `rdf:type` *property term* in §4.5.  The *type* of a *term* is the
+*class* which denotes the context in which it can be used.  Therefore
+the *range* of `rdf:type` is `rdfs:Class`, as shown in the *property*
+definition table in §4.5.
 
-Standards which define *properties* *should* specify their *range*, and
-*must* do so if third parties are permitted to define their own *terms*
-and if it is *recommended* or *required* that these third parties
-document or otherwise make available the information represented by the
-*property*.
+Standards which define *property terms* *should* specify their *range*,
+and *must* do so if third parties are permitted to define their own
+*terms* and if it is *recommended* or *required* that these third
+parties document or otherwise make available the information represented
+by the *property term*.
 
 {.note} This is the same wording that is used in §4.4 to specify when a
-*property* *must* be defined.  In circumstances where a *property*
-*must* be defined, its *range* *must* also be defined.
+*property term* *must* be defined.  In circumstances where a *property
+term* *must* be defined, its *range* *must* also be defined.
 
-The *range* of a *property* is itself a *property* of the *property*,
+The *range* of a *property term* is itself a *property*, and is 
 defined as follows:
 
 : Property definition
@@ -849,7 +945,7 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
 {.ednote}  We may need to introduce the concepts of the
-**domain** of a *property*, currently in our 
+**domain** of a *property term*, currently in our 
 [Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 Careful consideration will be needed before the *domain* is introduced
 to ensure it does not cause forwards compatibility problems if new uses
@@ -877,7 +973,7 @@ means.  In particular we want the complete *string* to match the
 `[0-9]{4}`, despite the lack of `^`...`$` around the *pattern*.
 {/}
 
-{.example ...}  The XML Schema `date` type mentioned in the previous
+{.example ...}  The XML Schema `date` type mentioned in a previous
 example has the following *pattern* (here split onto two lines for
 readability &mdash; the second line is an optional timezone which the
 XML Schema `date` type allows).
@@ -890,8 +986,8 @@ the *pattern*, this *string* is not part of the *lexical space* of this
 `date` type as 31 February is not a valid date.
 {/}
 
-The *property* representing the *pattern* of a *datatype* is defined as
-follows:
+The *property term* representing the *pattern* of a *datatype* is
+defined as follows:
 
 : Property definition
 
@@ -905,10 +1001,10 @@ Range            `https://terms.fhiso.org/types/Pattern`
 `types:Pattern`, which will be the *datatype* for FHISO's regular
 expression dialect.
 
-{.ednote}  This standard does not use `xsd:pattern` as the *property*,
-even though it is used as a *property* in 
+{.ednote}  This standard does not use `xsd:pattern` as the *property
+term*, even though it is used as a predicate in 
 [OWL 2](https://www.w3.org/TR/owl2-syntax/).  Its use would pose a
-difficulty because none of the relevant W3 specifications
+difficulty because none of the relevant W3C specifications
 indicate what the `rdfs:domain` of `xsd:pattern` is supposed to be.
 Possibly it is an `owl:Restriction`, which would be incompatible with
 this use.  Using `xsd:pattern` would also require us to use precisely
@@ -943,8 +1039,8 @@ necessarily be a subset of that of the *supertype*.  This is because the
 *pattern* is permitted to match *strings* outside the *lexical space*,
 as in the example of the date "`1999-02-31`".
 
-The *property* representing the *supertype* of a *datatype* is defined
-as follows:
+The *property term* representing the *supertype* of a *datatype* is
+defined as follows:
 
 : Property definition
 
@@ -955,15 +1051,15 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
 ------           -----------------------------------------------
 
 {.ednote ...}  An alternative option is to use the `rdfs:subClassOf`
-*property*, however it is anticipated that it will be desirable to have
-a *property* whose *domain* is exactly `rdfs:Datatype`.  The *domain* of
-`rdfs:subClassOf` is `rdfs:Class`; nevertheless, it is possible to apply
-`rdfs:subClassOf` to *datatypes* because
+*property term*, however it is anticipated that it will be desirable to have
+a *property term* whose *domain* is exactly `rdfs:Datatype`.  The
+*domain* of `rdfs:subClassOf` is `rdfs:Class`; nevertheless, it is
+possible to apply `rdfs:subClassOf` to *datatypes* because
 
     rdfs:Datatype rdfs:subClassOf rdfs:Class .
 
-In order to make our `subTypeOf` *property* accessible to RDF reasoners,
-we should document that
+In order to make our `subTypeOf` *property term* accessible to RDF
+reasoners, we should document that
 
     </types/subTypeOf> rdfs:subPropertyOf rdfs:subClassOf .
 
@@ -980,6 +1076,75 @@ an *abstract datatype*, as in XML Schema only complex types can be
 abstract.  If it is desirable to describe a FHISO *abstract datatype* in
 XML Schema, it should be defined as a normal simple type, with the
 information that it is abstract conveyed by another means. 
+
+### Language-tagged datatypes
+
+A **language-tagged datatype** is a *datatype* whose values are
+*language-tagged strings* consisting of both a *string* from the
+*lexical space* of the *datatype* and a *language tag* to identify the
+language in which that particular *string* is written.  
+
+{.note} Because the *language tag* is not part of the *lexical space* of
+the *datatype*, and is not embedded in the *string*, a *pattern* cannot
+be used to constrain the *language tag*.
+
+*Language-tagged datatypes* *should* be used whenever a *datatype* is
+needed to represent textual data that is in a particular
+language or script and which cannot automatically be translated or
+transliterated as required, and *should not* be used otherwise.
+
+{.example}  In a context where a year Anno Domini is required, a
+*language-tagged datatype* *should not* be used, and the *lexical space*
+of the *datatype* should encompass *strings* like, say, "`2015`".  Even
+though an application designed for Arabic researchers might need to
+render this year as "<span dir="rtl">٢٠١٥</span>" using Eastern Arabic
+numerals, this conversion can be done entirely in the application's user
+interface, so a *language-tagged datatype* is not required and 
+*should not* be used.
+
+{.example ...}  The [CEV Vocabulary] defines a *datatype* for
+representing the names of authors and other people, which has the
+following *term name*:
+
+    https://terms.fhiso.org/sources/AgentName
+
+A person's name is rarely translated in usual sense, but may be
+transliterated.  For example, the name of Andalusian historian 
+<span dir="rtl">صاعد الأندلسي</span> might be transliterated
+"Ṣā‘id al-Andalusī" in the Latin script.  Because machine
+transliteration is far from perfect, a *language-tagged datatype*
+*should* be used to allow an application to store both names.
+
+An author's names may also be respelled to conform to the spelling and
+grammar rules of the reader's language.  An Englishman named Richard may
+be rendered "Rikardo" in Esperanto: the change of the "c" to a "k" being
+to conform to Esperanto orthography, while the final "o" marks it as a
+noun.  The respelling would be tagged `eo`, the language code for
+Esperanto.
+{/}
+
+*Patterns* may be defined for *language-tagged datatypes* as for other
+*datatypes*.  Because *patterns* only constrain the *lexical space* of
+the *datatype*, they cannot be used to constrain the *language tag* in
+the value of a *language-tagged datatype*.
+
+A *datatype* that is not a *language-tagged datatype* is called a
+**non-language-tagged datatype**.
+
+{.note}  This means the classification of *datatypes* as
+*language-tagged* or *non-language-tagged* is orthogonal to their
+classification as *structured* or *unstructured*.  It is anticipated
+that most *non-language-tagged datatypes* will be *structured datatype*.
+
+{.example}  The `AgentName` datatype from the previous example is a
+microformat which is constrained by a *pattern* meaning it is a
+*structured datatype*, but it is also a *language-tagged datatype* as
+names can be translated and transliterated.
+
+*Subtypes* may be defined of *language-tagged datatypes* as well as of
+other *datatypes*.  If the *supertype* is a *language-tagged datatype*
+then the *subtype* *must* also be; and if the *supertype* is not a
+*language-tagged datatype* then the *subtype* *must not* be.
 
 ## References
 
@@ -1017,6 +1182,10 @@ information that it is abstract conveyed by another means.
     Fieldind and Julian Reschke, eds., 2014.  (See
     <https://tools.ietf.org/html/rfc7231>.)
 
+[Triples Discovery]
+:   FHISO (Family History Information Standards Organisation).
+    *Simple Triples Discovery Mechanism*.  Exploratory draft.
+
 [UAX 15]
 :   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
     Normalization Forms" in *The Unicode Standard, Version 8.0.0.*
@@ -1038,6 +1207,10 @@ information that it is abstract conveyed by another means.
     1993.  (See 
     <http://www.niso.org/apps/group_public/project/details.php?project_id=10>.)
     Standard withdrawn, 2013.
+
+[CEV Vocabulary]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: Vocabulary*.  Exploratory draft.
 
 [GEDCOM]
 :   The Church of Jesus Christ of Latter-day Saints.
@@ -1082,6 +1255,11 @@ information that it is abstract conveyed by another means.
     15924:2004.  Codes for the representation of names of scripts.*
     2004.
 
+[N-Triples]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 N-Triples.*  David
+    Becket, 2014.  W3C Recommendation.
+    (See <https://www.w3.org/TR/n-triples/>.)
+
 [RDF Concepts]
 :   W3C (World Wide Web Consortium).  *RDF 1.1 Concepts and Abstract
     Syntax.*  Richard Cyganiak, David Wood and Markus Lanthaler, eds.,
@@ -1118,18 +1296,18 @@ information that it is abstract conveyed by another means.
     Sales No. 98.XVII.9, 1999.
 
 [XML Names]
-:   W3 (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
+:   W3C (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
     Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
     W3C Recommendation.  (See <https://www.w3.org/TR/xml-names11/>.)
 
 [XSD Pt1]
-:   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language
     (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝), C. M. 
     Sperberg-McQueen and Henry S. Thompson, ed., 2012.  
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
 
 [XSD Pt2]
-:   W3 (World Wide Web Consortium). *W3C XML Schema Definition Language 
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
     (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
     Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
