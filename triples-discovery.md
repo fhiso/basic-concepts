@@ -19,14 +19,13 @@ can appear in data as a result of third-party extensions being used,
 when data conforming to a new standard is read by an older application,
 or if data conforming to other standards is present.
 
-*Discovery* is defined in §4.2 of FHISO's **Basic Concepts for
-Genealogical Standards** standard as being when an HTTP request to the
-*term name* IRI, made with an appropriate `Accept` header, results in a
-particular machine-readable format.  The `Accept` header triggers HTTP
-content negotiation, and in the case of the *Triples Discovery*, is used
-to request data in the N-Triples format.  This format is extremely
-simple to parse, and is supported in various libraries by virtue of
-being a small subset of the popular Turtle serialisation format.  
+In *Triples Discovery*, an application makes an HTTP request to the
+*term name* IRI with an `Accept` header requesting a response in the 
+N-Triples format.  The details of these HTTP requests and their
+responses are given in §2.  The N-Triples format is described in §3; it
+is extremely simple to parse, and is supported in various libraries by
+virtue of being a small subset of the more popular Turtle serialisation
+format.  
 
 ## Conventions used
 
@@ -106,6 +105,197 @@ The following *prefix* bindings are assumed in this standard:
 outside this standard document as *prefix notation* is not used in the
 formal data model defined by this standard.  This notation is simply a
 notational convenience to make the standard easier to read.
+
+## HTTP requests and responses
+
+*Discovery* is defined in §4.2 of [Basic Concepts] being when an HTTP
+request to the *term name* IRI, made with an appropriate `Accept`
+header, results in a particular machine-readable format.  This section
+defines how those HTTP requests and responses are made in *Triples
+Discovery*.
+
+When an application opts to carry out *discovery* using this *Triples
+Discovery* mechanism on a *term* whose *term name* IRI has an `http` or
+`https` scheme, it *shall* make an HTTP `GET` request to the URI that
+results from the conversion of the *term name* IRI to a URI per §4.1 of
+[RFC 3987].  
+
+{.note}  This standard does not specify how *Triples Discovery* works
+with *terms* using other IRI schemes, and the use of other schemes is
+*not recommended* by §4 of [Basic Concepts].
+
+The IRI to which the initial `GET` request is made is called the
+**discovery IRI**.  It is the *term name* IRI with any fragment
+component removed.
+
+{.example}  The *term name* `https://example.com/events#Birth` contains
+a fragment component, therefore its *discovery IRI* is
+`https://example.com/events`.
+
+The `GET` request *should* have an `Accept` header that is well-formed
+according to §5.3.2 of [RFC 7231], and which references the N-Triples
+media type, "`application/n-triples`".  The request's `Accept` header
+*may* alternatively or additionally reference the media types of one of
+the alternative RDF formats described in §4 of this standard, but
+*conformant* servers need not support support those formats.
+
+If the *discovery IRI* is not one of the cases listed in §5, and is not
+an IRI used for another purpose, it is *recommended* that servers issue a
+404 "Not Found" response.  Applications *must not* consider a 404 to
+mean the *term* is invalid.
+
+{.note}  As it is only *recommended* and not *required* that parties
+defining new *terms* make information available online at the *term
+name* IRI, a 404 response can also mean the provider has chosen not to
+follow this recommendation.  This might occur when a *term* is no longer
+supported by the organisation which originally defined it, but is still
+in use.
+
+After any initial redirections, a *conformant* server *should* 
+use the algorithm in §5.3 of [RFC 7231] to consider each of those media
+types listed in the `Accept` header which the server supports, including
+any documentation formats or other *discovery* formats outside the scope
+of this standard, to select the media type of the resource that will be
+served.   If the server supports none of the listed media types, it
+*should* send a 406 "Not Acceptable" response; otherwise, if the selected
+media type is the N-Triples media type or a supported alternative type
+from §4, and the *discovery IRI* is one of the cases listed in §5,
+the server *should* continue with *Triples Discovery* as outlined here.
+If the `Accept` header was precisely "`application/n-triples`" then a
+*conformant* server *must* continue with *Triples Discovery*.
+
+{.note}  It is only *recommended* that parties defining new *terms* do
+arrange for HTTP content negotiation to be performed properly as
+described above and in [RFC 7231], but not *required* by this standard.
+The reason for this is that some popular web servers do not make
+necessary configuration straightforward, and much of the published
+advice on the subject is to use basic pattern matching on `Accept`
+headers rather than proper content negotiation.  An prominent example of
+such advice is [SWBP Vocab Pub], published as best practice by the
+World Wide Web Consortium.  Recipes 3 and 4 from this can result in
+certain complex `Accept` headers being parsed contrary to [RFC 7231];
+nevertheless, this standard allows server administrators to follow [SWBP
+Vocab Pub] while remaining *conformant* with this standard.
+
+{.example ...}  An application might send a `GET` request with the
+following `Accept` header:
+
+    Accept: application/x-discovery; q=0.9, application/n-triples
+
+This is well-formed according to §5.3.2 of 
+&#x5B;[RFC 7231](//tools.ietf.org/html/rfc7231)].  The `q=0.9` in the
+`Accept` header is a quality value attached to the preceding media type.
+It indicates that the hypothetical `x-discovery` format is less
+preferred than N-Triples which by default has a quality value of 1.0.
+Placing a less preferred format before the preferred format is
+unorthodox but not prohibited.
+
+A server that supports both the `x-discovery` format and N-Triples
+*should* provide an N-Triples description of the *term* per this
+standard, but because the `Accept` header was not exactly
+"`application/n-triples`", this is not *required*.  If the server uses
+some form of pattern matching on the `Accept` header and concludes that
+`x-discovery` must be preferred as it is listed first, this behaviour,
+while incorrect, is still *conformant* with this standard.
+{/}
+
+Except when the *discovery IRI* is a *namespace name* as defined in
+§5.**XXX**, a *conformant* server *shall* issue a redirect to a
+resource containing a description of the *discovery* *term* in the
+selected format.  This redirect *should* be a 303 "See Other"
+redirect, and *must not* be a 301 "Moved Permanently".  If the
+*discovery IRI* is a *namespace name*, a redirect *may* be produced but
+is not *required*.  
+
+{.note}  A redirect is *required* when the *discovery IRI* is a
+*term name* to avoid confusing the *term name* with the document
+containing its definition, which is found at the post-redirect URL.
+Neither this standard nor [Basic Concepts] currently defines
+*properties* for use with documents, but future FHISO standards might,
+and servers conforming to this standard *may* include in their response
+RDF *triples* outside the scope of this standard, such as [Dublin Core]
+metadata about the document.  Without this requirement, such metadata
+should be indistinguishable from *properties* about the *term* subject
+to *discovery*. 
+
+{.example ...}  Suppose an application wants to perform *discovery* on 
+a hypothetical `https://example.com/events/Baptism` *term*.  An
+application wanting to maximise the likelihood of a response from any
+*conformant* server might make the following request:
+
+    GET /events/Baptism HTTP/1.1
+    Host: example.com
+    Accept: application/n-triples
+
+This standard does not specifically require support for HTTP/1.1, but it
+is currently the most widely used version of HTTP and servers are
+strongly encouraged to support it.  If the server does, as the `Accept`
+header is exactly "`application/n-triples`", a *conformant* server
+*must* conclude this is a request for an N-Triples representation of the
+*term*.  And as the *discovery IRI* is the *term name*, it *must*
+respond with a redirect:
+ 
+    HTTP/1.1 303 See Other
+    Location: https://example.com/events/Baptism.n3
+    Vary: Accept
+
+In this case the redirect is to the original IRI but with `.n3`
+appended, however the actual choice of IRI is up to the party defining
+the *term* and running the `example.com` web server.  When a server's
+response is dependent on the contents of an `Accept` header, §7.1.4 of
+&#x5B;[RFC 7231](//tools.ietf.org/html/rfc7231)] says that this *should*
+be recorded in a `Vary` header, as it is in this example.  In practice
+other headers are likely to be present too, probably including a
+`Date` header containing the current date and time, and a `Server`
+header identifying the web server software; these have been omitted for
+brevity.
+
+The application would normally then make a second HTTP request to follow
+the redirect:
+
+    GET /events/Baptism.n3 HTTP/1.1
+    Host: example.com
+    Accept: application/n-triples
+
+This request uses the same `Accept` header as the first, as HTTP
+redirects contain no information about the MIME type of the destination
+resource, so at this point the application does not know whether the
+server has done HTTP content negotiation.
+
+The server's response to this request should be an N-Triples file
+containing information about the `Baptism` *term*.
+
+    HTTP/1.1 200 OK
+    Content-Type: application/n-triples
+    
+    <https://example.com/events/Baptism> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.com/types/Event> .
+
+The meaning of the N-Triples in the request body is described in §3.
+{/}
+
+*Conformant* servers *may* issue additional redirects during the
+*Triples Discovery* process, including 301 "Moved Permanently"
+redirects.  Applications *must not* infer anything from the use of
+redirects: in particular, if one *term name* IRI permanently redirects
+to another *term name* IRI, applications *must not* assume the *terms*
+are synonymous.
+
+*Conformant* servers *may* support any version of HTTP and any
+additional HTTP features.
+
+{.example}  Conditional HTTP requests per [RFC 7232] are an example of a
+feature that the operators of *conformant* servers *may* opt to support.
+Applications *may* choose to repeat *discovery* on certain *terms* after
+some time has elapsed, and include an `If-Modified-Since` header in
+the request.  A server that has chosen to support conditional requests
+would respond with a 304 "Not Modifed" if the results of *discovery*
+have not changed.  If the results have changed, if the server cannot
+determine whether they have changed, or if the server does not support
+conditional requests of this form, it would produce a 200 "OK" response
+containing triples describing the *term*.
+
+
+
 
 ## N-Triples syntax
 
@@ -265,6 +455,15 @@ represented by a *term* or a *literal*.  For this reason, this standard
 does not prohibit *conformant* servers from generating *triples* using
 *blank nodes*.
 
+## Other formats
+
+
+
+## Discovery IRIs
+
+
+## References
+
 ### Normative references
 
 [Basic Concepts]
@@ -285,21 +484,38 @@ does not prohibit *conformant* servers from generating *triples* using
 [RFC 7230]
 :   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
     Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
-    Fieldind and Julian Reschke, eds., 2014.  (See
+    Fielding and Julian Reschke, eds., 2014.  (See
     <https://tools.ietf.org/html/rfc7230>.)
 
-[RFC 7231]
-:   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
-    Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
-    Fieldind and Julian Reschke, eds., 2014.  (See
-    <https://tools.ietf.org/html/rfc7231>.)
+[RFC 7232]
+:   IETF (Internet Engineering Task Force).  *RFC 7232:  Hypertext
+    Transfer Protocol (HTTP/1.1): Conditional Requests.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7232>.)
 
 
 ### Other references
 
+[Dublin Core]
+:   Dublin Core Metadata Initiative. *Dublin Core metadata element set*.
+    Dublin Core recommendation, version 1.1, 1999. 
+    See <http://dublincore.org/documents/dcmi-terms/>.
+
 [RDF Errata]
 :   W3C (World Wide Web Consortium).  *RDF1.1 Errata.*  
     (See <https://www.w3.org/2001/sw/wiki/RDF1.1_Errata>.)
+
+[RFC 7231]
+:   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
+    Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7231>.)
+
+[SWBP Vocab Pub]
+:   W3C (World Wide Web Consortium).  *Best Practice Recipes for
+    Publishing RDF Vocabularies*.  Diego Berrueta and Jon Phipps, eds.,
+    2008.  W3C Working Group Note.
+    (See <https://www.w3.org/TR/swbp-vocab-pub/>.)
 
 ----
 Copyright © 2017, [Family History Information Standards Organisation,
