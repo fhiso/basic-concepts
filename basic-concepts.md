@@ -1173,13 +1173,13 @@ then the *subtype* *must* also be; and if the *supertype* is not a
 [RFC 7230]
 :   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
     Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
-    Fieldind and Julian Reschke, eds., 2014.  (See
+    Fielding and Julian Reschke, eds., 2014.  (See
     <https://tools.ietf.org/html/rfc7230>.)
 
 [RFC 7231]
 :   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
     Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
-    Fieldind and Julian Reschke, eds., 2014.  (See
+    Fielding and Julian Reschke, eds., 2014.  (See
     <https://tools.ietf.org/html/rfc7231>.)
 
 [Triples Discovery]
@@ -1287,8 +1287,8 @@ then the *subtype* *must* also be; and if the *supertype* is not a
 
 [SWBP XSD DT]
 :   W3C (World Wide Web Consortium). *XML Schema Datatypes in RDF and OWL*.
-    Jeremy J. Carroll and Jeff Z. Pan, 2006.
-    W3C Working Group.  (See <https://www.w3.org/TR/swbp-xsch-datatypes/>.)
+    Jeremy J. Carroll and Jeff Z. Pan, eds., 2006.  W3C Working Group Note.  
+    (See <https://www.w3.org/TR/swbp-xsch-datatypes/>.)
 
 [UN M.49]
 :   United Nations, Statistics Division.  *Standard Country or Area
