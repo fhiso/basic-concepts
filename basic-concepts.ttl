@@ -3,25 +3,53 @@
 
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix types: <https://terms.fhiso.org/types/> .
 
 # These triples are all true, either axiomatically or by entailment,
 # according to [RDF 1.1 Semantics].
 
+# §4.3
 rdfs:Class rdf:type rdfs:Class .
 
+# §4.4
 rdf:Property rdf:type rdfs:Class .
 
-rdf:type rdf:type rdf:Property .
-rdf:type rdfs:range rdf:Class .
+# §4.4.1
+rdfs:range rdf:type rdf:Property ;
+           rdfs:range rdfs:Class .
 
+# §4.4.2
+rdf:type rdf:type rdf:Property ;
+         rdfs:range rdf:Class .
+
+# §5
 rdfs:Datatype rdf:type rdfs:Class .
 
-types:pattern rdf:type rdf:Property .
-types:pattern rdf:range types:Pattern .
+# §5.1
+types:pattern rdf:type rdf:Property ;
+              rdf:range types:Pattern .
 
-types:subTypeOf rdf:type rdf:Property .
-types:subTypeOf rdf:range rdfs:Datatype .
+# TODO: define types:Pattern .
 
-rdfs:range rdf:type rdf:Property .
-rdfs:range rdfs:range rdfs:Class .
+# §5.2
+types:subTypeOf rdf:type rdf:Property ;
+                rdf:range rdfs:Datatype .
+
+# §5.3
+types:isAbstract rdf:type rdf:Property ;
+                 rdf:range xsd:boolean .
+
+# §5.5.1
+xsd:string rdf:type rdfs:Datatype ;
+           types:pattern ".*" ;
+           types:subTypeOf rdf:Resource ;    # TODO 
+           types:isAbstract "false" .
+
+# §5.5.2
+xsd:boolean rdf:type rdfs:Datatype ;
+            types:pattern "true|false|1|0" ;
+            types:subTypeOf rdf:Resource ;    # TODO 
+            types:isAbstract "false" .
+
+# §5.5.3 xsd:integer needs writing

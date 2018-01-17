@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 26 November 2017
+date: 17 January 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -23,11 +23,11 @@ standards use *language tags*.  *Terms* are defined in §4 as a
 form of extensible identifier using IRIs; a shorthand notation for
 *terms* known as *prefix notation* is described in §4.1, and §4.2
 discusses information that may be retrieved from these IRIs.
-The notion of a *datatype* is defined in §5, and §5.2 and §5.3 include
+The notion of a *datatype* is defined in §5, which also includes
 details on how to specify a new *datatype*.
 
-The concepts of a *classes*, *properties*, the *type* of a *term*, and
-the *range* of a *property* are defined in §4.3, §4.4, §4.5 and §5.1,
+The concepts of a *classes*, *properties*, the *range* of a *property*,
+and the *type* of a *term* are defined in §4.3, §4.4, §4.4.1 and §4.4.2,
 respectively.  They provide an infrastructure for defining extensions to
 FHISO standards and new, compatible standards in such a way that
 applications can use a *discovery* mechanism to find out about unknown
@@ -37,7 +37,7 @@ implementing *discovery*.
 
 {.ednote} It is anticipated that a future draft will include some
 standard, low-level *datatypes* for *strings*, integers and booleans.  A
-*pattern* *datatype* will also be needed for the purpose of §5.3.  The
+*pattern* *datatype* will also be needed for the purpose of §5.1.  The
 notion of *cardinality* may also be moved here from [CEV Concepts].
 
 ## Conventions used
@@ -360,7 +360,7 @@ matching the `IRI` production in §2.2 of
 §5 of this standard, and also for *classes* and *properties*, defined in
 §4.3 and §4.4.
 
-{.ednote}  Give an actual example, e.g. `xsd:string`.
+{.ednote}  Give an actual example, e.g. `xsd:integer`.
 
 {.note} IRIs have been chosen in preference to URIs because it is
 recognised that certain culture-specific genealogical concepts may not
@@ -685,6 +685,13 @@ therefore part of the description of the *subject* of the *property*,
 while the latter is an item of vocabulary reference by that description.
 The *property name* is a *property term*.
 
+The *property value* *shall* be a *term*, a *string*, or a
+*language-tagged string*.
+
+*Properties* *shall not* have default *property values* that applies
+when the *property* is absent, however standards *may* define how an
+*conformant* application handles the absence of a *property*.
+
 Standards which introduce such pieces of information *should* define a
 *property terms* to represent them, and *must* do so if third parties are
 permitted to define their own *terms* and if it is *recommended* or
@@ -729,7 +736,113 @@ As with the `rdfs:Class` *term*, an implementer may safely use the
 `rdf:Property` *terms* for the purposes of this standard without reading
 [RDF Schema].
 
-### The type property
+#### Range
+
+{.note}  This section defines a *property term* to describe way other
+*properties* are to be used.
+It is part of the infrastructure for defining extensions to FHISO
+standards or new, compatible standards, and is used by applications
+during *discovery*, support for which is *optional*.
+
+The **range** of a *property term* is a formal specification of
+allowable *property values* for a *property* whose *property name* is
+that *property term*.  The *range* *shall* be a *class name* or a
+*datatype name*.  
+
+{.note}  *Datatypes* provide a formal description of the values allowed
+in a particular context.  They are defined in §5 of this standard.
+
+When the *range* is a *class*, the *property value* *shall* be a *term*
+whose *type* is that *class*; when the *range* is a *datatype*, the
+value associated with the property shall be a *string* in the *lexical
+space* of that *datatype*.
+
+{.example ...}  An earlier example gave a hypothetical `cardinality`
+*property term* that might be used when defining genealogical events.
+Most likely, the *property value* of this *property* would be a
+representation of "one" or "unbounded", depending on whether the event
+is one that can occur just once, or whether it can occur multiple times.
+The party defining this *property* would need to consider how best to
+represent these two values.  
+
+One option is to define two *terms* to represent these options, say:
+
+    https://example.com/events/SinglyOccurring
+    https://example.com/events/MultiplyOccurring
+
+The context in which these two *terms* can be used is when specifying a
+cardinality, so a `Cardinality` *class* would be defined:
+
+    https://example.com/events/Cardinality
+
+The *type* of `SinglyOccuring` and `MultiplyOccuring` would be
+`Cardinality`, and the *range* of the `cardinality` *property* would be
+the `Cardinality` *class*.  Having a *property* and the *class* that
+serves as its *range* only differing in capitalisation is a common
+idiom.
+
+A second option is to use two *strings* to represent the possible
+cardinalities, perhaps "`1`" and "`unbounded`".  A *datatype* would 
+then be defined whose *lexical space* consisted of just these two
+*strings*, and the *datatype* given a name like:
+
+    https://example.com/events/Cardinality
+
+As in the first option, the *range* of the `cardinality` *property*
+would be the `Cardinality` *class*. 
+
+A third and likely preferable option would be to name the `cardinality`
+*property* differently, say `canOccurMultiply`, so that its *range*
+could be a standard boolean *datatype* like `xsd:boolean`.  
+{/}
+
+{.note} This standard has already defined one *property term*, namely
+the `rdf:type` *property term* in §4.4.2.  The *type* of a *term* is the
+*class* which denotes the context in which it can be used.  Therefore
+the *range* of `rdf:type` is `rdfs:Class`, as shown in the *property*
+definition table in §4.4.2.
+
+Standards which define *property terms* *should* specify their *range*,
+and *must* do so if third parties are permitted to define their own
+*terms* and if it is *recommended* or *required* that these third
+parties document or otherwise make available the information represented
+by the *property term*.
+
+{.note} This is the same wording that is used in §4.4 to specify when a
+*property term* *must* be defined.  In circumstances where a *property
+term* *must* be defined, its *range* *must* also be defined.
+
+The *range* of a *property term* is itself a *property* which is 
+defined as follows:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.ednote ...} The *range* of the `rdfs:range` *property* is defined as
+`rdfs:Class`, despite the fact that the *property value* of a
+`rdfs:range` *property* can be either a *class name* or a *datatype
+name*.  At an RDF level this is valid because 
+
+    rdfs:Datatype rdfs:subClassOf rdfs:Class .
+
+This standard does not currently have the notion of a subclass which
+makes this problematic.
+{/}
+
+
+{.ednote}  We may need to introduce the concepts of the
+**domain** of a *property term*, currently in our 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+Careful consideration will be needed before the *domain* is introduced
+to ensure it does not cause forwards compatibility problems if new uses
+are found for the *property*.
+
+#### The type property
 
 {.note}  This section defines a *property term* to denote *type* of
 *subject*.  It is part of the infrastructure for defining extensions to
@@ -749,9 +862,6 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
-{.note}  The meaning of the *range* given in the *property* definition
-table above is given in §5.1 of this standard.
-
 {.note}  The `rdf:type` *property term* is defined §3.3 of [RDF Schema],
 however implementers may safely use this *property term* for the
 purposes of this standard without reading [RDF Schema].
@@ -760,11 +870,8 @@ purposes of this standard without reading [RDF Schema].
 
 {.ednote}  The concepts related to *datatypes* were originally defined in
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
-section, including §5.2, §5.3 and §5.4 on *patterns*, *subtypes* and 
-*language-tagged datatypes*, has been moved here to be more generally
-usable.  The material in §5.1 is new in this draft, but draws heavily on
-FHISO's [Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
-
+section and its subsections has been moved here to be more generally usable. 
+ 
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
 *datatype* is identified by a *term name* which is an IRI.  The *term
@@ -862,95 +969,6 @@ Name             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Type             `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
-### Range
-
-{.note}  This section defines a *property term* to describe way other
-*properties* are to be used.
-It is part of the infrastructure for defining extensions to FHISO
-standards or new, compatible standards, and is used by applications
-during *discovery*, support for which is *optional*.
-
-The **range** of a *property term* is a formal specification of
-allowable *property values* for a *property* whose *property name* is
-that *property term*.  It *shall* be a *class* or a *datatype*.  When
-the *range* is a *class*, the *property value* *shall* be a *term* whose
-*type* is that *class*; when the *range* is a *datatype*, the value
-associated with the property shall be a *string* in the *lexical space*
-of that *datatype*.
-
-{.example ...}  An earlier example gave a hypothetical `cardinality`
-*property term* that might be used when defining genealogical events.
-Most likely, the *property value* of this *property* would be a
-representation of "one" or "unbounded", depending on whether the event
-is one that can occur just once, or whether it can occur multiple times.
-The party defining this *property* would need to consider how best to
-represent these two values.  
-
-One option is to define two *terms* to represent these options, say:
-
-    https://example.com/events/SinglyOccurring
-    https://example.com/events/MultiplyOccurring
-
-The context in which these two *terms* can be used is when specifying a
-cardinality, so a `Cardinality` *class* would be defined:
-
-    https://example.com/events/Cardinality
-
-The *type* of `SinglyOccuring` and `MultiplyOccuring` would be
-`Cardinality`, and the *range* of the `cardinality` *property* would be
-the `Cardinality` *class*.  Having a *property* and the *class* that
-serves as its *range* only differing in capitalisation is a common
-idiom.
-
-A second option is to use two *strings* to represent the possible
-cardinalities, perhaps "`1`" and "`unbounded`".  A *datatype* would 
-then be defined whose *lexical space* consisted of just these two
-*strings*, and the *datatype* given a name like:
-
-    https://example.com/events/Cardinality
-
-As in the first option, the *range* of the `cardinality` *property*
-would be the `Cardinality` *class*. 
-
-A third and likely preferable option would be to name the `cardinality`
-*property* differently, say `canOccurMultiply`, so that its *range*
-could be a standard boolean *datatype* like `xsd:boolean`.  
-{/}
-
-{.note} This standard has already defined one *property term*, namely
-the `rdf:type` *property term* in §4.5.  The *type* of a *term* is the
-*class* which denotes the context in which it can be used.  Therefore
-the *range* of `rdf:type` is `rdfs:Class`, as shown in the *property*
-definition table in §4.5.
-
-Standards which define *property terms* *should* specify their *range*,
-and *must* do so if third parties are permitted to define their own
-*terms* and if it is *recommended* or *required* that these third
-parties document or otherwise make available the information represented
-by the *property term*.
-
-{.note} This is the same wording that is used in §4.4 to specify when a
-*property term* *must* be defined.  In circumstances where a *property
-term* *must* be defined, its *range* *must* also be defined.
-
-The *range* of a *property term* is itself a *property*, and is 
-defined as follows:
-
-: Property definition
-
-------           -----------------------------------------------
-Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
-Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
-
-{.ednote}  We may need to introduce the concepts of the
-**domain** of a *property term*, currently in our 
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
-Careful consideration will be needed before the *domain* is introduced
-to ensure it does not cause forwards compatibility problems if new uses
-are found for the *property*.
-
 ### Patterns
 
 A party defining a *datatype* *shall* specify a **pattern** for that
@@ -997,9 +1015,8 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `https://terms.fhiso.org/types/Pattern`
 ------           -----------------------------------------------
 
-{.ednote} The *range* (as defined in §5.1) of `types:pattern` is
-`types:Pattern`, which will be the *datatype* for FHISO's regular
-expression dialect.
+{.ednote} The *range* of `types:pattern` is `types:Pattern`, which will
+be the *datatype* for FHISO's regular expression dialect.
 
 {.ednote}  This standard does not use `xsd:pattern` as the *property
 term*, even though it is used as a predicate in 
@@ -1039,6 +1056,8 @@ necessarily be a subset of that of the *supertype*.  This is because the
 *pattern* is permitted to match *strings* outside the *lexical space*,
 as in the example of the date "`1999-02-31`".
 
+{.ednote}  This section needs an example.
+
 The *property term* representing the *supertype* of a *datatype* is
 defined as follows:
 
@@ -1076,6 +1095,37 @@ an *abstract datatype*, as in XML Schema only complex types can be
 abstract.  If it is desirable to describe a FHISO *abstract datatype* in
 XML Schema, it should be defined as a normal simple type, with the
 information that it is abstract conveyed by another means. 
+
+### Abstract datatypes
+
+A *datatype* *may* be defined to be a **abstract datatype**.  An
+*abstract datatype* is one that *must* only be used as a *supertype* of
+other types.  A *string* *must not* be declared to have a *datatype*
+which is an *abstract datatype*.  *Abstract datatypes* *may* specify a
+*pattern* and *shall* have a *lexical space*.
+
+{.note} The *lexical space* of an *abstract datatype* and any *pattern*
+defined on it serve to restrict the *lexical space* of all its
+*subtypes*.  If no such restriction is desired, the *lexical space* may
+be defined as the space of all *strings*.
+
+The *property* that represents whether or not a *datatype* is an
+*abstract datatype* has the following *property name*:
+
+    https://terms.fhiso.org/types/isAbstract
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/isAbstract`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2001/XMLSchema#boolean`
+------           -----------------------------------------------
+
+{.ednote}  Are *abstract datatypes* a necessary part of our data model
+at all?  They were introduced to allow an `AbstractDate` *datatype*, but
+is it necessary for this datatype to be an *abstract datatype*?
+
 
 ### Language-tagged datatypes
 
@@ -1145,6 +1195,111 @@ names can be translated and transliterated.
 other *datatypes*.  If the *supertype* is a *language-tagged datatype*
 then the *subtype* *must* also be; and if the *supertype* is not a
 *language-tagged datatype* then the *subtype* *must not* be.
+
+### Standard datatypes
+
+This standard endorses the use of the following three *datatypes*
+defined in &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to
+represent *strings*, *booleans* and *integers*.
+
+{.note} Other *datatypes* from that standard *may* also be suitable for
+use with FHISO technologies.  They are not included here as, when this
+standard was written, there was no particular demonstrated need for them.
+
+{.ednote} FHISO will need one or more date *datatype*, but it is currently
+anticipated that the `xsd:date` type will not be sufficient for FHISO's
+purposes.  This will be addressed, either in a future draft of this
+standard, or in a separate standard.
+
+
+#### The `xsd:string` datatype
+
+Some FHISO standard make limited use of the `xsd:string` *datatype*
+defined in §3.3.1 of &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].  
+This is an *unstructured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#string`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        *none*
+Abstract         `false`
+------           -----------------------------------------------
+
+It is a general-purpose *datatype* whose lexical space is the space of
+all *strings*; however it is not a *language-tagged datatype* and
+therefore it *should not* be used to contain text in a human-readable
+natural language.
+
+{.note}  This type is not the ultimate *supertype* of all
+*non-language-tagged* datatypes.  This is because many other XML Schema
+*datatypes*, including `xsd:date` and `xsd:integer` are not defined as
+*subtypes* of `xsd:string` in XML Schema.
+
+Use of this *datatype* is generally *not recommended*: data that is in
+a human-readable form *should* use a *language-tagged datatype*, while
+data that is not human-readable *should* use a *structured datatype*.
+
+If an application encounters a *string* with the `xsd:string`
+*datatype* in a context where a *language-tagged string* would be
+permitted, the application *may* change the *datatype* to
+`rdf:langString` and assign the *string* a *language tag* of `und`,
+meaning an undetermined language.
+
+{.note} The `xsd:string` *datatype* is included in this standard in
+order to align this data model more closely with the RDF data model, and
+in particular the [CEV RFDa] bindings which use this *datatype* as the
+default when no *language tag* is present.  The above rule allowing
+conversion to `rdf:langString` means that applications *may* ignore the
+`xsd:string` *datatype*.
+
+#### The `xsd:boolean` datatype
+
+A **boolean** is a *datatype* with precisely two logical values:
+**true** and **false**.  FHISO standards represent *booleans* using the
+`xsd:boolean` *datatype* defined in §3.3.2 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].
+This is a *structured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#boolean`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `true|false|1|0`
+Supertype        *none*
+Abstract         `false`
+------           -----------------------------------------------
+
+The *lexical space* of this *datatype* includes four different
+*strings* so that the two logical values of the *datatype* each have two
+alternative lexical representations.  The value *true* *may* be
+represented by either "`true`" or "`1`", while the value *false* *may*
+be represented by either "`false`" or "`0`".  *Conformant* applications
+*shall not* attach any significance to which of the alternative lexical
+representations is used, and *may* replace any instance of "`1`" in a
+*boolean* *string* with "`true`", or "`0`" with "`false`", but not vice
+versa.  Where possible, the numeric representations, "`0`" and "`1`",
+*should not* be used.
+
+{.note} The numeric representations are allowed because `xsd:boolean`
+allows them, and alignment with the XML Schema *datatype* is desirable
+as it is widely used in third-party standards.  Appendix E.4 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] defines the
+alphabetic representations, "`true`" and "`false`", to be the canonical
+forms of the datatype, and this standard does similarly.
+
+#### The `xsd:integer` datatype
+
+{.ednote}  An integer *datatype* seems like something that FHISO will
+definitely need, in which case the standard `xsd:integer` *datatype*
+defined in §3.4.13 of &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)]
+is the obvious choice.  But at the moment there is no clear use case for
+an integer type.
 
 ## References
 
