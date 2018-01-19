@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 17 January 2018
+date: 19 January 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -637,10 +637,19 @@ represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
 
 : Class definition
 
-------           -----------------------------------------------
-Name             `http://www.w3.org/2000/01/rdf-schema#Class`
-Type             `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://terms.fhiso.org/types/requiredProperty`
+------              -----------------------------------------------------------
+
+{.note} The table above sets out the formal *properties* of the
+`rdfs:Class` *class*.  *Properties* are defined in §4.4 of this
+standard, and the meaning of the *required properties* listed above 
+is given in §4.4.3.
 
 ### Properties
 
@@ -650,11 +659,11 @@ standards or new, compatible standards, and is used by applications
 during *discovery*, support for which is *optional*.
 
 During *discovery*, and in other situations when a formal definition of a
-particular *term* is needed, it is useful to have a formalism for
+particular *term* is needed, it is necessary to have a formalism for
 providing information about that *term*.  
 
 A **property** is a particular piece of information that might be
-provided when defining another entity.  The thing being defined is
+provided when defining some entity.  The thing being defined is
 typically a *term*, and is called the **subject** of the *property*.
 
 {.ednote} The *subject* of the *property* is only said to be typically a
@@ -724,10 +733,14 @@ The *class* of *property terms* has the following *class name*:
 
 : Class definition
 
-------           -----------------------------------------------
-Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Type             `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
+------              -----------------------------------------------------------
 
 {.note}  The `rdf:Property` *class* is defined §2.8 of [RDF Schema].
 The fact that its *term name* IRI begin differently to the `rdfs:Class`
@@ -866,6 +879,43 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 however implementers may safely use this *property term* for the
 purposes of this standard without reading [RDF Schema].
 
+#### Required properties
+
+A *property* that *must* be provided when a third party defining a new
+*term* with some particular *type* is called a **required property**.  
+
+{.example}  The notion of a *datatype* is defined in §5 of this
+standard, and is common to many FHISO standards.  *Datatypes* are
+identified by a *term* known as their *datatype name*, and any party
+defining a *datatype* for use with FHISO standards is *required* to
+specify its *pattern*, *supertype* if any, and whether it is an
+*abstract datatype*.  These pieces of information are specified via
+three *properties* called `types:pattern`, `types:subTypeOf` and
+`types:isAbstract`.  These three *properties* are therefore the
+*required properties* for *datatypes*.  In fact, *datatypes* have a
+fourth *required property* which is their *type*: i.e. a statement that
+the *term* is a *datatype*.
+
+The *type* of a new *term* being defined is a *class*, and therefore the
+list of the *property names* of the *required properties* of a *term*
+defined with that *type* is a *property* of that *class*.  The
+*property* representing the *required properties* of a *class* is
+defined as follows:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/requiredProperty`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+------           -----------------------------------------------
+
+{.ednote}  This data model does not provide a mechanism for the
+*property value* to be a list.  Therefore, instead of one
+`requiredProperties` *property* whose value is a list of *property
+names*, *classes* will normally have multiple `requiredProperty`
+*properties* each of whose value is a single *property name*.
+
 ## Datatypes
 
 {.ednote}  The concepts related to *datatypes* were originally defined in
@@ -964,10 +1014,16 @@ This standard uses the `rdfs:Datatype` *class* as the *class* of
 
 : Class definition
 
-------           -----------------------------------------------
-Name             `http://www.w3.org/2000/01/rdf-schema#Datatype`
-Type             `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/subTypeOf`<br/>
+                    `https://terms.fhiso.org/types/isAbstract`
+------              -----------------------------------------------------------
 
 ### Patterns
 
