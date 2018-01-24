@@ -1270,7 +1270,7 @@ standard, or in a separate standard.
 
 #### The `xsd:string` datatype
 
-Some FHISO standard make limited use of the `xsd:string` *datatype*
+Some FHISO standards make limited use of the `xsd:string` *datatype*
 defined in §3.3.1 of &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].  
 This is an *unstructured non-language-tagged datatype* which has the
 following properties:
@@ -1348,6 +1348,13 @@ as it is widely used in third-party standards.  Appendix E.4 of
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] defines the
 alphabetic representations, "`true`" and "`false`", to be the canonical
 forms of the datatype, and this standard does similarly.
+
+{.note} Even though the preferred forms of the allowed values of
+`xsd:boolean` are "`true`" and "`false`", which are in English, it is
+not a *language-tagged datatype* because the values *must not* be
+present in translated form.  A Romanian dataset, for example, would
+still use the value "`false`" rather than translating it as
+"`adevărat`".
 
 #### The `xsd:integer` datatype
 
