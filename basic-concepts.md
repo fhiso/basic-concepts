@@ -1054,8 +1054,9 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `https://terms.fhiso.org/types/Pattern`
 ------           -----------------------------------------------
 
-{.ednote} The *range* of `types:pattern` is `types:Pattern`, which will
-be the *datatype* for FHISO's regular expression dialect.
+{.note}  The `types:Pattern` *datatype* used as the *range* of this
+property is defined in a separate FHISO [Patterns] standard which
+defines the dialect of regular expressions which FHISO supports.
 
 {.ednote}  This standard does not use `xsd:pattern` as the *property
 term*, even though it is used as a predicate in 
@@ -1435,6 +1436,10 @@ always to fit in these fixed sized *datatypes*.
 :   ISO (International Organization for Standardization).  *ISO/IEC
     10646:2014. Information technology &mdash; Universal Coded Character
     Set (UCS).*  2014.
+
+[Patterns]
+:   FHISO (Family History Information Standards Organisation).
+    *The Patterns Datatype*.  Exploratory draft.
 
 [RFC 2119]
 :   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
