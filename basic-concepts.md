@@ -945,27 +945,10 @@ to the definition of a datatype in
 &#x5B;[RDF Concepts](https://www.w3.org/TR/rdf11-concepts/)], and
 RDF datatypes can be used as *datatypes* in this standard.
 
-{.example ...} XML Schema defines an integer type in §3.4.13 of
-&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] which is well suited
-for use in this standard.  XML Schema does not give its types IRIs, but
-it does give them `id`s, and following the best practice advice given in 
-§2.3 of &#x5B;[SWBP XSD DT](https://www.w3.org/TR/swbp-xsch-datatypes/)]
-gives it the following IRI:
-
-    http://www.w3.org/2001/XMLSchema#integer
-
-This same type is also recommended for use in RDF by §5.1 of 
-&#x5B;[RDF Concepts](https://www.w3.org/TR/rdf11-concepts/)] which
-explicitly gives it the IRI above.
-
-The *lexical space* of this *datatype* is the space of all *strings*
-consisting of a finite-length sequence of one or more decimal digits
-(U+0030 to U+0039, inclusive), optionally preceded by a `+` or `-` sign
-(U+002B or U+002D, respectively).  Thus the *string* "`137`" is within the
-*lexical space* of this *datatype*, but "`20.000`" and "`四十二`" are
-not, despite being normal ways of representing integers in certain
-cultures.
-{/}
+{.example} XML Schema defines an integer type in §3.4.13 of
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] which is well-suited
+for use in this standard.  FHISO use this type where integer values
+occur.  It discussed in §5.5.3 of this standard.
 
 The mapping from lexical representations to logical values need not be
 one-to-one.  If a *datatype* has multiple lexical representations of the
@@ -1258,9 +1241,22 @@ This standard endorses the use of the following three *datatypes*
 defined in &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to
 represent *strings*, *booleans* and *integers*.
 
-{.note} Other *datatypes* from that standard *may* also be suitable for
-use with FHISO technologies.  They are not included here as, when this
-standard was written, there was no particular demonstrated need for them.
+{.note ...} XML Schema does not give its types IRIs, but it does give
+them `id`s, and following the best practice advice given in §2.3 of 
+&#x5B;[SWBP XSD DT](https://www.w3.org/TR/swbp-xsch-datatypes/)]
+gives it them IRIs like this:
+
+    http://www.w3.org/2001/XMLSchema#integer
+
+These types are also recommended for use in RDF by §5.1 of 
+&#x5B;[RDF Concepts](https://www.w3.org/TR/rdf11-concepts/)].
+RDF requires all *datatypes* to be identified by an IRI, and 
+IRIs such as the one above are used for XML Schema *datatypes*.
+{/}
+
+{.note} Other XML Schema *datatypes* *may* also be suitable for use with
+FHISO technologies.  They are not included here as, when this standard
+was written, there was no particular demonstrated need for them.
 
 {.ednote} FHISO will need one or more date *datatype*, but it is currently
 anticipated that the `xsd:date` type will not be sufficient for FHISO's
@@ -1292,7 +1288,7 @@ natural language.
 
 {.note}  This type is not the ultimate *supertype* of all
 *non-language-tagged* datatypes.  This is because many other XML Schema
-*datatypes*, including `xsd:date` and `xsd:integer` are not defined as
+*datatypes*, including `xsd:boolean` and `xsd:integer` are not defined as
 *subtypes* of `xsd:string` in XML Schema.
 
 Use of this *datatype* is generally *not recommended*: data that is in
@@ -1358,11 +1354,78 @@ still use the value "`false`" rather than translating it as
 
 #### The `xsd:integer` datatype
 
-{.ednote}  An integer *datatype* seems like something that FHISO will
-definitely need, in which case the standard `xsd:integer` *datatype*
-defined in §3.4.13 of &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)]
-is the obvious choice.  But at the moment there is no clear use case for
-an integer type.
+FHISO uses the `xsd:integer` *datatype* defined in §3.4.13 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent
+integers.  It *must not* be used for values which are typically but not
+invariably integers.
+
+{.example}  Quantities that are invariably integer-valued do not
+occur all that frequently in genealogy.  The page number of material
+being cited is normally an integer, but not invariably as a page number
+of a colour plate might be "facing p.&nbsp;102" and prefatory pages are
+often numbered with Roman numerals.  For this reason, page numbers
+should not be represented with integers.  House numbers are similar, as
+it is not uncommon to find houses with numbers like "12A" in some
+countries.  
+
+{.example}  The number of children born to a couple is an example of a
+value which is integer-valued.  The number might be unknown or might only
+be known within certain bounds, but ultimately it is an integer: a
+couple cannot have 2.4 children. 
+
+This *datatype* can represent arbitrarily large integers, but
+unless otherwise stated, applications *may* opt not to support values
+greater than 2&thinsp;147&thinsp;483&thinsp;647 or less than
+&minus;2&thinsp;147&thinsp;483&thinsp;648.
+
+{.note}  This permits applications to represent an `xsd:integer` as a
+signed 32-bit integer except where otherwise noted.
+
+The *lexical space* of this *datatype* is the space of all *strings*
+consisting of a finite-length sequence of one or more decimal digits
+(U+0030 to U+0039, inclusive), optionally preceded by a `+` or `-` sign
+(U+002B or U+002D, respectively).  
+
+{.example}  Thus the *string* "`137`" is within the *lexical space* of
+this *datatype*, but "`20.000`" and "`四十二`" are not, despite being
+normal ways of representing integers in certain cultures.
+
+This *datatype* has several alternative representations of the same
+logical integer value.  This arises because leading zeros are permitted,
+the `+` sign is optional, and the value `-0` is permitted.  Applications
+*may* remove any leading `+` sign and any leading zeros preceding a
+non-zero digit, and *may* rewrite `-0` as `0`.
+
+{.note}  This ensures that applications do not need to preserve the
+original lexical form of an integer, only its value.
+
+This is a *structured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#integer`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `(\+|-)?[0-9]+`
+Supertype        *none*
+Abstract         `false`
+------           -----------------------------------------------
+
+{.ednote}  Its *supertype* is actually `xsd:decimal`, but this is not a
+supported *datatype* in this standard.
+
+{.note}  &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] also
+provides a range of signed and unsigned *datatypes* for integers
+represented in a specified number of bytes.  The *datatypes* are
+`xsd:byte`, `xsd:short`, `xsd:int`, `xsd:long` and their unsigned
+equivalents.  FHISO discourage the use of all of these *datatypes* in
+conjunction with FHISO standards as there very few genealogical contexts
+where an integer is required but where the value can be guaranteed
+always to fit in these fixed sized *datatypes*.
+
+{.ednote}  This draft does not include specific guidance on the use of
+`xsd:positiveInteger` and `xsd:nonNegativeInteger`.
 
 ## References
 
