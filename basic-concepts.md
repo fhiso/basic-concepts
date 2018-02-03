@@ -1055,7 +1055,7 @@ Range            `https://terms.fhiso.org/types/Pattern`
 ------           -----------------------------------------------
 
 {.note}  The `types:Pattern` *datatype* used as the *range* of this
-property is defined in a separate FHISO [Patterns] standard which
+property is defined in a separate [FHISO Patterns] standard which
 defines the dialect of regular expressions which FHISO supports.
 
 {.ednote}  This standard does not use `xsd:pattern` as the *property
@@ -1238,9 +1238,11 @@ then the *subtype* *must* also be; and if the *supertype* is not a
 
 ### Standard datatypes
 
-This standard endorses the use of the following three *datatypes*
-defined in &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to
-represent *strings*, *booleans* and *integers*.
+This standard recommends the use of the `xsd:string`, `xsd:boolean` and
+`xsd:integer` *datatypes* defined in &#x5B;[XSD
+Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent *strings*,
+*booleans* and *integers*, respectively.  They are described in the
+following subsections.
 
 {.note ...} XML Schema does not give its types IRIs, but it does give
 them `id`s, and following the best practice advice given in §2.3 of 
@@ -1255,15 +1257,14 @@ RDF requires all *datatypes* to be identified by an IRI, and
 IRIs such as the one above are used for XML Schema *datatypes*.
 {/}
 
-{.note} Other XML Schema *datatypes* *may* also be suitable for use with
-FHISO technologies.  They are not included here as, when this standard
-was written, there was no particular demonstrated need for them.
+This section also contains a summary of the `rdf:langString` *datatype*
+which is used heavily by FHISO technologies.
 
-{.ednote} FHISO will need one or more date *datatype*, but it is currently
-anticipated that the `xsd:date` type will not be sufficient for FHISO's
-purposes.  This will be addressed, either in a future draft of this
-standard, or in a separate standard.
-
+{.note}  The *datatypes* described in this section are not intended to
+be an exhaustive list of *datatypes* usable with FHISO technologies, but
+rather is a list of the most common ones.  Other XML Schema *datatypes*
+*may* also be suitable, as *may* *datatypes* from other third-party
+standards.  Other FHISO standards will define additional *datatypes*.
 
 #### The `xsd:string` datatype
 
@@ -1428,6 +1429,49 @@ always to fit in these fixed sized *datatypes*.
 {.ednote}  This draft does not include specific guidance on the use of
 `xsd:positiveInteger` and `xsd:nonNegativeInteger`.
 
+#### The `rdf:langString` datatype
+
+The `rdf:langString` *datatype* defined in §2.5 of [RDFS] is used as the
+general-purpose *unstructured language-tagged datatype*.  No constraints
+are placed on the *lexical space* of this *datatype*; the only
+restriction placed on the use or semantics of this *datatype* is that it
+*should* contain text in a human-readable form.  
+
+Any *language-tagged datatype* that is not defined to be a *subtype* of
+some other *datatype* *shall* implicitly be considered to be a *subtype*
+of the `rdf:langString` *datatype*.
+
+{.note}  Together with the requirement in §5.4 that *language-tagged
+datatypes* *must not* be *subtypes* of *non-language-tagged datatypes*,
+this ensures that `rdf:langString` is the ultimate *supertype* of all
+*language-tagged datatypes*.
+
+This *datatype* has the following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        *none*
+Abstract         `false`
+------           -----------------------------------------------
+
+{.note} Although this type is formally defined in the RDF Schema
+specification, this standard requires no knowledge of RDF; an
+implementer may safely use this *datatype* using just the information
+given in this section, and without reading [RDFS].
+
+{.ednote} This standard does not specify a comparable *datatype*
+which acts as the ultimate *supertype* of all *non-language-tagged
+datatypes*, nor of all *datatypes*.  Possibly one or more of the
+`rdfs:Resource`, `rdfs:Literal`, `xsd:anyType`, `xsd:anySimpleType` and
+`xsd:anyAtomicType` would serve, but this needs careful consideration of
+the differences between *datatypes* in XML Schema, RDF and this
+standard.  At present there is no compelling need for such a
+*supertype*.
+
 ## References
 
 ### Normative references
@@ -1437,9 +1481,14 @@ always to fit in these fixed sized *datatypes*.
     10646:2014. Information technology &mdash; Universal Coded Character
     Set (UCS).*  2014.
 
-[Patterns]
+[FHISO Patterns]
 :   FHISO (Family History Information Standards Organisation).
     *The Patterns Datatype*.  Exploratory draft.
+
+[RDFS]
+:   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
+    W3C Recommendation, 2014.
+    (See <https://www.w3.org/TR/rdf-schema>.)
 
 [RFC 2119]
 :   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
