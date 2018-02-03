@@ -739,7 +739,7 @@ Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
+                    `http://www.w3.org/2000/01/rdf-schema#range`
 ------              -----------------------------------------------------------
 
 {.note}  The `rdf:Property` *class* is defined §2.8 of [RDF Schema].
@@ -831,7 +831,7 @@ defined as follows:
 : Property definition
 
 ------           -----------------------------------------------
-Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#range`
+Name             `http://www.w3.org/2000/01/rdf-schema#range`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
@@ -1409,7 +1409,7 @@ following properties:
 ------           -----------------------------------------------
 Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
-Pattern          `(\+|-)?[0-9]+`
+Pattern          `[+-]?[0-9]+`
 Supertype        *none*
 Abstract         `false`
 ------           -----------------------------------------------

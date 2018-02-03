@@ -10,46 +10,78 @@
 # according to [RDF 1.1 Semantics].
 
 # §4.3
-rdfs:Class rdf:type rdfs:Class .
+rdfs:Class
+	rdf:type rdfs:Class ;
+	types:requiredProperty rdf:type, types:requiredProperty .
 
 # §4.4
-rdf:Property rdf:type rdfs:Class .
+rdf:Property
+	rdf:type rdfs:Class ;
+	types:requiredProperty rdf:type, rdfs:range .
 
 # §4.4.1
-rdfs:range rdf:type rdf:Property ;
-           rdfs:range rdfs:Class .
+rdfs:range
+	rdf:type rdf:Property ;
+	rdfs:range rdfs:Class .
 
 # §4.4.2
-rdf:type rdf:type rdf:Property ;
-         rdfs:range rdf:Class .
+rdf:type
+	rdf:type rdf:Property ;
+	rdfs:range rdf:Class .
 
 # §5
-rdfs:Datatype rdf:type rdfs:Class .
+rdfs:Datatype
+	rdf:type rdfs:Class ;
+	types:requiredProperty rdf:type, types:pattern, 
+		types:subTypeOf, types:isAbstract .
 
 # §5.1
-types:pattern rdf:type rdf:Property ;
-              rdf:range types:Pattern .
+types:pattern
+	rdf:type rdf:Property ;
+	rdf:range types:Pattern .
 
-# TODO: define types:Pattern .
+# TODO: this will be defined externally
+types:Pattern
+	rdf:type rdfs:Datatype ;
+	types:pattern ".*" ;
+	types:subTypeOf rdf:Resource ;    # TODO 
+	types:isAbstract false .
 
 # §5.2
-types:subTypeOf rdf:type rdf:Property ;
-                rdf:range rdfs:Datatype .
+types:subTypeOf
+	rdf:type rdf:Property ;
+	rdf:range rdfs:Datatype .
 
 # §5.3
-types:isAbstract rdf:type rdf:Property ;
-                 rdf:range xsd:boolean .
+types:isAbstract
+	rdf:type rdf:Property ;
+	rdf:range xsd:boolean .
 
 # §5.5.1
-xsd:string rdf:type rdfs:Datatype ;
-           types:pattern ".*" ;
-           types:subTypeOf rdf:Resource ;    # TODO 
-           types:isAbstract "false" .
+xsd:string
+	rdf:type rdfs:Datatype ;
+	types:pattern ".*" ;
+	types:subTypeOf rdf:Resource ;    # TODO 
+	types:isAbstract false .
 
 # §5.5.2
-xsd:boolean rdf:type rdfs:Datatype ;
-            types:pattern "true|false|1|0" ;
-            types:subTypeOf rdf:Resource ;    # TODO 
-            types:isAbstract "false" .
+xsd:boolean
+	rdf:type rdfs:Datatype ;
+	types:pattern "true|false|1|0" ;
+	types:subTypeOf rdf:Resource ;    # TODO 
+	types:isAbstract false .
 
-# §5.5.3 xsd:integer needs writing
+# §5.5.3
+xsd:integer
+	rdf:type rdfs:Datatype ;
+	types:pattern "[+-]?[0-9]+" ;
+	types:subTypeOf rdf:Resource ;    # TODO 
+	types:isAbstract false .
+
+# §5.5.4
+rdf:langString
+	rdf:type rdfs:Datatype ;
+	types:pattern ".*" ;
+	types:subTypeOf rdf:Resource ;    # TODO 
+	types:isAbstract false .
+
