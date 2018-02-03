@@ -38,7 +38,7 @@ implementing *discovery*.
 {.ednote} It is anticipated that a future draft will include some
 standard, low-level *datatypes* for *strings*, integers and booleans.  A
 *pattern* *datatype* will also be needed for the purpose of §5.1.  The
-notion of *cardinality* may also be moved here from [CEV Concepts].
+notion of *cardinality* may also be moved here from CEV Concepts.
 
 ## Conventions used
 
