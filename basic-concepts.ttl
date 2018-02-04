@@ -29,6 +29,11 @@ rdf:type
 	rdf:type rdf:Property ;
 	rdfs:range rdf:Class .
 
+# §4.4.3
+types:requiredProperty
+	rdf:type rdf:Property ;
+	rdfs:range rdf:Property .
+
 # §5
 rdfs:Datatype
 	rdf:type rdfs:Class ;
