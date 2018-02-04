@@ -136,10 +136,10 @@ The `GET` request *should* have an `Accept` header that is well-formed
 according to §5.3.2 of [RFC 7231], and which references the N-Triples
 media type, "`application/n-triples`".  The request's `Accept` header
 *may* alternatively or additionally reference the media types of one of
-the alternative RDF formats described in §4 of this standard, but
+the alternative RDF formats described in §3.3 of this standard, but
 *conformant* servers need not support support those formats.
 
-If the *discovery IRI* is not one of the cases listed in §5, and is not
+If the *discovery IRI* is not one of the cases listed in §4, and is not
 an IRI used for another purpose, it is *recommended* that servers issue a
 404 "Not Found" response.  Applications *must not* consider a 404 to
 mean the *term* is invalid.
@@ -159,7 +159,7 @@ of this standard, to select the media type of the resource that will be
 served.   If the server supports none of the listed media types, it
 *should* send a 406 "Not Acceptable" response; otherwise, if the selected
 media type is the N-Triples media type or a supported alternative type
-from §4, and the *discovery IRI* is one of the cases listed in §5,
+from §3.3, and the *discovery IRI* is one of the cases listed in §4,
 the server *should* continue with *Triples Discovery* as outlined here.
 If the `Accept` header was precisely "`application/n-triples`" then a
 *conformant* server *must* continue with *Triples Discovery*.
@@ -200,7 +200,7 @@ while incorrect, is still *conformant* with this standard.
 {/}
 
 Except when the *discovery IRI* is a *namespace name* as defined in
-§5.**XXX**, a *conformant* server *shall* issue a redirect to a
+§4.**XXX**, a *conformant* server *shall* issue a redirect to a
 resource containing a description of the *discovery* *term* in the
 selected format.  This redirect *should* be a 303 "See Other"
 redirect, and *must not* be a 301 "Moved Permanently".  If the
@@ -455,9 +455,37 @@ represented by a *term* or a *literal*.  For this reason, this standard
 does not prohibit *conformant* servers from generating *triples* using
 *blank nodes*.
 
-## Other formats
+### Other formats
 
+{.note} This section explains how alternative RDF formats may be used
+instead of N-Triples.  Support for any other format is *optional*.
 
+N-Triples is not the only serialisation format for representing RDF
+data, nor is it the most commonly used.  
+
+{.note}  Originally the only serialisation format for RDF was
+[RDF/XML], and despite its excessive verbosity, this format remains
+popular for compatibility with older datasets and applications.  A more
+modern format is [Turtle] which is defined to be easily written and read
+by a human.  Many RDF frameworks support these as well as N-Triples, and
+can convert between formats.
+
+A *conformant* server *may* make information about *terms* available in
+other RDF formats too.  If a server does so, it *should* provide the same
+information in these other RDF formats as it provides is N-Triples, and
+*must* ensure that the information made available in any other supported
+RDF formats includes the required triples, as given in §4.  A
+*conformant* server *must not* only make information available in an
+RDF format other than N-Triples.
+
+A *conformant* application *may* request data in other RDF formats, and
+*may* request these formats in preference to or before N-Triples, but
+must also support N-Triples.  It *shall* parse data in other RDF formats
+as if by converting them to N-Triples and parsing that per this standard.
+
+{.note}  In practice, such an application would likely use an RDF
+framework to parse all the supported RDF formats, N-Triples included,
+and then process the parsed triples that the framework provides.
 
 ## Discovery IRIs
 
@@ -505,6 +533,11 @@ does not prohibit *conformant* servers from generating *triples* using
 :   W3C (World Wide Web Consortium).  *RDF1.1 Errata.*  
     (See <https://www.w3.org/2001/sw/wiki/RDF1.1_Errata>.)
 
+[RDF/XML]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 XML Syntax.* Fabien
+    Gandon and Guus Schreiber, eds., 2014.  W3C Recommendation.
+    (See <https://www.w3.org/TR/rdf-syntax-grammar/>.)
+
 [RFC 7231]
 :   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
     Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
@@ -516,6 +549,11 @@ does not prohibit *conformant* servers from generating *triples* using
     Publishing RDF Vocabularies*.  Diego Berrueta and Jon Phipps, eds.,
     2008.  W3C Working Group Note.
     (See <https://www.w3.org/TR/swbp-vocab-pub/>.)
+
+[Turtle]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 Turtle.* Eric Prud'hommeaux
+    and Gavin Carothers, eds., 2014.  W3C Recommendation.
+    (See <https://www.w3.org/TR/turtle/>.)
 
 ----
 Copyright © 2017, [Family History Information Standards Organisation,
