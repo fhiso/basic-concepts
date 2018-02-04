@@ -32,7 +32,9 @@ rdf:type
 # §4.4.3
 types:requiredProperty
 	rdf:type rdf:Property ;
-	rdfs:range rdf:Property .
+	rdfs:range rdf:Property ;
+	rdfs:isDefinedBy
+		<https://tech.fhiso.org/TR/basic-concepts#required-props> .
 
 # §5
 rdfs:Datatype
@@ -43,24 +45,32 @@ rdfs:Datatype
 # §5.1
 types:pattern
 	rdf:type rdf:Property ;
-	rdf:range types:Pattern .
+	rdf:range types:Pattern ;
+	rdfs:isDefinedBy
+		<https://tech.fhiso.org/TR/basic-concepts#patterns> .
 
 # TODO: this will be defined externally
 types:Pattern
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
 	types:subTypeOf rdf:Resource ;    # TODO 
-	types:isAbstract false .
+	types:isAbstract false ;
+	rdfs:isDefinedBy
+		<https://tech.fhiso.org/TR/basic-concepts#patterns> . # TODO
 
 # §5.2
 types:subTypeOf
 	rdf:type rdf:Property ;
-	rdf:range rdfs:Datatype .
+	rdf:range rdfs:Datatype ;
+	rdfs:isDefinedBy
+		<https://tech.fhiso.org/TR/basic-concepts#subtypes> .
 
 # §5.3
 types:isAbstract
 	rdf:type rdf:Property ;
-	rdf:range xsd:boolean .
+	rdf:range xsd:boolean ;
+	rdfs:isDefinedBy
+		<https://tech.fhiso.org/TR/basic-concepts#abstract-types> .
 
 # §5.5.1
 xsd:string

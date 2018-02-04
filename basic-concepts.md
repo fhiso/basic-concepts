@@ -879,7 +879,7 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 however implementers may safely use this *property term* for the
 purposes of this standard without reading [RDF Schema].
 
-#### Required properties
+#### Required properties                               {#required-props}
 
 A *property* that *must* be provided when a third party defining a new
 *term* with some particular *type* is called a **required property**.  
@@ -1008,7 +1008,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/isAbstract`
 ------              -----------------------------------------------------------
 
-### Patterns
+### Patterns                                                 {#patterns}
 
 A party defining a *datatype* *shall* specify a **pattern** for that
 *datatype*.  This is a regular expression which provides a constraint on
@@ -1071,7 +1071,7 @@ A *datatype* with a *pattern* other than `.*` is known as a **structured
 datatype**, while one with a *pattern* of `.*` is known as an
 **unstructured datatype**.
 
-### Subtypes
+### Subtypes                                                 {#subtypes}
 
 A *datatype* *may* be defined as a **subtype** of another *datatype*
 which is referred to as its **supertype**.  This is used to provide a
@@ -1136,7 +1136,7 @@ abstract.  If it is desirable to describe a FHISO *abstract datatype* in
 XML Schema, it should be defined as a normal simple type, with the
 information that it is abstract conveyed by another means. 
 
-### Abstract datatypes
+### Abstract datatypes                                 {#abstract-types}
 
 A *datatype* *may* be defined to be a **abstract datatype**.  An
 *abstract datatype* is one that *must* only be used as a *supertype* of
