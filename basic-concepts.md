@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 19 January 2018
+date: 3 March 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -17,28 +17,29 @@ and whose definitions do not logically belong in any one particular
 higher-level standard.
 
 The definition of a *string* which is used in multiple FHISO standards
-is given in §2 of this standard, together with various related concepts
-such as *characters* and *whitespace*, and §3 defines briefly how FHISO
-standards use *language tags*.  *Terms* are defined in §4 as a
-form of extensible identifier using IRIs; a shorthand notation for
-*terms* known as *prefix notation* is described in §4.1, and §4.2
-discusses information that may be retrieved from these IRIs.
-The notion of a *datatype* is defined in §5, which also includes
-details on how to specify a new *datatype*.
+is given in {§strings} of this standard, together with various related
+concepts such as *characters* and *whitespace*, and {§lang-tags} defines
+briefly how FHISO standards use *language tags*.  *Terms* are defined in
+{§terms} as a form of extensible identifier using IRIs; a shorthand
+notation for *terms* known as *prefix notation* is described in
+{§prefix-notn}, and {§iri-resn} discusses information that may be
+retrieved from these IRIs.
+The notion of a *datatype* is defined in {§datatypes}, which also
+includes details on how to specify a new *datatype*.
 
 The concepts of a *classes*, *properties*, the *range* of a *property*,
-and the *type* of a *term* are defined in §4.3, §4.4, §4.4.1 and §4.4.2,
-respectively.  They provide an infrastructure for defining extensions to
-FHISO standards and new, compatible standards in such a way that
-applications can use a *discovery* mechanism to find out about unknown
-components, allowing them to be processed.  The facilities in these
-sections will primarily be of use to parties defining extensions or
-implementing *discovery*.
+and the *type* of a *term* are defined in {§classes}, {§properties},
+{§range} and {§type}, respectively.  They provide an infrastructure for
+defining extensions to FHISO standards and new, compatible standards in
+such a way that applications can use a *discovery* mechanism to find out
+about unknown components, allowing them to be processed.  The facilities
+in these sections will primarily be of use to parties defining
+extensions or implementing *discovery*.
 
 {.ednote} It is anticipated that a future draft will include some
 standard, low-level *datatypes* for *strings*, integers and booleans.  A
-*pattern* *datatype* will also be needed for the purpose of §5.1.  The
-notion of *cardinality* may also be moved here from CEV Concepts.
+*pattern* *datatype* will also be needed for the purpose of {§patterns}.
+The notion of *cardinality* may also be moved here from CEV Concepts.
 
 ## Conventions used
 
@@ -86,8 +87,8 @@ applications *must not* generate data not conforming to the syntax given
 here, but non-conforming syntax *may* be accepted and processed by a
 *conforming* application in an implementation-defined manner.
 
-This standard uses *prefix notation*, as defined in §4.1 of this
-standard, when discussing specific *terms*.  The following *prefix*
+This standard uses *prefix notation*, as defined in {§prefix-notn} of
+this standard, when discussing specific *terms*.  The following *prefix*
 bindings are assumed in this standard:
 
 ------           -----------------------------------------------
@@ -102,8 +103,7 @@ outside this standard document as *prefix notation* is not used in the
 formal data model defined by this standard.  This notation is simply a
 notational convenience to make the standard easier to read.
 
-
-## Characters and strings
+## Characters and strings                                     {#strings}
 
 {.ednote}  The concepts related to *strings* were originally defined in
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
@@ -222,7 +222,7 @@ In the event of a difference between the definitions of the `Char`,
 &#x5B;[XML](https://www.w3.org/TR/xml11/)], the definitions in the
 latest edition of XML 1.1 specification are definitive.
 
-## Language tags
+## Language tags                                            {#lang-tags}
 
 {.ednote}  The material in this section is new in this draft.
 
@@ -340,14 +340,12 @@ string**.
 {.note} The *language tag* is not itself part of *string*, but is stored
 alongside it.  
 
-## Terms
+## Terms                                                        {#terms}
 
 {.ednote}  The concept of a *term* was originally defined in the 
 [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  It has
-been moved here to be more generally usable.  The material in §4.3 and
-§4.4 is new in this draft, but draws heavily on FHISO's
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
-
+been moved here to be more generally usable.
+ 
 A **term** is a form of identifier used in FHISO standards to represent
 a concepts which it is useful to be able to reference.  A *term*
 consists of a unique, machine-readable identifier, known as the **term
@@ -357,8 +355,8 @@ matching the `IRI` production in §2.2 of
 &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
 
 {.example} This standard uses *terms* to name *datatypes*, as defined in
-§5 of this standard, and also for *classes* and *properties*, defined in
-§4.3 and §4.4.
+{§datatypes} of this standard, and also for *classes* and *properties*,
+defined in {§classes} and {§properties}.
 
 {.ednote}  Give an actual example, e.g. `xsd:integer`.
 
@@ -440,7 +438,7 @@ public key pinning is used per
 &#x5B;[RFC 7469](https://tools.ietf.org/html/rfc7469)].
 {/}
 
-### Prefix notation
+### Prefix notation                                       {#prefix-notn}
 
 *Term names* are sometimes referred using **prefix notation**.  This is
 a system whereby **prefixes** are assigned to IRIs that occur frequently
@@ -454,7 +452,7 @@ this in full, if the `rdfs` *prefix* is bound to the IRI
 `http://www.w3.org/2000/01/rdf-schema#`, then this IRI can be written in
 *prefix form* as `rdfs:Class`.
 
-### IRI resolution
+### IRI resolution                                           {#iri-resn}
  
 It is *recommended* that an HTTP `GET` request to a *term name* IRI with
 an `http` or `https` scheme (once converted to a URI per §4.1 of
@@ -547,12 +545,20 @@ machine-readable definition of the *term* unconditionally, however it is
 *recommended* that such servers implement HTTP content negotiation 
 respecting the `Accept` header.
 
-### Classes
+## Underlying type system                                 {#type-system}
 
-{.note}  This section defines a basic type system for *terms*.  
-It is part of the infrastructure for defining extensions to FHISO
-standards or new, compatible standards, and is used by applications
-during *discovery*, support for which is *optional*.
+{.ednote} The material in this section is new in this draft, but draws
+heavily on FHISO's 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+
+{.note}  This section defines a basic type system for *terms* and a
+simple vocabulary for describing them.  This formalism provides a solid
+theoretical framework for defining extensions to FHISO standards, and is
+used by applications during *discovery* (support for which is
+*optional*).  Parties who are simply implementing a higher level FHISO
+standards will typically not need to be familiar with this material.
+
+### Classes                                                   {#classes}
 
 *Terms* are used in many contexts in FHISO standards and it can be
 useful to have a concise, machine-readable way of stating the use for
@@ -591,6 +597,8 @@ word does not mean that the other notions associated with the word
 
 The *term name* of a *class* is also referred to as its **class name**.
 
+#### The type of a term                                          {#type}
+
 When a *term* has been defined for use in the context denoted by some
 *class*, that *class* is referred to as the **type** of the *term*.  
 
@@ -598,12 +606,55 @@ When a *term* has been defined for use in the context denoted by some
 `https://example.com/events/`, the *type* of `ex:Baptism` from the
 previous example is `ex:EventType`.
 
+The *type* of a *term* is a piece of information which *must* be
+provided, perhaps implicitly, when defining a *term*.  As such, the
+*type* is *property* of the *term*, as defined in {§properties}, and
+needs a *property term* to represent it.  This standard uses the
+`rdf:type` *term* for this purpose:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note}  The table above sets out the formal *properties* of the
+`rdf:type` *property*.  The first line of this definition states the
+*term name* of the `rdf:type` *property*.  As required above, the *type*
+of a *term* *must* be specified when a *term* is defined and the
+`rdf:type` *property* is no exception.  Its type is `rdf:Property` which
+is defined in {§properties} of this standard.  The meaning of the *range* is
+given in {§range}.
+
+{.note}  The `rdf:type` *property term* is defined §3.3 of [RDF Schema],
+however implementers may safely use this *property term* for the
+purposes of this standard without reading [RDF Schema].  The
+decision to use this RDF *term* in FHISO's standards rather than invent
+a new *term* allows for greater compatibility with existing third-party
+vocabularies.
+
+#### The class of classes                                  {#rdfs-class}
+
 As a *class* is a *term*, defining a *class* is itself a context in
 which *terms* are defined, including by third parties.  This means the
 general concept of a *class* needs a *term* defining to represent it.
 This standard uses the `rdfs:Class` *term* for this purpose:
 
-    http://www.w3.org/2000/01/rdf-schema#Class
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://www.w3.org/2000/01/rdf-schema#subClassOf`<br/>
+                    `http://terms.fhiso.org/types/requiredProperty`
+------              -----------------------------------------------------------
 
 {.note}  This can be thought of as a *class* of *classes*.  It is not
 merely an arcane abstraction: it serves a useful role in *discovery*.
@@ -635,28 +686,99 @@ represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
 *class*, albeit a fairly special one, the *type* of `rdfs:Class` is
 `rdfs:Class`.
 
+#### Subclasses                                            {#subclasses}
+
+A *class* *may* be defined as a **subclass** of another *class*.  The
+latter *class* is referred to as the **superclass** of the former
+*class*.  The *subclass* denotes a more specialised version of the
+context denoted by its *superclass*.  A *term* whose *type* is
+*subclass* of some other *class* *may* be used wherever a *term* is
+required whose *type* is the *superclass*.
+
+{.example}  In the example above, a hypothetical standard was said to
+have defined a *class* representing event types.  The same hypothetical
+standard might define a *subclass* of this called `IndividualEventType`
+to represent individual events for those events that are principally
+about a single person.  In such a scheme, a baptism would be considered
+an individual event, while a marriage would probably not as it involves
+two principal participants.  In a context where a *term* of *type*
+`EventType` is required, an `IndividualEventType` like `Baptism` *may* be
+used; but in a context where an `IndividualEventType` is required,
+others sorts of event such as `Marriage` *must not* be used.
+
+The *superclass* of a *class* *must* be specified when defining a
+*class* to be the *subclass* of some other *class*.  As such, the
+*superclass* of the *class* is a *property* of the *class*, as defined
+in {§properties} and needs a *property term* to represent it.  This
+standard uses the `rdfs:subClassOf` *term* for this purpose:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#subClassOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note}  The `rdfs:subClassOf` *property term* is defined §3.4 of 
+[RDF Schema], however implementers may safely use this *property term*
+for the purposes of this standard without reading [RDF Schema].  The
+decision to use this RDF *term* in FHISO's standards rather than invent
+a new *term* allows for greater compatibility with existing third-party
+vocabularies.  
+
+The notion of a *subclass* is transitive, meaning that if a *class* is a
+*subclass* of a second *class*, and that second *class* is a *subclass*
+of a third *class*, then the first *class* is a *subclass* of the third.
+The notion of a *subclass* is also reflexive, meaning that a *class* is
+by definition a *subclass* of itself.  The notion of a *superclass* is
+similarly transitive and reflexive.
+
+The `rdfs:subClassOf` *property* is defined as a *required property* of
+`rdfs:Class`, meaning its *supertypes* *must* be specified whenever a
+new *class* is defined.  However this standard does not require every
+*superclass* to be identified explicitly.  If a *class* has two or more
+*superclasses*, and one of the *superclasses* is itself a *superclass*
+of another of the *superclasses*, then the *superclass* of the
+*superclass* need not be identified explicitly.
+
+{.example}  Continuing the previous example, it is correct to say that
+the hypothetical `IndividualEventType` *class* is a *superclass* of
+`EventType`, but it is equally correct to say that it is a *superclass*
+of the `rdfs:Resource` *universal superclass* defined in
+{§rdfs-resource}, below.
+The `IndividualEventType` *class* therefore has two *superclasses*, one
+of which (`EventType`) is a *superclass* of the other (`rdfs:Resource`).
+Because of this, it is not necessary to state that `IndividualEventType`
+is a *subclass* of `rdfs:Resource`.
+
+#### The universal superclass                           {#rdfs-resource}
+
+This standard uses `rdfs:Resource` as a **universal superclass**
+defined to be the *superclass* of all *classes*.
+
 : Class definition
 
 ------              -----------------------------------------------------------
-Name                `http://www.w3.org/2000/01/rdf-schema#Class`
+Name                `http://www.w3.org/2000/01/rdf-schema#Resource`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
-Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://terms.fhiso.org/types/requiredProperty`
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
 
-{.note} The table above sets out the formal *properties* of the
-`rdfs:Class` *class*.  *Properties* are defined in §4.4 of this
-standard, and the meaning of the *required properties* listed above 
-is given in §4.4.3.
+{.note}  The `rdfs:Resource` *class* is defined in §2.1 of [RDF
+Schema].
 
-### Properties
+This *class* has no semantics of its own, other than to be *class* of
+all things that can be expressed in this data model.  
 
-{.note}  This section defines a simple vocabulary for describing *terms*.
-It is part of the infrastructure for defining extensions to FHISO
-standards or new, compatible standards, and is used by applications
-during *discovery*, support for which is *optional*.
+{.note}  The `rdfs:Resource` *class* is useful with the `rdfs:subClassOf` 
+*property* when defining a *class* which has no other *superclass*.
+
+### Properties                                             {#properties}
 
 During *discovery*, and in other situations when a formal definition of a
 particular *term* is needed, it is necessary to have a formalism for
@@ -696,6 +818,15 @@ The *property name* is a *property term*.
 
 The *property value* *shall* be a *term*, a *string*, or a
 *language-tagged string*.
+
+{.ednote}  Should *datatype-tagged strings* also be permitted as
+*property values*?  At the moment *datatypes* are implicit.  The
+*property value* is a *string* and its *datatype* is inferred from the
+*range* of the *property name*.  If the *citation elements*, as defined
+in [CEV Concepts], are to become a subclass of *properties*, it will be
+necessary to allow *datatype-tagged strings*.  Moreover, it will be
+necessary to pull the notion of a *localisation set* down into Basic
+Concepts. 
 
 *Properties* *shall not* have default *property values* that applies
 when the *property* is absent, however standards *may* define how an
@@ -738,24 +869,18 @@ Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `http://www.w3.org/2000/01/rdf-schema#range`
 ------              -----------------------------------------------------------
 
-{.note}  The `rdf:Property` *class* is defined §2.8 of [RDF Schema].
-The fact that its *term name* IRI begin differently to the `rdfs:Class`
-*term name* used in §4.3 of this standard is due to historical reasons.
-As with the `rdfs:Class` *term*, an implementer may safely use the
-`rdf:Property` *terms* for the purposes of this standard without reading
-[RDF Schema].
+{.note}  The `rdf:Property` *term* is defined in §2.8 of [RDF Schema].
+As with the `rdfs:Class` *term*, an implementer may safely use
+the `rdf:Property` *terms* for the purposes of this standard without
+reading [RDF Schema].
 
-#### Range
-
-{.note}  This section defines a *property term* to describe way other
-*properties* are to be used.
-It is part of the infrastructure for defining extensions to FHISO
-standards or new, compatible standards, and is used by applications
-during *discovery*, support for which is *optional*.
+#### Range                                                      {#range}
 
 The **range** of a *property term* is a formal specification of
 allowable *property values* for a *property* whose *property name* is
@@ -763,7 +888,8 @@ that *property term*.  The *range* *shall* be a *class name* or a
 *datatype name*.  
 
 {.note}  *Datatypes* provide a formal description of the values allowed
-in a particular context.  They are defined in §5 of this standard.
+in a particular context.  They are defined in {§datatypes} of this
+standard.
 
 When the *range* is a *class*, the *property value* *shall* be a *term*
 whose *type* is that *class*; when the *range* is a *datatype*, the
@@ -810,10 +936,10 @@ could be a standard boolean *datatype* like `xsd:boolean`.
 {/}
 
 {.note} This standard has already defined one *property term*, namely
-the `rdf:type` *property term* in §4.4.2.  The *type* of a *term* is the
+the `rdf:type` *property term* in {§type}.  The *type* of a *term* is the
 *class* which denotes the context in which it can be used.  Therefore
 the *range* of `rdf:type` is `rdfs:Class`, as shown in the *property*
-definition table in §4.4.2.
+definition table in {§type}.
 
 Standards which define *property terms* *should* specify their *range*,
 and *must* do so if third parties are permitted to define their own
@@ -821,9 +947,10 @@ and *must* do so if third parties are permitted to define their own
 parties document or otherwise make available the information represented
 by the *property term*.
 
-{.note} This is the same wording that is used in §4.4 to specify when a
-*property term* *must* be defined.  In circumstances where a *property
-term* *must* be defined, its *range* *must* also be defined.
+{.note} This is the same wording that is used in {§properties} to
+specify when a *property term* *must* be defined.  In circumstances
+where a *property term* *must* be defined, its *range* *must* also be
+defined.
 
 The *range* of a *property term* is itself a *property* which is 
 defined as follows:
@@ -836,17 +963,12 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
-{.ednote ...} The *range* of the `rdfs:range` *property* is defined as
-`rdfs:Class`, despite the fact that the *property value* of a
-`rdfs:range` *property* can be either a *class name* or a *datatype
-name*.  At an RDF level this is valid because 
-
-    rdfs:Datatype rdfs:subClassOf rdfs:Class .
-
-This standard does not currently have the notion of a subclass which
-makes this problematic.
-{/}
-
+{.note} The *range* of the `rdfs:range` *property* is defined above to
+be `rdfs:Class`, although the *property value* of an `rdfs:range`
+*property* can be either a *class name* or a *datatype name*.  This
+works because `rdfs:Datatype` is defined as a *subclass* of
+`rdfs:Class`, and therefore a *datatype name* can be used where a
+*class name* is required.
 
 {.ednote}  We may need to introduce the concepts of the
 **domain** of a *property term*, currently in our 
@@ -855,42 +977,18 @@ Careful consideration will be needed before the *domain* is introduced
 to ensure it does not cause forwards compatibility problems if new uses
 are found for the *property*.
 
-#### The type property
-
-{.note}  This section defines a *property term* to denote *type* of
-*subject*.  It is part of the infrastructure for defining extensions to
-FHISO standards or new, compatible standards, and is used by
-applications during *discovery*, support for which is *optional*.
-
-The *type* of a *term*, as introduced in §4.3, is a piece of information
-which *should* normally be provided, albeit often implicitly, when
-defining a *term*.  As such it needs a *property term* to represent it.
-This standard uses the `rdf:type` *term* for this purpose:
-
-: Property definition
-
-------           -----------------------------------------------
-Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
-
-{.note}  The `rdf:type` *property term* is defined §3.3 of [RDF Schema],
-however implementers may safely use this *property term* for the
-purposes of this standard without reading [RDF Schema].
-
 #### Required properties                               {#required-props}
 
-A *property* that *must* be provided when a third party defining a new
+A *property* which *must* be provided when a third party defining a new
 *term* with some particular *type* is called a **required property**.  
 
-{.example}  The notion of a *datatype* is defined in §5 of this
-standard, and is common to many FHISO standards.  *Datatypes* are
+{.example}  The notion of a *datatype* is defined in {§datatypes} of
+this standard, and is common to many FHISO standards.  *Datatypes* are
 identified by a *term* known as their *datatype name*, and any party
 defining a *datatype* for use with FHISO standards is *required* to
 specify its *pattern*, *supertype* if any, and whether it is an
 *abstract datatype*.  These pieces of information are specified via
-three *properties* called `types:pattern`, `types:subTypeOf` and
+three *properties* called `types:pattern`, `rdfs:subClassOf` and
 `types:isAbstract`.  These three *properties* are therefore the
 *required properties* for *datatypes*.  In fact, *datatypes* have a
 fourth *required property* which is their *type*: i.e. a statement that
@@ -916,11 +1014,37 @@ Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 names*, *classes* will normally have multiple `requiredProperty`
 *properties* each of whose value is a single *property name*.
 
-## Datatypes
+The *required properties* of a *class* *shall* include all the *required
+properties* of each *superclass* of the *class*.
 
-{.ednote}  The concepts related to *datatypes* were originally defined in
-the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
-section and its subsections has been moved here to be more generally usable. 
+{.note}  The `rdf:type` is a *required property* of `rdfs:Resource` and
+all *classes* are a *subclass* of `rdfs:Resource`, thus `rdf:type` is a
+*required property* of every *class*.
+
+The sole exception to the above is that `types:requiredProperty` is not
+itself a *required property* of the `rdfs:Datatype` *class*.
+
+{.note}  The `rdfs:Datatype` *class* is defined in {§datatypes} to be a
+*subclass* of `rdfs:Class`, and therefore would therefore ordinarily
+inherit all the *required properties* of `rdfs:Class`, including
+`types:requiredProperty`.  On a practical level, a *datatypes* do not
+need *required properties* because *terms* are never defined whose
+*type* is a *datatype*, and therefore the opportunity to specify the
+*properties* for such *terms* never arises.
+
+{.ednote}  Making an exception for `rdfs:Datatype` can also be justified
+due to the privileged position of `rdfs:Datatype` in the data model.  It
+is not normal to define *subclasses* of `rdfs:Class`, and the
+relationship between `rdfs:Datatype` and `rdfs:Class` is more nuanced
+than the former simply being a *subclass* of the latter.
+
+
+## Datatypes                                                {#datatypes}
+
+{.ednote}  The concepts related to *datatypes* were originally defined
+in the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.
+This section and its subsections has been moved here to be more
+generally usable. 
  
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
@@ -948,7 +1072,7 @@ RDF datatypes can be used as *datatypes* in this standard.
 {.example} XML Schema defines an integer type in §3.4.13 of
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] which is well-suited
 for use in this standard.  FHISO use this type where integer values
-occur.  It discussed in §5.5.3 of this standard.
+occur.  It discussed in {§integer} of this standard.
 
 The mapping from lexical representations to logical values need not be
 one-to-one.  If a *datatype* has multiple lexical representations of the
@@ -1002,11 +1126,32 @@ Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
+
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://www.w3.org/2000/01/rdf-schema#subClassOf`<br/>
                     `https://terms.fhiso.org/types/pattern`<br/>
-                    `https://terms.fhiso.org/types/subTypeOf`<br/>
                     `https://terms.fhiso.org/types/isAbstract`
 ------              -----------------------------------------------------------
+
+{.note}  The `rdfs:Datatype` *term* is defined in §2.4 of [RDF Schema].
+
+{.note  ...}  The *class* of *datatypes*, `rdfs:Datatype`, is defined here to
+be a *subclass* of the *class* of all *classes*, `rdfs:Class`.  This may
+appear counter-intuitive as new *classes* are normally defined to be a
+*subclass* only of `rdfs:Resource`, the *universal superclass*.  The
+reason for doing this is partly for compatibility with its definition in
+[RDF Schema], but the reasons [RDF Schema] took this unusual decision
+are also valid here.
+
+Making `rdfs:Datatype` a *subclass* of `rdfs:Class` says that a *datatype
+name* *may* be used where a *class name* is expected.  In many
+situations this is desirable.  For example, the *range* of a *property*
+is, in general, a *class name*, but frequently a *datatype name* will be
+used: for example, the *range* of `types:isAbstract` is the
+`xsd:boolean` *datatype*.  By making `rdfs:Datatype` a *subclass* of
+`rdfs:Class`, the *range* of `rdfs:range` can be `rdfs:Class`.
+{/}
 
 ### Patterns                                                 {#patterns}
 
@@ -1098,35 +1243,6 @@ as in the example of the date "`1999-02-31`".
 
 {.ednote}  This section needs an example.
 
-The *property term* representing the *supertype* of a *datatype* is
-defined as follows:
-
-: Property definition
-
-------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/subTypeOf`
-Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
-------           -----------------------------------------------
-
-{.ednote ...}  An alternative option is to use the `rdfs:subClassOf`
-*property term*, however it is anticipated that it will be desirable to have
-a *property term* whose *domain* is exactly `rdfs:Datatype`.  The
-*domain* of `rdfs:subClassOf` is `rdfs:Class`; nevertheless, it is
-possible to apply `rdfs:subClassOf` to *datatypes* because
-
-    rdfs:Datatype rdfs:subClassOf rdfs:Class .
-
-In order to make our `subTypeOf` *property term* accessible to RDF
-reasoners, we should document that
-
-    </types/subTypeOf> rdfs:subPropertyOf rdfs:subClassOf .
-
-We will need a way of explicitly saying that a *datatype* has no
-*supertype*.  In RDF, all *datatypes* are subtypes of `rdfs:Literal`,
-so this *datatype* can be used as a special value to signify that.
-{/}
-
 {.note} The concept of a *subtype* in this standard corresponds to
 XML Schema's concept of derivation of a simple type by restriction per
 §3.16 of &#x5B;[XSD Pt1](https://www.w3.org/TR/xmlschema11-1/)].  XML
@@ -1135,6 +1251,62 @@ an *abstract datatype*, as in XML Schema only complex types can be
 abstract.  If it is desirable to describe a FHISO *abstract datatype* in
 XML Schema, it should be defined as a normal simple type, with the
 information that it is abstract conveyed by another means. 
+
+This standard reuses the `rdfs:subClassOf` *property* to represent the
+*supertype* of a *datatype*.
+
+{.note}  This *property* was introduced in {§subclasses} to represent
+the *superclass* of a *class*.  This reuse is possible because
+`rdfs:Datatype` is a *subclass* of `rdfs:Class`, and therefore a
+*datatype name* can be used where a *class name* is expected.
+
+{.ednote}  An earlier unpublished draft of this standard introduced a
+new `types:subTypeOf` *property* to represent the *supertype* of a
+*datatype*.  It was removed when the last remaining difference between
+it and `rdfs:subClassOf` was removed, that difference being that it had
+a *range* of `rdfs:Datatype` instead of `rdfs:Class`.   This proved
+problematic because, for somewhat arcane reasons, `rdfs:Literal` is a
+*class* not a *datatype*, and it is the closest things that exists in
+RDF to a universal supertype.
+
+This is a *required property* of *datatypes*, meaning it *must* be
+specified when a *datatype* is defined, however not all *datatypes* have
+a *supertype*.   This standard uses the `rdfs:Literal` *term* as a
+special value to denote the absence of a *supertype*.  
+
+Formally, `rdfs:Literal` is a *class* defined as below.
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Literal`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+------              -----------------------------------------------------------
+
+{.note}  The `rdfs:Literal` *class* is defined in §2.3 of [RDF Schema], 
+however implementers may safely use this *term* as described above
+without reading [RDF Schema].  The decision to use this RDF *term* in
+FHISO's standards rather than invent a new *term* allows for greater
+compatibility with existing third-party vocabularies.
+
+
+Every *datatype* is a *subclass* of `rdfs:Literal`.
+
+{.note}  `rdfs:Literal` is not the *supertype* of any *datatype* because
+it is not a *datatype*.  This is because it does not have a *lexical
+space*, and therefore it is not possible to create a *string* with this
+*datatype*.  Despite not being a *datatype*, the role of this *class* is
+similar to that of an ultimate *supertype* of all *datatypes*.
+
+{.ednote}  `rdfs:Literal` could equally have been defined to be an
+*abstract unstructured datatype*, but [RDF Schema] did not do so because
+it lacks the notion of an *abstract datatype*.  FHISO have chosen to
+retain this rather than introducing an incompatibility with RDF.
 
 ### Abstract datatypes                                 {#abstract-types}
 
@@ -1167,7 +1339,7 @@ at all?  They were introduced to allow an `AbstractDate` *datatype*, but
 is it necessary for this datatype to be an *abstract datatype*?
 
 
-### Language-tagged datatypes
+### Language-tagged datatypes                              {#lang-types}
 
 A **language-tagged datatype** is a *datatype* whose values are
 *language-tagged strings* consisting of both a *string* from the
@@ -1234,7 +1406,7 @@ names can be translated and transliterated.
 *Subtypes* may be defined of *language-tagged datatypes* as well as of
 other *datatypes*.  If the *supertype* is a *language-tagged datatype*
 then the *subtype* *must* also be; and if the *supertype* is not a
-*language-tagged datatype* then the *subtype* *must not* be.
+*language-tagged datatype* then the *subtype* *must not* be.  
 
 ### Standard datatypes
 
@@ -1247,7 +1419,7 @@ following subsections.
 {.note ...} XML Schema does not give its types IRIs, but it does give
 them `id`s, and following the best practice advice given in §2.3 of 
 &#x5B;[SWBP XSD DT](https://www.w3.org/TR/swbp-xsch-datatypes/)]
-gives it them IRIs like this:
+gives them IRIs like this:
 
     http://www.w3.org/2001/XMLSchema#integer
 
@@ -1279,7 +1451,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#string`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *none*
+Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1325,7 +1497,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#boolean`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `true|false|1|0`
-Supertype        *none*
+Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1354,7 +1526,7 @@ present in translated form.  A Romanian dataset, for example, would
 still use the value "`false`" rather than translating it as
 "`adevărat`".
 
-#### The `xsd:integer` datatype
+#### The `xsd:integer` datatype                               {#integer}
 
 FHISO uses the `xsd:integer` *datatype* defined in §3.4.13 of 
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent
@@ -1410,7 +1582,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `[+-]?[0-9]+`
-Supertype        *none*
+Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1441,10 +1613,10 @@ Any *language-tagged datatype* that is not defined to be a *subtype* of
 some other *datatype* *shall* implicitly be considered to be a *subtype*
 of the `rdf:langString` *datatype*.
 
-{.note}  Together with the requirement in §5.4 that *language-tagged
-datatypes* *must not* be *subtypes* of *non-language-tagged datatypes*,
-this ensures that `rdf:langString` is the ultimate *supertype* of all
-*language-tagged datatypes*.
+{.note}  Together with the requirement in {§lang-types} that
+*language-tagged datatypes* *must not* be *subtypes* of
+*non-language-tagged datatypes*, this ensures that `rdf:langString` is
+the ultimate *supertype* of all *language-tagged datatypes*.
 
 This *datatype* has the following properties:
 
@@ -1454,7 +1626,7 @@ This *datatype* has the following properties:
 Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *none*
+Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1648,7 +1820,7 @@ standard.  At present there is no compelling need for such a
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
 
 ----
-Copyright © 2017, [Family History Information Standards Organisation,
+Copyright © 2017–18, [Family History Information Standards Organisation,
 Inc](https://fhiso.org/).  
 The text of this standard is available under the
 [Creative Commons Attribution 4.0 International

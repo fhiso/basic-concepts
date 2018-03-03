@@ -9,40 +9,46 @@
 # These triples are all true, either axiomatically or by entailment,
 # according to [RDF 1.1 Semantics].
 
-# §4.3
-rdfs:Class
-	rdf:type rdfs:Class ;
-	types:requiredProperty rdf:type, types:requiredProperty .
-
-# §4.4
-rdf:Property
-	rdf:type rdfs:Class ;
-	types:requiredProperty rdf:type, rdfs:range .
-
-# §4.4.1
-rdfs:range
-	rdf:type rdf:Property ;
-	rdfs:range rdfs:Class .
-
-# §4.4.2
 rdf:type
 	rdf:type rdf:Property ;
 	rdfs:range rdf:Class .
 
-# §4.4.3
+rdfs:Class
+	rdf:type rdfs:Class ;
+	rdfs:subClassOf rdfs:Resource ;
+	types:requiredProperty
+		rdf:type, rdfs:subClassOf, types:requiredProperty .
+
+rdfs:subClassOf
+	rdf:type rdf:Property ;
+	rdfs:range rdf:Class .
+
+rdfs:Resource
+	rdf:type rdf:Class ;
+	rdfs:subClassOf rdfs:Resource ;
+	types:requiredProperty rdf:type .
+
+rdf:Property
+	rdf:type rdfs:Class ;
+	rdfs:subClassOf rdfs:Resource ;
+	types:requiredProperty rdf:type, rdfs:range .
+
+rdfs:range
+	rdf:type rdf:Property ;
+	rdfs:range rdfs:Class .
+
 types:requiredProperty
 	rdf:type rdf:Property ;
 	rdfs:range rdf:Property ;
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#required-props> .
 
-# §5
 rdfs:Datatype
 	rdf:type rdfs:Class ;
-	types:requiredProperty rdf:type, types:pattern, 
-		types:subTypeOf, types:isAbstract .
+	rdfs:subClassOf rdfs:Class ;
+	types:requiredProperty rdf:type, rdfs:subClassOf, 
+                types:pattern, types:isAbstract .
 
-# §5.1
 types:pattern
 	rdf:type rdf:Property ;
 	rdf:range types:Pattern ;
@@ -52,51 +58,45 @@ types:pattern
 # TODO: this will be defined externally
 types:Pattern
 	rdf:type rdfs:Datatype ;
+	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
-	types:subTypeOf rdf:Resource ;    # TODO 
 	types:isAbstract false ;
 	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#patterns> . # TODO
+		<https://fhiso.org/TR/basic-concepts#patterns> .
 
-# §5.2
-types:subTypeOf
-	rdf:type rdf:Property ;
-	rdf:range rdfs:Datatype ;
-	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#subtypes> .
+rdfs:Literal
+	rdf:type rdfs:Class ;
+	rdfs:subClassOf rdfs:Resource ;
+	types:requiredProperty rdf:type .
 
-# §5.3
 types:isAbstract
 	rdf:type rdf:Property ;
 	rdf:range xsd:boolean ;
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#abstract-types> .
 
-# §5.5.1
 xsd:string
 	rdf:type rdfs:Datatype ;
+	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
-	types:subTypeOf rdf:Resource ;    # TODO 
 	types:isAbstract false .
 
-# §5.5.2
 xsd:boolean
 	rdf:type rdfs:Datatype ;
+	rdfs:subClassOf rdfs:Literal ;
 	types:pattern "true|false|1|0" ;
-	types:subTypeOf rdf:Resource ;    # TODO 
 	types:isAbstract false .
 
-# §5.5.3
 xsd:integer
 	rdf:type rdfs:Datatype ;
+	rdfs:subClassOf rdfs:Literal ;
 	types:pattern "[+-]?[0-9]+" ;
-	types:subTypeOf rdf:Resource ;    # TODO 
 	types:isAbstract false .
 
-# §5.5.4
 rdf:langString
 	rdf:type rdfs:Datatype ;
+	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
-	types:subTypeOf rdf:Resource ;    # TODO 
 	types:isAbstract false .
+
 
