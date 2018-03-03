@@ -1633,7 +1633,7 @@ Abstract         `false`
 {.note} Although this type is formally defined in the RDF Schema
 specification, this standard requires no knowledge of RDF; an
 implementer may safely use this *datatype* using just the information
-given in this section, and without reading [RDFS].
+given in this section, and without reading [RDF Schema].
 
 {.ednote} This standard does not specify a comparable *datatype*
 which acts as the ultimate *supertype* of all *non-language-tagged
@@ -1776,6 +1776,11 @@ standard.  At present there is no compelling need for such a
 :   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
     Dan Brickley and R.&nbsp;V. Guha, eds., 2014.
     W3C Recommendation.  (See <https://www.w3.org/TR/rdf-schema>.)
+
+[RFC 4122]
+:   IETF (Internet Engineering Task Force).  *A Universally Unique
+    IDentifier (UUID) URN Namespace*.  P. Leach, M. Mealling and R.
+    Salz, ed., 2005.  (See <https://tools.ietf.org/html/rfc4122>.)
 
 [RFC 4648]
 :   IETF (Internet Engineering Task Force).  *RFC 4648:  The Base16,
