@@ -1,11 +1,11 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 3 March 2018
+date: 10 March 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
 
-{.ednote ...} This is an **exploratory draft** of a standard covering 
+{.ednote ...} This is a **first public draft** of a standard covering 
 basic concepts that are expected to be used in multiple FHISO standards.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
@@ -652,7 +652,6 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://www.w3.org/2000/01/rdf-schema#subClassOf`<br/>
                     `http://terms.fhiso.org/types/requiredProperty`
 ------              -----------------------------------------------------------
 
@@ -763,8 +762,6 @@ defined to be the *superclass* of all *classes*.
 Name                `http://www.w3.org/2000/01/rdf-schema#Resource`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
-
-Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
@@ -988,7 +985,7 @@ identified by a *term* known as their *datatype name*, and any party
 defining a *datatype* for use with FHISO standards is *required* to
 specify its *pattern*, *supertype* if any, and whether it is an
 *abstract datatype*.  These pieces of information are specified via
-three *properties* called `types:pattern`, `rdfs:subClassOf` and
+three *properties* called `types:pattern`, `types:subTypeOf` and
 `types:isAbstract`.  These three *properties* are therefore the
 *required properties* for *datatypes*.  In fact, *datatypes* have a
 fourth *required property* which is their *type*: i.e. a statement that
@@ -1030,7 +1027,9 @@ inherit all the *required properties* of `rdfs:Class`, including
 `types:requiredProperty`.  On a practical level, a *datatypes* do not
 need *required properties* because *terms* are never defined whose
 *type* is a *datatype*, and therefore the opportunity to specify the
-*properties* for such *terms* never arises.
+*properties* for such *terms* never arises.  Thus this *standard* does
+not require `xsd:integer`, for example, to list a set of *required
+properties*.
 
 {.ednote}  Making an exception for `rdfs:Datatype` can also be justified
 due to the privileged position of `rdfs:Datatype` in the data model.  It
@@ -1129,8 +1128,8 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://www.w3.org/2000/01/rdf-schema#subClassOf`<br/>
                     `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/subTypeOf`<br/>
                     `https://terms.fhiso.org/types/isAbstract`
 ------              -----------------------------------------------------------
 
@@ -1234,7 +1233,7 @@ the *supertype* does.  Because the *lexical space* of the *subtype*
 might be done if additional restrictions made on *lexical space* of the
 *subtype* cannot readily be expressed using a regular expression.
 
-{.note}  It is only the *lexical space* of the *subtype* that is
+{.note}  It is the *lexical space* of the *subtype* that is
 required to be a subset of the *lexical space* of the *supertype*.  The
 set of *strings* that match the *pattern* of the *subtype* might not
 necessarily be a subset of that of the *supertype*.  This is because the
@@ -1252,61 +1251,36 @@ abstract.  If it is desirable to describe a FHISO *abstract datatype* in
 XML Schema, it should be defined as a normal simple type, with the
 information that it is abstract conveyed by another means. 
 
-This standard reuses the `rdfs:subClassOf` *property* to represent the
-*supertype* of a *datatype*.
+The *property term* representing the *supertype* of a *datatype* is
+defined as follows:
 
-{.note}  This *property* was introduced in {§subclasses} to represent
-the *superclass* of a *class*.  This reuse is possible because
-`rdfs:Datatype` is a *subclass* of `rdfs:Class`, and therefore a
-*datatype name* can be used where a *class name* is expected.
+: Property definition
 
-{.ednote}  An earlier unpublished draft of this standard introduced a
-new `types:subTypeOf` *property* to represent the *supertype* of a
-*datatype*.  It was removed when the last remaining difference between
-it and `rdfs:subClassOf` was removed, that difference being that it had
-a *range* of `rdfs:Datatype` instead of `rdfs:Class`.   This proved
-problematic because, for somewhat arcane reasons, `rdfs:Literal` is a
-*class* not a *datatype*, and it is the closest things that exists in
-RDF to a universal supertype.
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/subTypeOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
 
-This is a *required property* of *datatypes*, meaning it *must* be
-specified when a *datatype* is defined, however not all *datatypes* have
-a *supertype*.   This standard uses the `rdfs:Literal` *term* as a
-special value to denote the absence of a *supertype*.  
+{.ednote}  An earlier unpublished draft of this standard reused the
+`rdfs:subClassOf` *property* to represent the *supertype* of a
+*datatype*.  This introduced a fairly obscure incompatibility with RDF.
+RDF only requires that the value space of a *subtype* is a subset of the
+value space of the *supertype*: it says nothing about their *lexical
+spaces*.  Thus in RDF it would be possible for `xsd:boolean` to be a
+*subclass* of `xsd:integer` if the boolean values "true" and "false" are
+considered to be identical to the integer values 1 and 0, respectively
+(though in fact they're not).  This is despite the *strings* "`true`"
+and "`false`" being part of *lexical space* of `xsd:boolean` but not of
+`xsd:integer`.  This means a stronger relationship is needed which
+constrains both the *lexical space* and the *value space*.  This is what
+`types:subTypeOf` provides.  This standard explicitly does not state
+whether `types:subTypeOf` is an `rdfs:subPropertyOf` `rdfs:subClassOf`.
 
-Formally, `rdfs:Literal` is a *class* defined as below.
-
-: Class definition
-
-------              -----------------------------------------------------------
-Name                `http://www.w3.org/2000/01/rdf-schema#Literal`
-
-Type                `http://www.w3.org/2000/01/rdf-schema#Class`
-
-Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
-
-Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-------              -----------------------------------------------------------
-
-{.note}  The `rdfs:Literal` *class* is defined in §2.3 of [RDF Schema], 
-however implementers may safely use this *term* as described above
-without reading [RDF Schema].  The decision to use this RDF *term* in
-FHISO's standards rather than invent a new *term* allows for greater
-compatibility with existing third-party vocabularies.
-
-
-Every *datatype* is a *subclass* of `rdfs:Literal`.
-
-{.note}  `rdfs:Literal` is not the *supertype* of any *datatype* because
-it is not a *datatype*.  This is because it does not have a *lexical
-space*, and therefore it is not possible to create a *string* with this
-*datatype*.  Despite not being a *datatype*, the role of this *class* is
-similar to that of an ultimate *supertype* of all *datatypes*.
-
-{.ednote}  `rdfs:Literal` could equally have been defined to be an
-*abstract unstructured datatype*, but [RDF Schema] did not do so because
-it lacks the notion of an *abstract datatype*.  FHISO have chosen to
-retain this rather than introducing an incompatibility with RDF.
+*Datatypes* which are not explicitly defined as *subtypes* of some other
+*datatype* are implicitly defined to be *subtypes* of one of 
+`rdf:langString` or `xsd:anyAtomicType`, as defined in {§langString} and
+{§anyAtomicType}, respectively.
 
 ### Abstract datatypes                                 {#abstract-types}
 
@@ -1408,6 +1382,13 @@ other *datatypes*.  If the *supertype* is a *language-tagged datatype*
 then the *subtype* *must* also be; and if the *supertype* is not a
 *language-tagged datatype* then the *subtype* *must not* be.  
 
+This standard does not provide a *property* denoting whether or not a
+*datatype* is a *language-tagged datatype*.  Instead, this information
+is conveyed using the `types:subTypeOf` *property*.  *Language-tagged
+datatypes* *shall* include the `rdf:langString` *datatype* defined in
+§6.5.4 as a *supertype*, while *non-language-tagged datatypes* *shall*
+include the `xsd:anyAtomicType` *datatype* as a *supertype*.
+
 ### Standard datatypes
 
 This standard recommends the use of the `xsd:string`, `xsd:boolean` and
@@ -1451,7 +1432,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#string`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
+Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1497,7 +1478,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#boolean`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `true|false|1|0`
-Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
+Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1582,7 +1563,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `[+-]?[0-9]+`
-Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
+Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1601,7 +1582,7 @@ always to fit in these fixed sized *datatypes*.
 {.ednote}  This draft does not include specific guidance on the use of
 `xsd:positiveInteger` and `xsd:nonNegativeInteger`.
 
-#### The `rdf:langString` datatype
+#### The `rdf:langString` datatype                         {#langString}
 
 The `rdf:langString` *datatype* defined in §2.5 of [RDFS] is used as the
 general-purpose *unstructured language-tagged datatype*.  No constraints
@@ -1626,7 +1607,6 @@ This *datatype* has the following properties:
 Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        `http://www.w3.org/2000/01/rdf-schema#Literal`
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1635,14 +1615,42 @@ specification, this standard requires no knowledge of RDF; an
 implementer may safely use this *datatype* using just the information
 given in this section, and without reading [RDF Schema].
 
-{.ednote} This standard does not specify a comparable *datatype*
-which acts as the ultimate *supertype* of all *non-language-tagged
-datatypes*, nor of all *datatypes*.  Possibly one or more of the
-`rdfs:Resource`, `rdfs:Literal`, `xsd:anyType`, `xsd:anySimpleType` and
-`xsd:anyAtomicType` would serve, but this needs careful consideration of
-the differences between *datatypes* in XML Schema, RDF and this
-standard.  At present there is no compelling need for such a
-*supertype*.
+#### The `xsd:anyAtomicType` datatype                   {#anyAtomicType}
+
+The `xsd:anyAtomicType` *datatype* defined in defined §3.2.2 of
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] is used as the
+ultimate *supertype* of all *non-language-tagged datatypes*.
+
+This *datatype* has the following properties:
+
+: Datatype definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Type                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern             `.*`
+Abstract            `true`
+------              -----------------------------------------------------------
+
+{.note}  The `xsd:anyAtomicType` *datatype* is defined §3.2.2 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].  That standard
+does not define it as an *abstract datatype* as XML Schema's notion of
+abstract types does not extend to simple types.  Neverthless,
+`xsd:anyAtomicType` is treated specially by XML Schema in a way that
+is similar to this standard's definition of an *abstract datatype*.  It
+is also not considered an "RDF-compatible XSD type" in §5.1 of 
+[RDF Concepts] which means it *should not* be used as a *datatype* in
+RDF; again, this is similar to this standard's notion of an *abstract
+datatype*.
+
+Any *non-language-tagged datatype* not defined to be a *subtype* of
+any other *datatype* *shall* implicitly be considered to be a *subtype*
+of the `xsd:anyAtomicType` *datatype*.
+
+{.ednote}  In RDF, `xsd:anyAtomicType` is a *subclass* of
+`rdfs:Literal`.  So is `rdf:langString`.  This standard does not
+explicitly say this as FHISO's data model currently has no need for the
+`rdfs:Literal` *class*.
 
 ## References
 
@@ -1691,7 +1699,7 @@ standard.  At present there is no compelling need for such a
 
 [Triples Discovery]
 :   FHISO (Family History Information Standards Organisation).
-    *Simple Triples Discovery Mechanism*.  Exploratory draft.
+    *Simple Triples Discovery Mechanism*.  First public draft.
 
 [UAX 15]
 :   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
