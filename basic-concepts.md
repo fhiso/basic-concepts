@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 10 March 2018
+date: 11 March 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -1391,11 +1391,11 @@ include the `xsd:anyAtomicType` *datatype* as a *supertype*.
 
 ### Standard datatypes
 
-This standard recommends the use of the `xsd:string`, `xsd:boolean` and
-`xsd:integer` *datatypes* defined in &#x5B;[XSD
+This standard recommends the use of the `xsd:string`, `xsd:boolean`,
+`xsd:integer` and `xsd:anyURI` *datatypes* defined in &#x5B;[XSD
 Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent *strings*,
-*booleans* and *integers*, respectively.  They are described in the
-following subsections.
+*booleans*, *integers* and IRIs, respectively.  They are described in
+the following subsections.
 
 {.note ...} XML Schema does not give its types IRIs, but it does give
 them `id`s, and following the best practice advice given in §2.3 of 
@@ -1581,6 +1581,40 @@ always to fit in these fixed sized *datatypes*.
 
 {.ednote}  This draft does not include specific guidance on the use of
 `xsd:positiveInteger` and `xsd:nonNegativeInteger`.
+
+#### The `xsd:anyURI` datatype                                 {#anyURI}
+
+FHISO uses the `xsd:anyURI` *datatype* defined in §3.3.17 of
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent
+*strings* which are valid IRIs.
+
+{.note} Despite the name of this *datatype* it is used to represent any
+IRI, not just those which are valid URIs.  This misleading naming arose
+because XML Schema 1.0 did restrict the *datatype* to just URIs as IRIs
+were yet to be standardised.  XML Schema 1.1 broadened the definition to
+include IRIs and FHISO uses this broader definition of the *datatype*.
+
+Formally this is an *unstructured datatype* with no restrictions imposed
+on its *lexical space*; nevertheless, this *datatype* *should* only be
+used with *strings* which match the `IRI-reference` production in §2.2
+of &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)] which matches
+both absolute and relative IRIs.
+
+{.note} FHISO are following the definition in §3.3.17 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] in making this an
+*unstructured type*.  XML Schema does this because the rules for
+validating an IRI are complex, subject to frequent updates, and
+dependent on IRI scheme.
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#anyURI`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Abstract         `false`
+------           -----------------------------------------------
 
 #### The `rdf:langString` datatype                         {#langString}
 
