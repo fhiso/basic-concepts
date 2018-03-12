@@ -346,11 +346,15 @@ that it represents.  *Term names* *shall* take the form of an IRI
 matching the `IRI` production in §2.2 of
 &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
 
-{.example} This standard uses *terms* to name *datatypes*, as defined in
-{§datatypes} of this standard, and also for *classes* and *properties*,
-defined in {§classes} and {§properties}.
+{.example ...} This standard uses *terms* to name *datatypes*, as defined in
+{§datatypes} of this standard, and also to name *classes* and *properties*,
+defined in {§classes} and {§properties}.   For example, {§integer} of
+this standard defines a *datatype* for representing integers.  This
+*datatype* is identified by a *term* whose *term name* in *prefix*
+notation is `xsd:integer`.  This is short for the following IRI:
 
-{.ednote}  Give an actual example, e.g. `xsd:integer`.
+    http://www.w3.org/2001/XMLSchema#integer
+{/}
 
 {.note} IRIs have been chosen in preference to URIs because it is
 recognised that certain culture-specific genealogical concepts may not
@@ -1285,7 +1289,13 @@ necessarily be a subset of that of the *supertype*.  This is because the
 *pattern* is permitted to match *strings* outside the *lexical space*,
 as in the example of the date "`1999-02-31`".
 
-{.ednote}  This section needs an example.
+{.ednote}  This section needs an example, but not one involving
+*language-tagged datatypes* as they have yet to be defined.  Currently
+the only uses of *subtypes* as with *language-tagged datatypes*, or
+involve the rather arcane ultimate *supertypes*, `xsd:anyAtomicType`.  
+It is anticipated that dates will provide a good example, as we expect
+to need several *subtypes* of `AbstractDate`, but FHISO has yet to
+specify how dates are handled in this data model.
 
 {.note} The concept of a *subtype* in this standard corresponds to
 XML Schema's concept of derivation of a simple type by restriction per
