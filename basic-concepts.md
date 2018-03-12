@@ -1713,7 +1713,7 @@ given in this section, and without reading [RDF Schema].
 
 The `xsd:anyAtomicType` *datatype* defined in defined §3.2.2 of
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] is used as the
-ultimate *supertype* of all *non-language-tagged datatypes*.
+**ultimate supertype** of all *datatypes*.
 
 This *datatype* has the following properties:
 
