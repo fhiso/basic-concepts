@@ -1,11 +1,11 @@
 ---
 title: Simple Triples Discovery Mechanism
-date: 17 October 2017
+date: 12 March 2018
 numbersections: true
 ...
 # Simple Triples Discovery Mechanism
 
-{.ednote ...} This is an **exploratory draft** of a standard defining a
+{.ednote ...} This is an **first public draft** of a standard defining a
 simple, general-purpose discovery mechanism.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
@@ -22,10 +22,10 @@ or if data conforming to other standards is present.
 In *Triples Discovery*, an application makes an HTTP request to the
 *term name* IRI with an `Accept` header requesting a response in the 
 N-Triples format.  The details of these HTTP requests and their
-responses are given in §2.  The N-Triples format is described in §3; it
-is extremely simple to parse, and is supported in various libraries by
-virtue of being a small subset of the more popular Turtle serialisation
-format.  
+responses are given in {§http}.  The N-Triples format is described in
+{§syntax}; it is extremely simple to parse, and is supported in various
+libraries by virtue of being a small subset of the more popular Turtle
+serialisation format.  
 
 ## Conventions used
 
@@ -63,9 +63,13 @@ Standards** standard.  To be *conformant* with this standard, an
 application *must* also be *conformant* with [Basic Concepts].  Concepts
 defined in that standard are used here without further definition.
 
-{.note} In particular, precise meaning of *string*, *language tag*,
-*term*, *discovery*, *class*, *class name*, *type*, *property*,
-*property name* and *datatype* are given in [Basic Concepts].
+{.note} In particular, precise definitions of *character*, *string*,
+*whitespace*, *language-tagged string*, *term*, *term name*,
+*discovery*, *namespace*, *namespace name*, *prefix notation*, *prefix*,
+*class*, *class name*, *type*, *property*, *property name*, *property
+value*, *property term*, *range*, *required property*, *datatype*,
+*datatype name*, *subtype*, *abstract datatype* and *language-tagged
+datatype* are given in [Basic Concepts].
 
 Indented text in grey or coloured boxes does not form a normative part
 of this standard, and is labelled as either an example or a note.  
@@ -99,16 +103,18 @@ The following *prefix* bindings are assumed in this standard:
 `rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
 `xsd`            `http://www.w3.org/2001/XMLSchema#`
 `types`          `https://terms.fhiso.org/types/`
+`cev`            `https://terms.fhiso.org/sources/`
 ------           -----------------------------------------------
 
 {.note}  The particular *prefix* assigned above have no relevance
 outside this standard document as *prefix notation* is not used in the
 formal data model defined by this standard.  This notation is simply a
-notational convenience to make the standard easier to read.
+notational convenience to make the standard easier to read.  The `cev`
+prefix is only used in examples.
 
-## HTTP requests and responses
+## HTTP requests and responses                                   {#http}
 
-*Discovery* is defined in §4.2 of [Basic Concepts] being when an HTTP
+*Discovery* is defined in §4.1 of [Basic Concepts] as being when an HTTP
 request to the *term name* IRI, made with an appropriate `Accept`
 header, results in a particular machine-readable format.  This section
 defines how those HTTP requests and responses are made in *Triples
@@ -136,13 +142,13 @@ The `GET` request *should* have an `Accept` header that is well-formed
 according to §5.3.2 of [RFC 7231], and which references the N-Triples
 media type, "`application/n-triples`".  The request's `Accept` header
 *may* alternatively or additionally reference the media types of one of
-the alternative RDF formats described in §3.3 of this standard, but
-*conformant* servers need not support support those formats.
+the alternative RDF formats described in {§other-fmts} of this standard,
+but *conformant* servers need not support support those formats.
 
-If the *discovery IRI* is not one of the cases listed in §4, and is not
-an IRI used for another purpose, it is *recommended* that servers issue a
-404 "Not Found" response.  Applications *must not* consider a 404 to
-mean the *term* is invalid.
+If the *discovery IRI* is not one of the cases listed in
+{§required-triples}, and is not an IRI used for another purpose, it is
+*recommended* that servers issue a 404 "Not Found" response.
+Applications *must not* consider a 404 to mean the *term* is invalid.
 
 {.note}  As it is only *recommended* and not *required* that parties
 defining new *terms* make information available online at the *term
@@ -159,14 +165,15 @@ of this standard, to select the media type of the resource that will be
 served.   If the server supports none of the listed media types, it
 *should* send a 406 "Not Acceptable" response; otherwise, if the selected
 media type is the N-Triples media type or a supported alternative type
-from §3.3, and the *discovery IRI* is one of the cases listed in §4,
-the server *should* continue with *Triples Discovery* as outlined here.
-If the `Accept` header was precisely "`application/n-triples`" then a
-*conformant* server *must* continue with *Triples Discovery*.
+from {§other-fmts}, and the *discovery IRI* is one of the cases listed
+in {§required-triples}, the server *should* continue with *Triples
+Discovery* as outlined here.  If the `Accept` header was precisely
+"`application/n-triples`" then a *conformant* server *must* continue
+with *Triples Discovery*.
 
-{.note}  It is only *recommended* that parties defining new *terms* do
-arrange for HTTP content negotiation to be performed properly as
-described above and in [RFC 7231], but not *required* by this standard.
+{.note}  It is only *recommended* and not *required* that parties
+defining new *terms* arrange for HTTP content negotiation to be
+performed properly as described above and in [RFC 7231].
 The reason for this is that some popular web servers do not make
 necessary configuration straightforward, and much of the published
 advice on the subject is to use basic pattern matching on `Accept`
@@ -200,12 +207,13 @@ while incorrect, is still *conformant* with this standard.
 {/}
 
 Except when the *discovery IRI* is a *namespace name* as defined in
-§4.**XXX**, a *conformant* server *shall* issue a redirect to a
+§4.2 of [Basic Concepts], a *conformant* server *shall* issue an HTTP
+redirect response with a `Location` header which contains the URL of a
 resource containing a description of the *discovery* *term* in the
-selected format.  This redirect *should* be a 303 "See Other"
-redirect, and *must not* be a 301 "Moved Permanently".  If the
-*discovery IRI* is a *namespace name*, a redirect *may* be produced but
-is not *required*.  
+selected format.  This redirect *should* use a 303 "See Other" redirect,
+and *must not* be a permanent redirect such as a 301 "Moved
+Permanently".  If the *discovery IRI* is a *namespace name*, a redirect
+*may* be produced but is not *required*.  
 
 {.note}  A redirect is *required* when the *discovery IRI* is a
 *term name* to avoid confusing the *term name* with the document
@@ -270,7 +278,8 @@ containing information about the `Baptism` *term*.
     
     <https://example.com/events/Baptism> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.com/types/Event> .
 
-The meaning of the N-Triples in the request body is described in §3.
+The meaning of the N-Triples in the request body is described in
+{§syntax}.
 {/}
 
 *Conformant* servers *may* issue additional redirects during the
@@ -285,33 +294,34 @@ additional HTTP features.
 
 {.example}  Conditional HTTP requests per [RFC 7232] are an example of a
 feature that the operators of *conformant* servers *may* opt to support.
-Applications *may* choose to repeat *discovery* on certain *terms* after
+Applications *may* repeat *discovery* on certain *terms* after
 some time has elapsed, and include an `If-Modified-Since` header in
-the request.  A server that has chosen to support conditional requests
-would respond with a 304 "Not Modifed" if the results of *discovery*
-have not changed.  If the results have changed, if the server cannot
+the request.  A server that has opted to support conditional requests
+would respond with a 304 "Not Modified" if the results of *discovery*
+have not changed.  If the results have changed, or if the server cannot
 determine whether they have changed, or if the server does not support
 conditional requests of this form, it would produce a 200 "OK" response
 containing triples describing the *term*.
 
 
-
-
-## N-Triples syntax
+## N-Triples syntax                                            {#syntax}
 
 N-Triples is a line-based format.  Each non-empty line contains a
 **triple**, which is a sequence of three elements separated by
-whitespace, and ending with a "`.`" (U+002E).  In the simplest case,
+*whitespace*, and ending with a "`.`" (U+002E).  In the simplest case,
 each of the three elements is a *term* written as an absolute IRI
 enclosed in "`<`" and "`>`" (U+003C and U+003E).  These three elements are
 known as the **subject**, **predicate** and **object** of the *triple*,
 and are used in this *discovery* mechanism to record the *properties* of
-a *term*.   The *subject* of the *triple* *shall* be the *subject* of the
+a *term*.   
+
+The *subject* of the *triple* *shall* be the *subject* of the
 *property*: that is, the *term* being described.   The *predicate*
 *shall* be the *property name* of the *property*, and the *object*
 *shall* be its *property value*.
 
-{.example ...}  The following is one *triple* in the N-Triples format:
+{.example ...}  The following is one *triple* in the N-Triples format,
+which is a *type triple*:
 
     <https://example.com/types/Date> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
 
@@ -327,25 +337,66 @@ of its `rdf:type` *property* is `rdfs:Datatype`: i.e. that this `Date`
 *term* is a *datatype*.
 {/}
 
-The details of this syntax are defined in the [N-Triples] standard.  A
-*conformant* application *may* choose only to support the canonical form
-of N-Triples define in §4 of [N-Triples], but are *recommended* to
-support the full N-Triples syntax.   *Conformant* servers *must* produce
-N-Triples in canonical form.
+If the *predicate* is `rdf:type` the *triple* is known as a **type
+triple**.
 
-{.note ...}  Canonical N-Triples is a form of N-Triples which does not
+{.note} *Type triples* are used in *Triples Discovery* as a minimal way
+of noting the existence of a *term*.
+
+The details of this syntax are defined in the [N-Triples] standard, and
+a *triple* must match the `triple` grammar production given in §7 of
+[N-Triples].  
+
+*Conformant* servers *must* produce N-Triples in the canonical form of
+N-Triples defined in §4 of [N-Triples].  A *conformant* application
+*must* support the canonical form of N-Triples, and *may* support more
+of the full syntax of N-Triples.  If a *conformant* application
+encounters an N-Triples file using unsupported features, it *may*
+discard the whole file or *may* discard the *triple* containing the
+feature.
+
+{.note}  Canonical N-Triples is a form of N-Triples which does not
 allow arbitrary *whitespace*, comments or certain escape constructs.
 This results in a further simplification to the parsing of N-Triples by
-removing alternative ways of serialisation the same triple.
+removing alternative ways of serialisation the same triple.  It is
+relatively rare to encounter N-Triples data which is not in its
+canonical form.
 
-This standard prefers Canonical N-Triples in part because the precise
-details of *whitespace* handling is underspecified in the full N-Triples
-syntax.  This is the subject of erratum 24 in [RDF Errata] and is likely
-to be addressed in a future version of [N-Triples], most likely by
-allowing more liberal use of *whitespace*.  To avoid potential
-incompatibilities when this is resolved, N-Triples producers *must*
-be conservative in the features they use, while consumers *should* be
-permissive in what they accept.
+{.note ...}  For convenience, the `triple` production and some related
+productions are reproduced here from §7 of [N-Triples]:
+
+    triple     ::=  subject predicate object '.'
+    subject    ::=  IRIREF | BLANK_NODE_LABEL
+    predicate  ::=  IRIREF
+    object     ::=  IRIREF | BLANK_NODE_LABEL | literal
+
+    IRIREF     ::=  '<' ([^#x00-#x20<>"{}|^`\]* | UCHAR)* '>'
+    UCHAR      ::=  '\u' HEX HEX HEX HEX 
+                  | '\U' HEX HEX HEX HEX HEX HEX HEX HEX
+    HEX        ::=  [0-9] | [A-F] | [a-f]
+
+The `UCHAR` escape sequences are not permitted in Canonical N-Triples,
+and therefore support for them is *optional* in this standard.
+Unicode characters are written directly, without the need for any
+escaping, in Canonical N-Triples.
+
+Because this standard permits *conformant* applications to parse
+non-conformant data, and because `UCHAR` support is *optional*, an
+application *may* simply parse any sequence of non-*whitespace*
+*characters* between "`<`" and "`>`" as an IRI without validating it
+against the `IRIREF` production.
+
+*Whitespace* handling is underspecified in the full N-Triples syntax.
+This is the subject of erratum 24 in [RDF Errata] and is likely
+to be addressed in a future version of [N-Triples], most probably by
+allowing more liberal use of *whitespace*.  In Canonical N-Triples,
+a single space *character* (U+0020) is required after each of the three
+elements of the *triple*, thus:
+
+    triple  ::=  subject #x20 predicate #x20 object #x20 '.'
+
+*Triples* are separated by `[#xD#xA]+`, which allows blank lines, and
+permits all the major styles of line endings.
 {/}
 
 ### Literals
@@ -422,8 +473,10 @@ on *terms*, it will be necessary to support *language tags* and
 *Conformant* servers *must not* produce *triples* whose *object* is a
 *literal* with a *datatype name* unless the *datatype* is either the
 *range* of the *predicate* of the *triple* or is a *subtype* of the
-*range* of the *predicate*.  Applications *may* discard any *triple* not
-conforming to this requirement.
+*range* of the *predicate*.  *Conformant* servers also *must not*
+produce *triples* whose *object* is a *literal* with a *datatype name*
+naming a *abstract datatype*.  Applications *may* discard any *triple* not
+conforming to these requirement.
 
 {.example ...}  The previous example included the following triple:
 
@@ -432,7 +485,37 @@ conforming to this requirement.
 A *conformant* server *may* generate this, even though the use of the
 *datatype name* is *not recommended*.  This is because the *range* of
 the `types:pattern` *property term* is defined to be `types:Pattern`,
-which is the *datatype name* used.
+which is the *datatype name* used, and `types:Pattern` is not an
+*abstract datatype*.
+{/}
+
+{.note ...}  *Literals* match the `literal` grammar production in §7 of
+[N-Triples] which is reproduced here for convenience:
+
+    literal               ::=  STRING_LITERAL_QUOTE 
+                                 ('^^' IRIREF | LANGTAG)?
+    STRING_LITERAL_QUOTE  ::=  '"' ([^#x22#x5C#xA#xD] 
+                                      | ECHAR | UCHAR)* '"'
+    ECHAR                 ::=  '\' [tbnrf"'\]
+    LANGTAG               ::=  '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
+
+The `ECHAR` production provides a means of escaping *characters* to
+appear in a *literal*:
+
+------------------     --------   -----
+tab                    U+0009     `\t`
+backspace              U+0008     `\b`
+line feed              U+000A     `\n`
+carriage return        U+000D     `\r`
+form feed              U+000C     `\f`
+double quote           U+0022     `\"`
+single quote           U+0027     `\'`
+backslash              U+005C     `\\`
+------------------     --------   -----
+
+Canonical N-Triples only allows the use of `\"`, `\\`, `\r` and `\n`.
+Support for the other escapes, like the `UCHAR` escape mechanism, is
+*optional*.
 {/}
 
 ### Blank nodes
@@ -455,7 +538,7 @@ represented by a *term* or a *literal*.  For this reason, this standard
 does not prohibit *conformant* servers from generating *triples* using
 *blank nodes*.
 
-### Other formats
+### Other formats                                          {#other-fmts}
 
 {.note} This section explains how alternative RDF formats may be used
 instead of N-Triples.  Support for any other format is *optional*.
@@ -467,16 +550,17 @@ data, nor is it the most commonly used.
 [RDF/XML], and despite its excessive verbosity, this format remains
 popular for compatibility with older datasets and applications.  A more
 modern format is [Turtle] which is defined to be easily written and read
-by a human.  Many RDF frameworks support these as well as N-Triples, and
-can convert between formats.
+by a human; it is a superset of N-Triples, though not as trivial to
+parse.  Many RDF frameworks support these as well as N-Triples, and can
+convert between formats.
 
 A *conformant* server *may* make information about *terms* available in
 other RDF formats too.  If a server does so, it *should* provide the same
 information in these other RDF formats as it provides is N-Triples, and
 *must* ensure that the information made available in any other supported
-RDF formats includes the required triples, as given in §4.  A
-*conformant* server *must not* only make information available in an
-RDF format other than N-Triples.
+RDF formats includes the *required triples*, as given in
+{§required-triples}.  A *conformant* server *must not* only make
+information available in an RDF format other than N-Triples.
 
 A *conformant* application *may* request data in other RDF formats, and
 *may* request these formats in preference to or before N-Triples, but
@@ -487,8 +571,68 @@ as if by converting them to N-Triples and parsing that per this standard.
 framework to parse all the supported RDF formats, N-Triples included,
 and then process the parsed triples that the framework provides.
 
-## Discovery IRIs
+## Required triples                                  {#required-triples}
 
+When *discovery* is carried out on an IRI (the *discovery IRI*) which is
+a known *term name* (including the *namespace name*, as defined in §4.2
+of [Basic Concepts]), a *conformant* server *shall* ensure that the
+response includes certain **required triples**.  The response *may*
+contain other *triples* in addition.
+
+If the *discovery IRI* is a *namespace IRI*, the set of *required
+triples* *shall* be the set of *type triples* for every *term* whose
+*namespace name* is the *discovery IRI*.
+
+{.example ...}  [Basic Concepts] defines five *terms* whose *term names*
+begin with the following IRI:
+
+    https://terms.fhiso.org/types/ 
+
+This is the *namespace* of these five terms, therefore *discovery* on
+that IRI *must* include the following triples:
+
+    <https://terms.fhiso.org/types/requiredProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/Pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
+    <https://terms.fhiso.org/types/subTypeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/isAbstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+
+If in the future FHISO defines further *terms* in that *namespace*, they
+will be *required* to be included too.
+{/}
+
+Otherwise, the *required triples* *shall* include *triples* for every
+*required property* of the *class* which is the *type* of the *discovery
+IRI*.  These *triples* all have the *discovery IRI* as their *subject*.
+
+{.example ...}  [Basic Concepts] defines a `types:pattern` *term* whose
+*type* is `rdf:Property`.  According to §5.2 of [Basic Concepts],
+`rdf:Property` has two *required properties*: `rdf:type` and
+`rdfs:range`.  The set of *required triples* therefore includes
+*triples* whose *subjects* are `types:pattern` and whose *predicate* is
+each of these *required properties*:
+
+    <https://terms.fhiso.org/types/pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#range> <https://terms.fhiso.org/types/Pattern> .
+{/}
+
+If the *discovery IRI* is a *class name* then the *required triples*
+*should* additionally include *type triples* for all known *terms* whose
+*type* is the *class* being discovered.  At the least, this *must*
+include *type triples* for any *terms* with this *type* that were
+defined or referenced in the standard which defines the *class*, or
+which have the same *namespace* as the *class*.
+
+{.example ...} [CEV Concepts] defines a *class* `cev:SourceDerivation`;
+that standard also defines a *term*, `cev:derivedFrom` whose *type* is
+that *class*.  Therefore the *required triples* of
+`cev:SourceDerivation` include the two *required properties* for an
+`rdfs:Class` as well as the *type triple* for `cev:derivedFrom`:
+
+    <https://terms.fhiso.org/sources/SourceDerivation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+    <https://terms.fhiso.org/sources/SourceDerivation> <https://terms.fhiso.org/types/requiredProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+    <https://terms.fhiso.org/sources/derivedFrom> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://terms.fhiso.org/sources/SourceDerivation> .
+{/}
 
 ## References
 
@@ -521,8 +665,12 @@ and then process the parsed triples that the framework provides.
     Fielding and Julian Reschke, eds., 2014.  (See
     <https://tools.ietf.org/html/rfc7232>.)
 
-
 ### Other references
+
+[CEV Concepts]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: General Concepts".  Third public draft.
+    See <https://fhiso.org/TR/cev-concepts>.
 
 [Dublin Core]
 :   Dublin Core Metadata Initiative. *Dublin Core metadata element set*.
@@ -556,7 +704,7 @@ and then process the parsed triples that the framework provides.
     (See <https://www.w3.org/TR/turtle/>.)
 
 ----
-Copyright © 2017, [Family History Information Standards Organisation,
+Copyright © 2017–18, [Family History Information Standards Organisation,
 Inc](https://fhiso.org/).  
 The text of this standard is available under the
 [Creative Commons Attribution 4.0 International

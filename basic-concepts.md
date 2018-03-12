@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 11 March 2018
+date: 12 March 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -20,26 +20,18 @@ The definition of a *string* which is used in multiple FHISO standards
 is given in {§strings} of this standard, together with various related
 concepts such as *characters* and *whitespace*, and {§lang-tags} defines
 briefly how FHISO standards use *language tags*.  *Terms* are defined in
-{§terms} as a form of extensible identifier using IRIs; a shorthand
-notation for *terms* known as *prefix notation* is described in
-{§prefix-notn}, and {§iri-resn} discusses information that may be
-retrieved from these IRIs.
+{§terms} as a form of extensible identifier using IRIs, and {§iri-resn}
+discusses information that may be retrieved from these IRIs.
 The notion of a *datatype* is defined in {§datatypes}, which also
 includes details on how to specify a new *datatype*.
 
-The concepts of a *classes*, *properties*, the *range* of a *property*,
-and the *type* of a *term* are defined in {§classes}, {§properties},
-{§range} and {§type}, respectively.  They provide an infrastructure for
-defining extensions to FHISO standards and new, compatible standards in
-such a way that applications can use a *discovery* mechanism to find out
-about unknown components, allowing them to be processed.  The facilities
-in these sections will primarily be of use to parties defining
-extensions or implementing *discovery*.
-
-{.ednote} It is anticipated that a future draft will include some
-standard, low-level *datatypes* for *strings*, integers and booleans.  A
-*pattern* *datatype* will also be needed for the purpose of {§patterns}.
-The notion of *cardinality* may also be moved here from CEV Concepts.
+The concepts of a *classes* and *properties* are defined in
+{§type-system}.  They provide an infrastructure for defining extensions
+to FHISO standards and new, compatible standards in such a way that
+applications can use a *discovery* mechanism to find out about unknown
+components, allowing them to be processed.  The facilities in these
+sections will primarily be of use to parties defining extensions or
+implementing *discovery*.
 
 ## Conventions used
 
@@ -438,20 +430,6 @@ public key pinning is used per
 &#x5B;[RFC 7469](https://tools.ietf.org/html/rfc7469)].
 {/}
 
-### Prefix notation                                       {#prefix-notn}
-
-*Term names* are sometimes referred using **prefix notation**.  This is
-a system whereby **prefixes** are assigned to IRIs that occur frequently
-as the leading portion of a *term name*.  Then, instead of writing the
-*term name* in full, the leading portion of the *term name* is replaced
-by its *prefix* followed by a colon (U+003A) separator.
-
-{.example}  The *term name* `http://www.w3.org/2000/01/rdf-schema#Class`
-is used in several places in this standard.  Instead of writing
-this in full, if the `rdfs` *prefix* is bound to the IRI
-`http://www.w3.org/2000/01/rdf-schema#`, then this IRI can be written in
-*prefix form* as `rdfs:Class`.
-
 ### IRI resolution                                           {#iri-resn}
  
 It is *recommended* that an HTTP `GET` request to a *term name* IRI with
@@ -544,6 +522,70 @@ content negotiation on their web server by serving a 303 redirect to a
 machine-readable definition of the *term* unconditionally, however it is
 *recommended* that such servers implement HTTP content negotiation 
 respecting the `Accept` header.
+
+### Namespaces                                             {#namespaces}
+
+{.ednote} The definition of a *namespace* is based on material in FHISO's 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+
+The **namespace** of a *term* is an other *term* which identifies a
+collection of related *terms* defined by the same party.  The *term
+name* of the *namespace* is also referred to as its **namespace name**.
+The *namespace name* of the *namespace* of some *term* is found as
+follows.
+
+If the *term name* ends with a non-empty fragment identifier, then its
+*namespace name* is formed by removing the fragment identifier, leaving
+an IRI ending with a `#`.
+
+{.example ...}  [Basic Concepts] uses a *datatype* identified by the
+following *term name* IRI:
+ 
+    http://www.w3.org/2001/XMLSchema#integer
+
+This concludes with a fragment identifier, "`integer`", and therefore
+its *namespace name* is its *term name* with the fragment identifier
+removed:
+
+    http://www.w3.org/2001/XMLSchema#
+{/}
+
+Otherwise, if the *term name* ends with a non-empty path segment,
+then its *namespace name* is formed by removing the path segment,
+leaving an IRI ending with a `/`.
+
+{.example ...}  [Basic Concepts] defines a *property* identified by the
+following *term name* IRI:
+
+    https://terms.fhiso.org/types/pattern
+
+This concludes with a path segment, "`pattern`", and therefore its
+*namespace name* is its *term name* with the path segment removed:
+
+    https://terms.fhiso.org/types/
+{/}
+
+Otherwise, the *namespace* is undefined.
+
+{.note}  This means the *namespace* of a *namespace* is necessarily
+undefined, as *namespace names* always end with a `#` or `/`, meaning
+they end with either an empty fragment identifier or an empty path
+segment.
+
+### Prefix notation                                       {#prefix-notn}
+
+*Term names* are sometimes referred using **prefix notation**.  This is
+a system whereby **prefixes** are assigned to *namespace names* which
+occur frequently in *term names*.  Then, instead of writing the *term
+name* in full, the leading portion of the *term name* equal to the
+*namespace name* is replaced by its *prefix* followed by a colon
+(U+003A) separator.
+
+{.example}  The *term name* `http://www.w3.org/2000/01/rdf-schema#Class`
+is used in several places in this standard.  Instead of writing
+this in full, if the `rdfs` *prefix* is bound to its *namespace name*
+`http://www.w3.org/2000/01/rdf-schema#`, then this IRI can be written in
+*prefix form* as `rdfs:Class`.
 
 ## Underlying type system                                 {#type-system}
 
@@ -786,7 +828,7 @@ provided when defining some entity.  The thing being defined is
 typically a *term*, and is called the **subject** of the *property*.
 
 {.ednote} The *subject* of the *property* is only said to be typically a
-*term* so that *citation elements terms* (in CEV Concepts) can be made a
+*term* so that *citation elements terms* (in [CEV Concepts]) can be made a
 subclass of *property terms*.  The *subject* of a *citation element* is
 a *source* which is not a *term* as we don't require them to be
 identified by an IRI.  It is likely that other genealogical concepts,
@@ -876,6 +918,9 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
 As with the `rdfs:Class` *term*, an implementer may safely use
 the `rdf:Property` *terms* for the purposes of this standard without
 reading [RDF Schema].
+
+{.ednote} The notion of *cardinality* may also be moved here from [CEV
+Concepts].
 
 #### Range                                                      {#range}
 
@@ -1458,7 +1503,7 @@ meaning an undetermined language.
 
 {.note} The `xsd:string` *datatype* is included in this standard in
 order to align this data model more closely with the RDF data model, and
-in particular the [CEV RFDa] bindings which use this *datatype* as the
+in particular the [CEV RDFa] bindings which use this *datatype* as the
 default when no *language tag* is present.  The above rule allowing
 conversion to `rdf:langString` means that applications *may* ignore the
 `xsd:string` *datatype*.
@@ -1756,6 +1801,16 @@ explicitly say this as FHISO's data model currently has no need for the
     1993.  (See 
     <http://www.niso.org/apps/group_public/project/details.php?project_id=10>.)
     Standard withdrawn, 2013.
+
+[CEV Concepts]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: General Concepts".  Third public draft.
+    See <https://fhiso.org/TR/cev-concepts>.
+
+[CEV RDFa]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: Bindings for RDFa*.  Third public draft.
+    (See <https://fhiso.org/TR/cev-rdfa-bindings>.)
 
 [CEV Vocabulary]
 :   FHISO (Family History Information Standards Organisation).

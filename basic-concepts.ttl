@@ -16,16 +16,14 @@ rdf:type
 rdfs:Class
 	rdf:type rdfs:Class ;
 	rdfs:subClassOf rdfs:Resource ;
-	types:requiredProperty
-		rdf:type, rdfs:subClassOf, types:requiredProperty .
+	types:requiredProperty rdf:type, types:requiredProperty .
 
 rdfs:subClassOf
 	rdf:type rdf:Property ;
-	rdfs:range rdf:Class .
+	rdfs:range rdfs:Class .
 
 rdfs:Resource
 	rdf:type rdf:Class ;
-	rdfs:subClassOf rdfs:Resource ;
 	types:requiredProperty rdf:type .
 
 rdf:Property
@@ -46,8 +44,8 @@ types:requiredProperty
 rdfs:Datatype
 	rdf:type rdfs:Class ;
 	rdfs:subClassOf rdfs:Class ;
-	types:requiredProperty rdf:type, rdfs:subClassOf, 
-                types:pattern, types:isAbstract .
+	types:requiredProperty rdf:type,
+                types:pattern, types:subTypeOf, types:isAbstract .
 
 types:pattern
 	rdf:type rdf:Property ;
@@ -62,12 +60,13 @@ types:Pattern
 	types:pattern ".*" ;
 	types:isAbstract false ;
 	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#patterns> .
+		<https://fhiso.org/TR/basic-concepts#patterns> .  # TODO
 
-rdfs:Literal
-	rdf:type rdfs:Class ;
-	rdfs:subClassOf rdfs:Resource ;
-	types:requiredProperty rdf:type .
+types:subTypeOf
+	rdf:type rdf:Property ;
+	rdf:range rdfs:Datatype ;
+	rdfs:isDefinedBy
+		<https://fhiso.org/TR/basic-concepts#subtypes> .
 
 types:isAbstract
 	rdf:type rdf:Property ;
@@ -77,26 +76,36 @@ types:isAbstract
 
 xsd:string
 	rdf:type rdfs:Datatype ;
-	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
+	types:subTypeOf xsd:anyAtomicType ;
 	types:isAbstract false .
 
 xsd:boolean
 	rdf:type rdfs:Datatype ;
-	rdfs:subClassOf rdfs:Literal ;
 	types:pattern "true|false|1|0" ;
+	types:subTypeOf xsd:anyAtomicType ;
 	types:isAbstract false .
 
 xsd:integer
 	rdf:type rdfs:Datatype ;
-	rdfs:subClassOf rdfs:Literal ;
 	types:pattern "[+-]?[0-9]+" ;
+	types:subTypeOf xsd:anyAtomicType ;
 	types:isAbstract false .
 
+xsd:anyURI
+	rdf:type rdfs:Datatype ;
+	types:pattern ".*" ;
+	types:subTypeOf xsd:anyAtomicType ;
+	types:isAbstract false .
+	
 rdf:langString
 	rdf:type rdfs:Datatype ;
-	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
 	types:isAbstract false .
+
+xsd:anyAtomicType
+	rdf:type rdfs:Datatype ;
+	types:pattern ".*" ;
+	types:isAbstract true .
 
 
