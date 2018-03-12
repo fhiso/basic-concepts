@@ -654,7 +654,7 @@ previous example is `ex:EventType`.
 
 The *type* of a *term* is a piece of information which *must* be
 provided, perhaps implicitly, when defining a *term*.  As such, the
-*type* is *property* of the *term*, as defined in {§properties}, and
+*type* is a *property* of the *term*, as defined in {§properties}, and
 needs a *property term* to represent it.  This standard uses the
 `rdf:type` *term* for this purpose:
 
@@ -1119,7 +1119,7 @@ RDF datatypes can be used as *datatypes* in this standard.
 
 {.example} XML Schema defines an integer type in §3.4.13 of
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] which is well-suited
-for use in this standard.  FHISO use this type where integer values
+for use in this standard.  FHISO uses this type where integer values
 occur.  It discussed in {§integer} of this standard.
 
 The mapping from lexical representations to logical values need not be
