@@ -143,7 +143,7 @@ according to §5.3.2 of [RFC 7231], and which references the N-Triples
 media type, "`application/n-triples`".  The request's `Accept` header
 *may* alternatively or additionally reference the media types of one of
 the alternative RDF formats described in {§other-fmts} of this standard,
-but *conformant* servers need not support support those formats.
+but *conformant* servers need not support those formats.
 
 If the *discovery IRI* is not one of the cases listed in
 {§required-triples}, and is not an IRI used for another purpose, it is
@@ -223,7 +223,7 @@ Neither this standard nor [Basic Concepts] currently defines
 and servers conforming to this standard *may* include in their response
 RDF *triples* outside the scope of this standard, such as [Dublin Core]
 metadata about the document.  Without this requirement, such metadata
-should be indistinguishable from *properties* about the *term* subject
+would be indistinguishable from *properties* about the *term* subject
 to *discovery*. 
 
 {.example ...}  Suppose an application wants to perform *discovery* on 
