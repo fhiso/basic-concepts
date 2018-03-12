@@ -101,6 +101,7 @@ xsd:anyURI
 rdf:langString
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
+	types:subTypeOf xsd:anyAtomicType ;
 	types:isAbstract false .
 
 xsd:anyAtomicType

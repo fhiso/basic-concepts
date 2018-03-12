@@ -1432,17 +1432,21 @@ microformat which is constrained by a *pattern* meaning it is a
 *structured datatype*, but it is also a *language-tagged datatype* as
 names can be translated and transliterated.
 
-*Subtypes* may be defined of *language-tagged datatypes* as well as of
-other *datatypes*.  If the *supertype* is a *language-tagged datatype*
-then the *subtype* *must* also be; and if the *supertype* is not a
-*language-tagged datatype* then the *subtype* *must not* be.  
+*Subtypes* may be defined of *language-tagged datatypes*, just as they
+can be for other *datatypes*.  If the *supertype* is a *language-tagged
+datatype* then the *subtype* *must* also be; and if the *supertype* is
+not a *language-tagged datatype* then the *subtype* *must not* be.  The
+sole exception to this is that, the `rdf:langString` *language-tagged
+datatype* is defined in {§langString} to be a *subtype* of the
+`xsd:anyAtomicType` *non-language-tagged datatype*.
 
 This standard does not provide a *property* denoting whether or not a
 *datatype* is a *language-tagged datatype*.  Instead, this information
 is conveyed using the `types:subTypeOf` *property*.  *Language-tagged
 datatypes* *shall* include the `rdf:langString` *datatype* defined in
-§6.5.4 as a *supertype*, while *non-language-tagged datatypes* *shall*
-include the `xsd:anyAtomicType` *datatype* as a *supertype*.
+{§langString} as a *supertype*, while *non-language-tagged datatypes* *shall*
+include the `xsd:anyAtomicType` *datatype* defined in {§anyAtomicType}
+as a *supertype*.
 
 ### Standard datatypes
 
@@ -1696,6 +1700,7 @@ This *datatype* has the following properties:
 Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
+Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Abstract         `false`
 ------           -----------------------------------------------
 
