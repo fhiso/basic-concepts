@@ -339,7 +339,7 @@ alongside it.
 been moved here to be more generally usable.
  
 A **term** is a form of identifier used in FHISO standards to represent
-a concepts which it is useful to be able to reference.  A *term*
+a concept which it is useful to be able to reference.  A *term*
 consists of a unique, machine-readable identifier, known as the **term
 name**, paired with a clearly-defined meaning for the concept or idea
 that it represents.  *Term names* *shall* take the form of an IRI
@@ -1091,7 +1091,7 @@ than the former simply being a *subclass* of the latter.
 
 {.ednote}  The concepts related to *datatypes* were originally defined
 in the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.
-This section and its subsections has been moved here to be more
+This section and its subsections have been moved here to be more
 generally usable. 
  
 A **datatype** is a *term* which serves as a formal description of the
