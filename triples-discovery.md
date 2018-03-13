@@ -403,10 +403,13 @@ permits all the major styles of line endings.
 
 Instead of being a *term*, the *object* of a triple *may* alternatively
 be a **literal**, which has a *string* value instead of an IRI, and
-is serialised in double quotes (U+0022).  If the *predicate* of the
-*triple* is a *property term* whose *range* is a *datatype*, then the
-*object* of the *triple* *shall* be a *literal* rather than a *term*;
-otherwise the *object* of the *triple* *shall* be a *term*.
+is serialised in double quotes (U+0022).  Backslashes (U+005C) *must* be
+used to escape any double quotes, backslashes, line feeds (U+000A) or
+carriage returns (U+000D) that appear literally in the *string*.  If the
+*predicate* of the *triple* is a *property term* whose *range* is a
+*datatype*, then the *object* of the *triple* *shall* be a *literal*
+rather than a *term*; otherwise the *object* of the *triple* *shall* be
+a *term*.
 
 {.example ...}  If *discovery* is performed on a *datatype name*, the
 resulting N-Triples *should* include its *type* and *pattern*, as
