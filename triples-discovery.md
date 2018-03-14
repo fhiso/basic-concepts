@@ -596,6 +596,14 @@ If the *discovery IRI* is a *namespace IRI*, the set of *required
 triples* *shall* be the set of *type triples* for every *term* whose
 *namespace name* is the *discovery IRI*.
 
+{.note ...} According to {§http}, *discovery* on a *namespace name* is
+*optional*. However, if discovery is supported the *required triples*
+for such discovery is the full set of *terms* in the *namespace*. Thus
+a *conformant* server *must* respond to a *namespace name* *discovery
+IRI* either with an error code or with a response including all of the
+*terms* in the *namespace*.
+{/}
+
 {.example ...}  [Basic Concepts] defines five *terms* whose *term names*
 begin with the following IRI:
 
