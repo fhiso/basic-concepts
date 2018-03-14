@@ -522,17 +522,17 @@ containing information about the `Baptism` *term*.
 {/}
 
 A party defining a *term* *may* support *discovery* without using HTTP
-content negotiation on their web server by serving a 303 redirect to a
-machine-readable definition of the *term* unconditionally, however it is
-*recommended* that such servers implement HTTP content negotiation 
-respecting the `Accept` header.
+content negotiation on their web server by serving a machine-readable
+definition of the *term* unconditionally (which *should* be served via a
+303 redirect), however it is *recommended* that such servers implement
+HTTP content negotiation respecting the `Accept` header.
 
 ### Namespaces                                             {#namespaces}
 
 {.ednote} The definition of a *namespace* is based on material in FHISO's 
 [Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
-The **namespace** of a *term* is an other *term* which identifies a
+The **namespace** of a *term* is another *term* which identifies a
 collection of related *terms* defined by the same party.  The *term
 name* of the *namespace* is also referred to as its **namespace name**.
 The *namespace name* of the *namespace* of some *term* is found as
@@ -697,8 +697,7 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
 Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 
-Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://terms.fhiso.org/types/requiredProperty`
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
 
 {.note}  This can be thought of as a *class* of *classes*.  It is not
@@ -1054,8 +1053,8 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 ------           -----------------------------------------------
 
-{.ednote}  This data model does not provide a mechanism for the
-*property value* to be a list.  Therefore, instead of one
+{.ednote}  This data model does not provide a convenient mechanism for
+the *property value* to be a list.  Therefore, instead of one
 `requiredProperties` *property* whose value is a list of *property
 names*, *classes* will normally have multiple `requiredProperty`
 *properties* each of whose value is a single *property name*.
@@ -1066,26 +1065,6 @@ properties* of each *superclass* of the *class*.
 {.note}  The `rdf:type` is a *required property* of `rdfs:Resource` and
 all *classes* are a *subclass* of `rdfs:Resource`, thus `rdf:type` is a
 *required property* of every *class*.
-
-The sole exception to the above is that `types:requiredProperty` is not
-itself a *required property* of the `rdfs:Datatype` *class*.
-
-{.note}  The `rdfs:Datatype` *class* is defined in {§datatypes} to be a
-*subclass* of `rdfs:Class`, and therefore would therefore ordinarily
-inherit all the *required properties* of `rdfs:Class`, including
-`types:requiredProperty`.  On a practical level, a *datatypes* do not
-need *required properties* because *terms* are never defined whose
-*type* is a *datatype*, and therefore the opportunity to specify the
-*properties* for such *terms* never arises.  Thus this *standard* does
-not require `xsd:integer`, for example, to list a set of *required
-properties*.
-
-{.ednote}  Making an exception for `rdfs:Datatype` can also be justified
-due to the privileged position of `rdfs:Datatype` in the data model.  It
-is not normal to define *subclasses* of `rdfs:Class`, and the
-relationship between `rdfs:Datatype` and `rdfs:Class` is more nuanced
-than the former simply being a *subclass* of the latter.
-
 
 ## Datatypes                                                {#datatypes}
 
@@ -1342,7 +1321,7 @@ whether `types:subTypeOf` is an `rdfs:subPropertyOf` `rdfs:subClassOf`.
 A *datatype* *may* be defined to be a **abstract datatype**.  An
 *abstract datatype* is one that *must* only be used as a *supertype* of
 other types.  A *string* *must not* be declared to have a *datatype*
-which is an *abstract datatype*.  *Abstract datatypes* *may* specify a
+which is an *abstract datatype*.  *Abstract datatypes* *shall* specify a
 *pattern* and *shall* have a *lexical space*.
 
 {.note} The *lexical space* of an *abstract datatype* and any *pattern*
@@ -1590,7 +1569,10 @@ couple cannot have 2.4 children.
 This *datatype* can represent arbitrarily large integers, but
 unless otherwise stated, applications *may* opt not to support values
 greater than 2&thinsp;147&thinsp;483&thinsp;647 or less than
-&minus;2&thinsp;147&thinsp;483&thinsp;648.
+&minus;2&thinsp;147&thinsp;483&thinsp;648.  In the event an unsupported
+value is encountered, an implementation *may* handle it in an
+implementation-defined manner, but *must not* convert it to a different
+integer.
 
 {.note}  This permits applications to represent an `xsd:integer` as a
 signed 32-bit integer except where otherwise noted.

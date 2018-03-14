@@ -592,9 +592,10 @@ of [Basic Concepts], if discovery on *namespaces* is supported), a
 **required triples**.  The response *may* contain other *triples* in
 addition.
 
-If the *discovery IRI* is a *namespace IRI*, the set of *required
-triples* *shall* be the set of *type triples* for every *term* whose
-*namespace name* is the *discovery IRI*.
+If the *discovery IRI* is a *namespace name* and if *discovery* of
+*namespace names* is supported, the set of *required triples* *shall* be
+the set of *type triples* for every *term* whose *namespace name* is the
+*discovery IRI*.
 
 {.example ...}  [Basic Concepts] defines five *terms* whose *term names*
 begin with the following IRI:
@@ -602,7 +603,8 @@ begin with the following IRI:
     https://terms.fhiso.org/types/ 
 
 This is the *namespace* of these five terms, therefore *discovery* on
-that IRI *must* include the following triples:
+that IRI either *must* yield an error (if *discovery* on *namespace
+names* is not supported) or *must* include the following triples:
 
     <https://terms.fhiso.org/types/requiredProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
     <https://terms.fhiso.org/types/pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
@@ -610,8 +612,8 @@ that IRI *must* include the following triples:
     <https://terms.fhiso.org/types/subTypeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
     <https://terms.fhiso.org/types/isAbstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
 
-If in the future FHISO defines further *terms* in that *namespace*, they
-will be *required* to be included too.
+If in the future FHISO defines further *terms* in that *namespace*, the
+server *must* include them too.
 {/}
 
 Otherwise, the *required triples* *shall* include *triples* for every
