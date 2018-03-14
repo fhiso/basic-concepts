@@ -145,10 +145,10 @@ media type, "`application/n-triples`".  The request's `Accept` header
 the alternative RDF formats described in {§other-fmts} of this standard,
 but *conformant* servers need not support those formats.
 
-If the *discovery IRI* is not one of the cases listed in
-{§required-triples}, and is not an IRI used for another purpose, it is
-*recommended* that servers issue a 404 "Not Found" response.
-Applications *must not* consider a 404 to mean the *term* is invalid.
+If the *discovery IRI* is not a known *term name* and is not an IRI
+used for another purpose, it is *recommended* that servers issue a 404
+"Not Found" response.  Applications *must not* consider a 404 or other
+HTTP error response to mean the *term* is invalid.
 
 {.note}  As it is only *recommended* and not *required* that parties
 defining new *terms* make information available online at the *term
@@ -165,8 +165,7 @@ of this standard, to select the media type of the resource that will be
 served.   If the server supports none of the listed media types, it
 *should* send a 406 "Not Acceptable" response; otherwise, if the selected
 media type is the N-Triples media type or a supported alternative type
-from {§other-fmts}, and the *discovery IRI* is one of the cases listed
-in {§required-triples}, the server *should* continue with *Triples
+from {§other-fmts}, the server *should* continue with *Triples
 Discovery* as outlined here.  If the `Accept` header was precisely
 "`application/n-triples`" then a *conformant* server *must* continue
 with *Triples Discovery*.
@@ -208,12 +207,12 @@ while incorrect, is still *conformant* with this standard.
 
 Except when the *discovery IRI* is a *namespace name* as defined in
 §4.2 of [Basic Concepts], a *conformant* server *shall* issue an HTTP
-redirect response with a `Location` header which contains the URL of a
+redirect response with a `Location` header containing the URL of a
 resource containing a description of the *discovery* *term* in the
-selected format.  This redirect *should* use a 303 "See Other" redirect,
-and *must not* be a permanent redirect such as a 301 "Moved
-Permanently".  If the *discovery IRI* is a *namespace name*, a redirect
-*may* be produced but is not *required*.  
+selected format including the *required triples* given in
+{§required-triples}.  This redirect *should* use a 303 "See Other"
+redirect, and *must not* be a permanent redirect such as a 301 "Moved
+Permanently".  
 
 {.note}  A redirect is *required* when the *discovery IRI* is a
 *term name* to avoid confusing the *term name* with the document
@@ -288,6 +287,16 @@ redirects.  Applications *must not* infer anything from the use of
 redirects: in particular, if one *term name* IRI permanently redirects
 to another *term name* IRI, applications *must not* assume the *terms*
 are synonymous.
+
+Server support for *Triples Discovery* on *namespace names* is
+*optional*, and a *conformant* server which opts not to support it *must
+not* generate a response in N-Triples or an alternative media type from
+{§other-fmts}, and *should* instead send a 406 "Not Acceptable" or 404
+"Not Found" response, depending whether or not documentation of the
+*namespace* is available in an alternative format.  If *Triples
+Discovery* of *namespaces* is supported and if the *discovery IRI* is a
+*namespace name*, a redirect is *optional*, but response *must* contain 
+the *required triples* given in {§required-triples}.
 
 *Conformant* servers *may* support any version of HTTP and any
 additional HTTP features.
@@ -578,9 +587,10 @@ and then process the parsed triples that the framework provides.
 
 When *discovery* is carried out on an IRI (the *discovery IRI*) which is
 a known *term name* (including the *namespace name*, as defined in §4.2
-of [Basic Concepts]), a *conformant* server *shall* ensure that the
-response includes certain **required triples**.  The response *may*
-contain other *triples* in addition.
+of [Basic Concepts], if discovery on *namespaces* is supported), a
+*conformant* server *shall* ensure that the response includes certain
+**required triples**.  The response *may* contain other *triples* in
+addition.
 
 If the *discovery IRI* is a *namespace IRI*, the set of *required
 triples* *shall* be the set of *type triples* for every *term* whose
