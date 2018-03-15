@@ -329,11 +329,11 @@ The *wildcard* defines the set of all *characters*.
 ### The `types:pattern` datatype
 
 FHISO uses the `types:pattern` *datatype* to represent *patterns*.
-It *must not* be used *pattern*-like regular expression variants
+It *must not* be used for *pattern*-like regular expression variants
 that do not conform to this standards' definition of a *pattern*.
 
-{.example} In ECMAScript, "`/(.)\1/`" is a regular expression that matches
-any string that contains the same character repeated twice in a row.
+{.example} In ECMAScript, "`/^.[.]$/`" is a regular expression that matches
+a two character string ending with a period.
 Because this is not a valid *pattern*, it does not have the `types:pattern` *datatype*.
 
 The *lexical space* of this *datatype* is the space of all *strings*
