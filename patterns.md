@@ -3,6 +3,12 @@ title: The Pattern Datatype
 ...
 # The Pattern Datatype
 
+{.ednote ...} This is a **first public draft** of a standard covering 
+basic concepts that are expected to be used in multiple FHISO standards.
+This document is not endorsed by the FHISO membership, and may be
+updated, replaced or obsoleted by other documents at any time. 
+{/}
+
 {.ednote ...}
 This document defines a "least-common demoninator" regular expression dialect.
 An explicit goal is to have all *patterns* be trivially modifiable
@@ -15,7 +21,6 @@ In particular, in interest of compatibility, the *pattern* in this document
 - does not define capturing groups, and thus does not need or support lazy quantifiers.
 - does not have partial-string matching, and thus does not need to define if `(a|an)` and `(an|a)` match differently.
 {/}
-
 
 
 ## Introduction
