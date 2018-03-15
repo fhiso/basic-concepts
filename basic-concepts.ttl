@@ -80,6 +80,27 @@ types:isAbstract
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#abstract-types> .
 
+types:Union
+	rdf:type rdfs:Class ;
+	rdfs:subClassOf rdfs:Datatype ;
+	types:requiredProperty rdf:type, types:pattern, 
+		types:nonTrivialSupertypeCount, types:isAbstract,
+		types:constituentDatatypeCount ;
+	rdfs:isDefinedBy
+		<https://fhiso.org/TR/basic-concepts#unions> .
+
+types:constituentDatatype
+	rdf:type rdf:Property ;
+	rdfs:range rdfs:Datatype ;
+	rdfs:isDefinedBy
+		<https://fhiso.org/TR/basic-concepts#unions> .
+
+types:constituentDatatypeCount
+	rdf:type rdf:Property ;
+	rdfs:range xsd:integer ;
+	rdfs:isDefinedBy
+		<https://fhiso.org/TR/basic-concepts#unions> .
+
 xsd:string
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
