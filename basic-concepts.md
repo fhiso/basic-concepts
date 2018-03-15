@@ -1033,7 +1033,7 @@ identified by a *term* known as their *datatype name*, and any party
 defining a *datatype* for use with FHISO standards is *required* to
 specify its *pattern*, *supertype* if any, and whether it is an
 *abstract datatype*.  These pieces of information are specified via
-three *properties* called `types:pattern`, `types:subTypeOf` and
+three *properties* called `types:pattern`, `types:nonTrivialSupertype` and
 `types:isAbstract`.  These three *properties* are therefore the
 *required properties* for *datatypes*.  In fact, *datatypes* have a
 fourth *required property* which is their *type*: i.e. a statement that
@@ -1157,7 +1157,7 @@ Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/pattern`<br/>
-                    `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSupertypeCount`<br/>
                     `https://terms.fhiso.org/types/isAbstract`
 ------              -----------------------------------------------------------
 
@@ -1303,6 +1303,8 @@ a *subtype* of a second *datatype*, and that second *datatype* is a
 meaning that a *datatype* is by definition a *subtype* of itself.  The
 notion of a *supertype* is similarly transitive and reflexive.
 
+#### Non-trivial supertypes                          {non-trivial-types}
+
 The **trivial supertypes** of a *datatype* are certain *supertypes*
 whose status as a *supertype* of the *datatype* is implied by the data
 model defined in this standard.  The *trivial supertypes* of a
@@ -1313,13 +1315,13 @@ called a **non-trivial supertype**.
 {.note} *Unions of datatypes*, as defined in {§unions}, are also
 *trivial supertypes*.
 
-The *property term* representing the *supertype* of a *datatype* is
-defined as follows:
+The *property term* representing a *non-trivial supertype* of a
+*datatype* is defined as follows:
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/subTypeOf`
+Name             `https://terms.fhiso.org/types/nonTrivialSupertype`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
 ------           -----------------------------------------------
@@ -1336,41 +1338,37 @@ considered to be identical to the integer values 1 and 0, respectively
 and "`false`" being part of *lexical space* of `xsd:boolean` but not of
 `xsd:integer`.  This means a stronger relationship is needed which
 constrains both the *lexical space* and the *value space*.  This is what
-`types:subTypeOf` provides.  This standard explicitly does not state
-whether `types:subTypeOf` is an `rdfs:subPropertyOf` `rdfs:subClassOf`.
+`types:nonTrivialSupertype` provides.  This standard explicitly does not
+state whether `types:nonTrivialSupertype` is an `rdfs:subPropertyOf`
+`rdfs:subClassOf`.
 
-The `types:subTypeOf` *property* *may* be used to record any
-*supertype*, but *trivial supertypes* *should not* normally be recorded.
+The `types:nonTrivialSupertype` *property* *must not* be used to record 
+a *trivial supertypes* of the *datatype*.
 
-{.note} As `types:subTypeOf` is a *required property* of
-`rdfs:Datatype`, if a *datatype* has no *non-trivial supertypes*, at
-least one *trivial supertype* *must* be recorded so that the *datatype*
-has a `types:subTypeOf` *property*.  
-
-A `types:subTypeOf` *property* *must* be used to record every
+A `types:nonTrivialSupertype` *property* *must* be used to record every
 *non-trivial supertype* of a *datatype* which is not implied by the
-transitivity of `types:subTypeOf` and the other `types:subTypesOf`
-*properties* present.
+transitivity of `types:nonTrivialSupertype` and the other
+`types:nonTrivialSupertype` *properties* present.
 
 {.example}  Suppose a hypothetical standard defines three *datatypes*,
 `DateTime`, `Date`, and `Year`.  If the standard specifies that `Year`
-has a `types:subTypeOf` *property* with *property value* `Date`, and
-that `Date` has a `types:subTypeOf` *property* with *property value*
+has a `types:nonTrivialSupertype` *property* with *property value* `Date`, and
+that `Date` has a `types:nonTrivialSupertype` *property* with *property value*
 `DateTime`, it is not necessary for the standard to record that `Year`
-has a second `types:subTypeOf` *property* with *property value*
+has a second `types:nonTrivialSupertype` *property* with *property value*
 `DateTime` as this is implied by the other two.  Nevertheless, the
 standard *may* do so.
 
 As a way of checking for data integrity during *discovery*, an
 additional *property* is provided representing the number of
 *non-trivial supertypes* of the *datatype* that are either recorded
-using `types:subTypeOf` *properties* or are implied by them via
+using `types:nonTrivialSupertype` *properties* or are implied by them via
 transitivity:
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`
+Name             `https://terms.fhiso.org/types/nonTrivialSupertypeCount`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2001/XMLSchema#integer`
 ------           -----------------------------------------------
@@ -1378,9 +1376,16 @@ Range            `http://www.w3.org/2001/XMLSchema#integer`
 {.ednote} Should this have a *range* of `xsd:nonNegativeInteger`
 instead?
 
-This `types:nonTrivialSuperTypeCount` *property* is a *required
+This `types:nonTrivialSupertypeCount` *property* is a *required
 property* of `rdfs:Datatype`, and must be specified (with a value of
 "`0`") even if there are no *non-trivial supertypes*.
+
+An application which finds out about a *datatype* through *discovery*
+*must not* assume it knows the *supertypes* of the *datatype* unless it
+has verified that the number of *non-trivial supertypes* specified with
+the `types:nonTrivialSupertype` *property* or implied by the
+transitivity of that *property* is equal to the value of the
+`types:nonTrivialSupertypeCount` *property*.
 
 {.ednote ...}  These two *properties* are likely to be changed in a
 future draft.  A cleaner implementation would be to have a single
@@ -1395,7 +1400,7 @@ whereas a collection of a *properties* is not is that the list-valued property
 can be made a *required property* which *must* be present exactly once.
 If it is not, an application knows that is missing and will not assume
 it properly understands the *datatype*.  However if one of several
-`types:subTypeOf` *properties* goes missing, this might go unnoticed.
+`types:nonTrivialSupertype` *properties* goes missing, this might go unnoticed.
 This is particular relevant if the *properties* have been processed by
 RDF applications, as the RDF philosophy is that RDF triples can be taken
 in isolation and that removing one or more RDF triples merely loses
@@ -1403,17 +1408,27 @@ information rather than altering the meaning of something.  It is
 therefore quite conceivable that an RDF triple encoding a *property*
 might go missing.
 
-In [CEV Concepts], a missing `types:subTypeOf` might result in a
+In [CEV Concepts], a missing `types:nonTrivialSupertype` might result in a
 *datatype* being incorrectly thought not to conform to the *range* of
 some *citation element*, which might result in a valid *citation
 element* being discarded.  The importance of avoiding this is the reason
-why the current draft includes a `types:nonTrivialSuperTypeCount` as a
+why the current draft includes a `types:nonTrivialSupertypeCount` as a
 check.
 {/}  
 
 In the *datatype* definition tables in this standard, a single
 *supertype* row is given which is understood to contain a complete list
 of all *non-trivial supertypes* and no *trivial supertypes*.
+
+{.ednote} A future version of this standard needs to address what
+changes may be made to an existing *datatype* hierarchy.  Specifically,
+can a new *non-trivial supertype* be injected into an existing
+hierarchy?  Doing so changes the number of *non-trivial supertypes* a
+*datatype* has, so at present it would break third-party *subtypes*.  A
+related question is whether a third party can inject their own
+*non-trivial supertype* into your *datatype* hierarchy.  Probably they
+should not be allowed to, and most use cases where this might be needed
+can hopefully be accommodated with a *union of datatypes*.
 
 ### Abstract datatypes                                 {#abstract-types}
 
@@ -1520,9 +1535,9 @@ datatypes* and *non-language-tagged datatypes*.
 All *language-tagged datatypes* are implicitly a *subtype* of the
 `rdf:langString` *datatype* defined in {§langString}.
 
-{.note} As a result, there is no need for a *property* stating whether
+{.note} There is no need for a *property* stating whether
 or not a *datatype* is a *language-tagged datatype* because this
-information is conveyed using the `types:subTypeOf` *property*.
+information is conveyed using the `types:nonTrivialSupertype` *property*.
 
 ### Unions of datatypes                                        {#unions}
 
@@ -1621,16 +1636,16 @@ Superclass          `http://www.w3.org/2000/01/rdf-schema#Datatype`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/pattern`<br/>
-                    `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSupertypeCount`<br/>
                     `https://terms.fhiso.org/types/isAbstract`<br/>
                     `https://terms.fhiso.org/types/constituentDatatypeCount`
 ------              -----------------------------------------------------------
 
 {.note} The main reason for defining a *class* for *unions of datatypes*
 is so that applications can distinguish *unions of datatypes* from other
-*datatypes* in order to check the number of *non-trivial subclasses* a
-class has, and whether this matches the number given in the
-`types:nonTrivialSuperTypeCount` *property*.  It also allows
+*datatypes* in order to check the number of *non-trivial supertypes* a
+*datatype* has, and whether this matches the number given in the
+`types:nonTrivialSupertypeCount` *property*.  It also allows
 `types:constituentDatatypeCount` to be defined as a *required property*.
 
 The *property* which denotes a *constituent datatype* of a *union of
