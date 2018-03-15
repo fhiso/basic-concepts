@@ -1391,7 +1391,7 @@ the current data model that is likely to be changed, but which requires
 considerable work.
 
 The reason why a single list-valued *property* is inherently safe
-whereas a collection of a *properties* is that the list-valued property
+whereas a collection of a *properties* is not is that the list-valued property
 can be made a *required property* which *must* be present exactly once.
 If it is not, an application knows that is missing and will not assume
 it properly understands the *datatype*.  However if one of several
