@@ -1257,9 +1257,10 @@ not introduce any false implications about the dataset.
 {.ednote}  Would it be a useful simplification if this definition said
 something along the following lines?  If a *datatype* has more than one
 *supertype* which are not *abstract datatypes*, one of these
-non-abstract *datatypes* *shall* be the *supertype* of the others.
-This is similar to Java's rule on inheritance: you can multiply inherit
-interfaces but only singly inherit a class.   
+*supertypes* *shall* be the *subtype* of all of the others.  This is
+similar to Java's rule on inheritance: you can multiply inherit
+interfaces (here *abstract datatypes*) but only singly inherit a class
+(here *datatypes* other than *abstract datatypes*).   
 
 The *lexical space* of the *subtype* *shall* be a subset of the *lexical
 space* of the *supertype*.
