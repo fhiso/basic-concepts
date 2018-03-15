@@ -1,6 +1,6 @@
 ---
 title: Simple Triples Discovery Mechanism
-date: 12 March 2018
+date: 15 March 2018
 numbersections: true
 ...
 # Simple Triples Discovery Mechanism
@@ -549,6 +549,56 @@ more complicated *property values* that cannot conveniently be
 represented by a *term* or a *literal*.  For this reason, this standard
 does not prohibit *conformant* servers from generating *triples* using
 *blank nodes*.
+
+{.ednote ...} FHISO recognises that *Triples Discovery* will need to be
+updated to include support for list-valued properties.  RDF supports
+lists in the form of the `rdf:List` *class*, and while introducing
+`rdf:List` is appealing and potentially solves various other problems,
+it causes implementation difficulties in *Triples Discovery*.  This is
+because, for simplicity's sake, we use N-Triples as the serialisation
+format, and, uniquely among the common RDF serialisation syntaxes,
+N-Triples lacks any clean syntax for representing an `rdf:List`.
+Instead, the N-Triples representation would involve a Lisp-like
+representation of the `rdf:List` with a series of blank nodes:
+
+    types:Date owl:unionOf _:1 .
+    _:1 rdf:type rdf:List .
+    _:1 rdf:first types:AbstractDate .
+    _:1 rdf:rest _:2 .
+    _:2 rdf:type rdf:List .
+    _:2 rdf:first rdf:langString .
+    _:2 rdf:rest rdf:nil .
+
+To support this, support for *blank nodes* and the `rdf:first`, `rdf:rest`
+and `rdf:nil` constructs would have to become *required*.  This adds
+some significant complexity to the implementation, as the implementation
+would need to recognise and ignore malformed uses of these constructs.  
+
+For comparison, the same data expressed in Turtle (which has native
+support for lists) would be:
+
+    types:Data owl:unionOf ( types:AbstractDate rdf:langString ) .
+
+Clearly this syntax is much cleaner; it also avoids the need for
+applications to support *blank nodes* and the `rdf:first`, `rdf:rest`
+and `rdf:nil` constructs.  Turtle (and RDF/XML and JSON-LD, the
+other main formats) are a somewhat harder format to parse than
+N-Triples.  There are plenty of libraries that will parse these formats,
+but this standard was designed to make parsing easy so that a library
+wasn't needed.  Also, the interface to many parsing libraries is a
+stream of *triples* which have lists expanded into their `rdf:first`,
+`rdf:rest` and `rdf:nil` equivalents.
+
+Making syntactic support for *blank nodes* *optional* (whether using the
+`_:1` syntax or the `[]` syntax) would make writing a parser a bit
+simpler.  Unfortunately, other features cannot be made *optional* so
+readily, as dropping them would make it hard to parse information on
+existing vocabularies, or to use standard tools to create the discovery
+files served by *conformant servers*.
+
+This issue needs resolving before list-valued *properties* can be added
+to [Basic Concepts].
+{/}
 
 ### Other formats                                          {#other-fmts}
 
