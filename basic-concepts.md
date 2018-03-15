@@ -859,16 +859,16 @@ while the latter is an item of vocabulary reference by that description.
 The *property name* is a *property term*.
 
 The *property value* *shall* be a *term*, a *string*, or a
-*language-tagged string*.
+*language-tagged string*.  The *property value* *may* additionally be
+tagged with a *datatype name*, which is a *term name* defined in
+{§datatypes}.  
 
-{.ednote}  Should *datatype-tagged strings* also be permitted as
-*property values*?  At the moment *datatypes* are implicit.  The
-*property value* is a *string* and its *datatype* is inferred from the
-*range* of the *property name*.  If the *citation elements*, as defined
-in [CEV Concepts], are to become a subclass of *properties*, it will be
-necessary to allow *datatype-tagged strings*.  Moreover, it will be
-necessary to pull the notion of a *localisation set* down into Basic
-Concepts. 
+{.ednote}  The ability to tag *property values* with a *datatype* is not
+currently used in this standard, but is required so that *citation
+elements*, as defined in [CEV Concepts], can be a subclass of
+*properties*.   More work is needed to fully harmonise these concepts,
+and it may become necessary to pull the notion of a *localisation set*
+down into Basic Concepts. 
 
 *Properties* *shall not* have default *property values* that applies
 when the *property* is absent, however standards *may* define how an
