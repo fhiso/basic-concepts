@@ -4,9 +4,12 @@ title: Regular Expressions
 Regular Expressions
 -------------------
 
+{.note ...}
 The goal of this document is to defined a "least-common denominator" for regular expressions.
 In particular, it aims to define a subset of common regular expression dialects that can be accepted by most regular expression engines
 with at most a preprocessing regular expression replacement to adjust syntax.
+{/}
+
 
 A regular expression is a string defining a **language**, or set of strings.
 A regular expression is said to **match** a string if and only if that string is in the regular expression's **language**.
@@ -150,7 +153,7 @@ Class Character
 Negative Character Class
 :   A **negative character class** is a set of one or more *character ranges*, preceded by U+005E `^`, within brackets.
 
-        negCharClass ::= '[^` charRange+ ']'
+        negCharClass ::= '[^' charRange+ ']'
     
     A string matches a *positive character class* if it contains only a single character and that character is not within any of the ranges.
 
