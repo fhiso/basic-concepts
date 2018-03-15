@@ -12,7 +12,7 @@ updated, replaced or obsoleted by other documents at any time.
 {/}
 
 {.ednote ...}
-This document defines a "least-common demoninator" regular expression dialect.
+This document defines a "least-common denominator" regular expression dialect.
 An explicit goal is to have all *patterns* be trivially modifiable
 to work with as many mainstream regular expression engines and libraries as possible.
 
@@ -85,8 +85,6 @@ This standard uses *prefix notation* when discussing specific *terms*.
 The following *prefix* bindings are assumed in this standard:
 
 ------           -----------------------------------------------
-`rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
-`rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
 `types`          `https://terms.fhiso.org/types/`
 ------           -----------------------------------------------
 
@@ -96,34 +94,53 @@ The following *prefix* bindings are assumed in this standard:
 ## Pattern
 
 As defined in [Basic Concepts], a *pattern* is a regular expression 
-intended to provides a constraint on the *lexical space* of the *datatype*.
+intended to provides a constraint on the *lexical space* of a *datatype*.
 This document defines both the `types:Pattern` *datatype*
 and the semantics of what it means for a *string* to *match* a *pattern*.
 
 ### Matching and Languages
 
 A **pattern** is an element of the `types:Pattern` *datatype*.
-Every *pattern* is said to *match* a (possibly-infinite) set of *strings*.
+Every *pattern* is said to **match** a (possibly-infinite) set of *strings*.
 The set of *strings* that a particular *pattern* *matches* is defined by
 the contents of the *pattern* itself, using the rules specified in this document.
 
+{.ednote ...} This draft is inconsistent in its use of "match" vs "*match*". It is not clear which is preferable.
+
+[Basic Concepts] currently refers to "match" as an undefined word,
+which is convenient because not all uses of "match" in that document
+refer to matching a pattern (others match EBNF productions, Accept headers,
+informal requirements, etc.) That flexibility is supported by not formally
+defining "match".
+
+Conversely, much of this document presents a formal definition of what it means
+to *match* a *pattern* or its component parts.
+That formality suggests "*match*" should be a formally-defined word.
+
+As an alternative, the entire document could be re-written to define
+the "language of" a *pattern* as many theoretical computer science text do,
+which would greatly reduce the occurrences of the word "*match*".
+This draft has taken the position that "language" it too important a word
+in other genealogical concepts for its formal definition herein to be wise.
+{/}
+
 {.note} Those familiar with theoretic computer science might be used to
-refering to the set of *strings* matched by a *pattern* as the 
-"language of" that *pattern*, and refering to the *pattern* itself
+referring to the set of *strings* matched by a *pattern* as the 
+"language of" that *pattern*, and referring to the *pattern* itself
 as a "regular expression". Since these terms are not necessary to define
 the semantics of a *pattern*, and since "language" in particular has a
 second, more common, and very important meaning in genealogy,
 this document does not make normative use of those terms.
 
-{.example ...} Consider the *pattern* `[ab][cd]?`.
-The set of *strings* that that *pattern* *matches* is {`a`, `ac`, `ad`, `b`, `bc`, `bd`}.
-We say that `[ab][cd]?` *matches* the *string* `a`
-and does *not match* the string `aa`.
+{.example ...} Consider the *pattern* "`[ab][cd]?`".
+The set of *strings* that that *pattern* *matches* is {"`a`", "`ac`", "`ad`", "`b`", "`bc`", "`bd`"}.
+We say that "`[ab][cd]?`" *matches* the *string* "`a`"
+and does *not match* the string "`aa`".
 {/} 
 
-### Hierarchical Definiton of Patterns
+### Hierarchical Definition of Patterns
 
-This section presents a set of definitons that fully define both
+This section presents a set of definitions that fully define both
 the *lexical space* of the `types:Pattern` *datatype*
 and the set of *strings* matched by an given *pattern*.
 It does this by introducing and naming several intermediate concepts.
@@ -133,7 +150,13 @@ In particular, this documents' presentation of the following key words
 SHOULD NOT be directly referenced in other documents:
 *regular expression*, *branch*, *piece*, *quantifier*, *atom*, *normal character*, *metacharacter*, *banned character*, *escaped character*, *character class*, *positive character class*, *negative character class*, *character range*, *wildcard*.
 
-#### Regular Expression                                 {#regExp}
+{.ednote} The list of key words defined in this document that *should not* appear in other documents is inelegant, but defining these terms is not a principle goal of this document either. However, definitions of patterns that do not name (at least most of) these parts are hard to follow.
+
+#### Components that Match Strings
+
+The following components define portions of *patterns* which match *strings*
+
+##### Regular Expression                                 {#regExp}
 
 A **regular expression** consists of one or more *branches*.
 Between each *branch* is a single U+007C `|` character.
@@ -143,7 +166,7 @@ Between each *branch* is a single U+007C `|` character.
 The set of *strings* *matched* by a *regular expression* is the union of
 the sets of *strings* *matched* by its *branches*.
 
-#### Branch
+##### Branch
 A **branch** consists of one or more *pieces*.
 The *pieces* of a *branch* appear adjacent to one another with no intervening characters.
 
@@ -151,7 +174,7 @@ The *pieces* of a *branch* appear adjacent to one another with no intervening ch
 
 A *branch* *matches* a *string* $s$ if and only if a prefix of $s$ matches the first *piece* of the *branch* and the remainder of $s$ matches the remaining *pieces*.
 
-#### Piece
+##### Piece
 
 A **piece** consists of an *atom*, possibly followed by a **quantifier**.
 
@@ -180,7 +203,7 @@ were vague or undefined on this point.
 
 XML: just says "followed by", as e.g. "`A` `B` matches `A` followed by `B`."
 
-ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without definiton. It does contain a description of the `String.prototype.concat` function: "Set *R* to the String value consisting of the code units of the previous value of *R* followed by the code units of nextString."
+ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without definition. It does contain a description of the `String.prototype.concat` function: "Set *R* to the String value consisting of the code units of the previous value of *R* followed by the code units of nextString."
 {/}
 
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
@@ -191,7 +214,7 @@ ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without
 
 
 
-#### Atom
+##### Atom
 
 An **atom** is either a *normal character*, an *escaped character*, a
 *character class*, or a parenthesised *regular expression*.
@@ -200,11 +223,15 @@ An **atom** is either a *normal character*, an *escaped character*, a
 
 An *atom* that is a parenthesized *regular expression* matches the same set of *strings* as its *regular expression* (the parentheses do not directly contribute to the *match*).
 
-An *atom* that is a *normal character* or *escaped character* matches any single-character string whose character is the chracter represented by the *normal character* or *escaped character*.
+An *atom* that is a *normal character* or *escaped character* matches any single-character string whose character is the character represented by the *normal character* or *escaped character*.
 
 An *atom* that is a *character class* matches any single-character *string* whose character is within the *character class*.
 
-#### Normal Character
+#### Components that represent characters
+
+The following components define portions of *patterns* which represent single *characters*
+
+##### Normal Character
 
 A **normal character** is any *character* that is not a *metacharacter* or a *banned character*.
 
@@ -220,7 +247,7 @@ The **banned characters** are '`^`', '`$`', '`&`', '`/`', and the escapable cont
 
 {.ednote} The set of *banned characters* was selected by a survey of several regular expression dialects, but may be incomplete. Community input on other characters that may have special meaning in some dialects is invited.
 
-#### Escaped Character
+##### Escaped Character
 
 An **escaped character** is a U+005C `\` followed by a single character,
 which must be a *metacharacter*, a *class metacharacter*, a *banned character*, or one of U+0074 `t`, U+006E `n`, or U+0072 `r`.
@@ -233,31 +260,45 @@ An escaped U+006E `\n` represents the *character* U+000A (the line fed).
 
 An escaped U+0072 `\r` represents the *character* U+000D (the carriage return).
     
-{.note} Some dialects of regular expresions allow any character to be escaped without special meaning, but others do not or have additional special meanings for some characters (such as `\f`, `\A`, etc). For maximal compatibility, *patterns* MUST NOT escape characters other than those listed aove.
+{.note} Some dialects of regular expressions allow any character to be escaped without special meaning, but others do not or have additional special meanings for some characters (such as `\f`, `\A`, etc). For maximal compatibility, *patterns* MUST NOT escape characters other than those listed above.
 
 {.note ...}
-Code-point escapes (e.g., `\x{2F2E}` for `⼮`) are not provided in this specification because they are not supported in some common regular expression engines such as POSIX and XML. Instead, unicode should be expressed in the same encoding used by the *strings* being checked for membership in a regular expression's language.
+Code-point escapes (e.g., `\x{2F2E}` for `⼮`) are not provided in this specification because they are not supported in some common regular expression engines such as POSIX and XML. Instead, Unicode should be expressed in the same encoding used by the *strings* being checked for membership in a regular expression's language.
 
 If the chosen engine is byte- rather than code-point-oriented, care should be made that (a) quantifiers bind to characters, not bytes; and (b) character class ranges are correctly handled.
 Binding can be achieved by adding parentheses around each multi-byte character; how to achieve character class ranges is not known in general by the authors of this specification.
 {/}
 
+##### Class Character
 
-#### Character Class
+A **class character** is either an *escaped character* or a single character that is neither a *class metacharacter* nor a *banned character*.
+
+The **class metacharacters** are '`.`', '`\`', '`-`', '`|`', '`[`', and '`]`'.
+
+{.example} Because *banned characters* are not permitted unescaped as *class characters*, "`[A-^]`" is not a *pattern* (as it includes the *banned character* '`^`') even though it is accepted by some regular expression engines.
+
+{.ednote} *class character* might be clearer if we add a definition for *class normal character* (like we do a *normal character*)
+
+
+#### Components that define sets of characters
+
+The following components define sets of individual characters.
+
+##### Character Class
 A **character class** is either a *positive character class*, a *negative character class*, or a *wildcard*.
 
     charClass ::= posCharClass | negCharClass | wildcard
 
-#### Positive Character Class
+##### Positive Character Class
 A **positive character class** is a set of one or more *character ranges* within brackets.
 
     posCharClass ::= '[' charRange+ ']'
     
-A *character* is within a *positive character class* if it is within at least one of the *positive character class*'s *character ranges*.
+A *positive character class* defines the union of the sets defined by its *character ranges*.
 
 {.note} The ranges do not need to be mutually exclusive nor presented in any particular order.
 
-#### Character Range
+##### Character Range
 A **character range** is either a single *class character*
 or two *class characters* separated by a U+002D `-`.
 
@@ -265,33 +306,25 @@ or two *class characters* separated by a U+002D `-`.
 
 If a character range has two *class characters* the second MUST NOT have a numerically lesser code point than the first.
 
-A character is within a single-*class character* *character range* if it is that character that *class character* represents.
-A character is within a two-character *character range* if its code point is both
+A single-*class character* *character range* defines the singleton set containing only the character that its *class character* represents.
+A two-character *character range* defines the set of all *characters* whose code point is 
 
 - numerically greater than or equal to the code point of the *character* that the first *class character* represents
 - numerically less than or equal to the code point of the *character* that the second *class character* represents
 
-#### Class Character
-
-A **class character** is either an *escaped character* or a single character that is neither a *class metacharacter* nor a *banned character*.
-
-The **class metacharacters** are '`.`', '`\`', '`-`', '`|`', '`[`', and '`]`'.
-
-{.example} Because *banned characters* are not permitted unescpaed as *class characters*, `[A-^]` is not a *pattern* (as it includes the *banned character* `^`) even though it is accepted by some regular expression engines.
-
-#### Negative Character Class
+##### Negative Character Class
 A **negative character class** is a set of one or more *character ranges*, preceded by U+005E `^`, within brackets.
 
     negCharClass ::= '[^' charRange+ ']'
 
-A character is within a *negative character class* if and only if it is not within any of the *negative character class*'s *character ranges*.
+A *negative character class* defines the set of all *characters* that are not within the union of the sets defined by its *character ranges*.
 
-#### Wildcard
+##### Wildcard
 A **wildcard** is represented as U+002E `.`.
 
     wildcard ::= '.'
 
-All *characters* are within the *wildcard*.
+The *wildcard* defines the set of all *characters*.
 
 {.note} The above definition includes new line characters in `.`. When using an engine that does not do so, replace all `.` with something else, such as `(.|[\r\n])`, `(.|\s)`, or `[\s\S]`. Which one works depends on the engine in question.
 
@@ -299,13 +332,12 @@ All *characters* are within the *wildcard*.
 ### The `types:Pattern` datatype
 
 FHISO uses the `types:Pattern` *datatype* to represent *patterns*.
-It *must not* be used for *pattern*-like regular expresison variants
-that do not conform to this standard's defintion of a *pattern*.
+It *must not* be used for *pattern*-like regular expression variants
+that do not conform to this standard's definition of a *pattern*.
 
-{.example} In Perl, `/(.)\1/` is a regular expression that matches
-any string that contains the same character repreated twice in a row.
-Because this is not a valid *pattern*, it does not have the
-`types:Pattern` *datatype*.
+{.example} In ECMAScript, "`/^.[.]$/`" is a regular expression that matches
+a two character string ending with a period.
+Because this is not a valid *pattern*, it does not have the `types:Pattern` *datatype*.
 
 The *lexical space* of this *datatype* is the space of all *strings*
 that match the `regExp` production in {§regExp}.
@@ -323,7 +355,7 @@ following properties:
 Name             `https://terms.fhiso.org/types/Pattern`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
