@@ -655,20 +655,24 @@ IRI* either with an error code or with a response including all of the
 *terms* in the *namespace*.
 {/}
 
-{.example ...}  [Basic Concepts] defines five *terms* whose *term names*
+{.example ...}  [Basic Concepts] defines nine *terms* whose *term names*
 begin with the following IRI:
 
     https://terms.fhiso.org/types/ 
 
-This is the *namespace* of these five terms, therefore *discovery* on
+This is the *namespace* of these nine terms, therefore *discovery* on
 that IRI either *must* yield an error (if *discovery* on *namespace
 names* is not supported) or *must* include the following triples:
 
+    <https://terms.fhiso.org/types/constituentDatatype> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/nonTrivialSupertype> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/Union> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+    <https://terms.fhiso.org/types/isAbstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
     <https://terms.fhiso.org/types/requiredProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
     <https://terms.fhiso.org/types/pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/nonTrivialSupertypeCount> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+    <https://terms.fhiso.org/types/constituentDatatypeCount> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
     <https://terms.fhiso.org/types/Pattern> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-    <https://terms.fhiso.org/types/subTypeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
-    <https://terms.fhiso.org/types/isAbstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
 
 If in the future FHISO defines further *terms* in that *namespace*, the
 server *must* include them too.
