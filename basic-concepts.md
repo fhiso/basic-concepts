@@ -2002,7 +2002,7 @@ explicitly say this as FHISO's data model currently has no need for the
 
 [FHISO Patterns]
 :   FHISO (Family History Information Standards Organisation).
-    *The Patterns Datatype*.  Exploratory draft.
+    *The Pattern Datatype*.  First public draft.
 
 [RDFS]
 :   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
