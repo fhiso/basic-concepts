@@ -1,10 +1,12 @@
 ---
 title: The Pattern Datatype
+date: 15 March 2018
+numbersections: true
 ...
 # The Pattern Datatype
 
-{.ednote ...} This is a **first public draft** of a standard covering 
-basic concepts that are expected to be used in multiple FHISO standards.
+{.ednote ...} This is a **first public draft** of a standard defining
+a regular expression dialect for use in FHISO standards.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
 {/}
@@ -85,9 +87,7 @@ The following *prefix* bindings are assumed in this standard:
 ------           -----------------------------------------------
 `rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
 `rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
-`xsd`            `http://www.w3.org/2001/XMLSchema#`
 `types`          `https://terms.fhiso.org/types/`
-`cev`            `https://terms.fhiso.org/sources/`
 ------           -----------------------------------------------
 
 
@@ -95,14 +95,14 @@ The following *prefix* bindings are assumed in this standard:
 
 ## Pattern
 
-As defined in [Basic Concepts], a *pattern* is a a regular expression 
+As defined in [Basic Concepts], a *pattern* is a regular expression 
 intended to provides a constraint on the *lexical space* of the *datatype*.
-This document defines both the `types:pattern` *datatype*
+This document defines both the `types:Pattern` *datatype*
 and the semantics of what it means for a *string* to *match* a *pattern*.
 
 ### Matching and Languages
 
-A **pattern** is an element of the `types:pattern` *datatype*.
+A **pattern** is an element of the `types:Pattern` *datatype*.
 Every *pattern* is said to *match* a (possibly-infinite) set of *strings*.
 The set of *strings* that a particular *pattern* *matches* is defined by
 the contents of the *pattern* itself, using the rules specified in this document.
@@ -124,7 +124,7 @@ and does *not match* the string `aa`.
 ### Hierarchical Definiton of Patterns
 
 This section presents a set of definitons that fully define both
-the *lexical space* of the `types:pattern` *datatype*
+the *lexical space* of the `types:Pattern` *datatype*
 and the set of *strings* matched by an given *pattern*.
 It does this by introducing and naming several intermediate concepts.
 These intermediate concepts are presented for expository purposed only
@@ -140,7 +140,8 @@ Between each *branch* is a single U+007C `|` character.
 
     regExp ::= branch ( '|' branch )*
 
-The set of *strings* *matched* by a *regular expression* is the union of the languages of its *branches*.
+The set of *strings* *matched* by a *regular expression* is the union of
+the sets of *strings* *matched* by its *branches*.
 
 #### Branch
 A **branch** consists of one or more *pieces*.
@@ -192,7 +193,8 @@ ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without
 
 #### Atom
 
-An **atom** is either a *normal character*, an *escaped character*, a *character class*, or a parenthesized *regular expression*.
+An **atom** is either a *normal character*, an *escaped character*, a
+*character class*, or a parenthesised *regular expression*.
 
     atom ::= NormalChar | escapedChar | charClass | '(' regExp ')'
 
@@ -234,7 +236,7 @@ An escaped U+0072 `\r` represents the *character* U+000D (the carriage return).
 {.note} Some dialects of regular expresions allow any character to be escaped without special meaning, but others do not or have additional special meanings for some characters (such as `\f`, `\A`, etc). For maximal compatibility, *patterns* MUST NOT escape characters other than those listed aove.
 
 {.note ...}
-Code-point escapes (e.g., `\x{2F2E}` for `⼮`) are not provided in this specification because they are not supported in some common regular expression engines such as POSIX and XML. Instead, unicode should be expressed in the same encoding used by the strings being checked for membership in a regular expression's language.
+Code-point escapes (e.g., `\x{2F2E}` for `⼮`) are not provided in this specification because they are not supported in some common regular expression engines such as POSIX and XML. Instead, unicode should be expressed in the same encoding used by the *strings* being checked for membership in a regular expression's language.
 
 If the chosen engine is byte- rather than code-point-oriented, care should be made that (a) quantifiers bind to characters, not bytes; and (b) character class ranges are correctly handled.
 Binding can be achieved by adding parentheses around each multi-byte character; how to achieve character class ranges is not known in general by the authors of this specification.
@@ -294,15 +296,16 @@ All *characters* are within the *wildcard*.
 {.note} The above definition includes new line characters in `.`. When using an engine that does not do so, replace all `.` with something else, such as `(.|[\r\n])`, `(.|\s)`, or `[\s\S]`. Which one works depends on the engine in question.
 
 
-### The `types:pattern` datatype
+### The `types:Pattern` datatype
 
-FHISO uses the `types:pattern` *datatype* to represent *patterns*.
-It *must not* be used *pattern*-like regular expresison variants
-that do not conform to this standards' defintion of a *pattern*.
+FHISO uses the `types:Pattern` *datatype* to represent *patterns*.
+It *must not* be used for *pattern*-like regular expresison variants
+that do not conform to this standard's defintion of a *pattern*.
 
 {.example} In Perl, `/(.)\1/` is a regular expression that matches
 any string that contains the same character repreated twice in a row.
-Because this is not a valid *pattern*, it does not have the `types:pattern` *datatype*.
+Because this is not a valid *pattern*, it does not have the
+`types:Pattern` *datatype*.
 
 The *lexical space* of this *datatype* is the space of all *strings*
 that match the `regExp` production in {§regExp}.
@@ -317,7 +320,7 @@ following properties:
 : Datatype definition
 
 ------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/pattern`
+Name             `https://terms.fhiso.org/types/Pattern`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
 Supertype        *No non-trival supertypes*
@@ -403,4 +406,9 @@ XML
     Maler, François Yergeau, and John Cowan eds., 2006.  W3C
     Recommendation.  (See <https://www.w3.org/TR/xml11/>.)
 
-
+----
+Copyright © 2017–18, [Family History Information Standards Organisation,
+Inc](https://fhiso.org/).
+The text of this standard is available under the
+[Creative Commons Attribution 4.0 International
+License](https://creativecommons.org/licenses/by/4.0/).
