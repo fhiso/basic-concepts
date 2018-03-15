@@ -1732,7 +1732,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#string`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1778,7 +1778,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#boolean`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `true|false|1|0`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1866,7 +1866,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `[+-]?[0-9]+`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1915,7 +1915,7 @@ dependent on IRI scheme.
 Name             `http://www.w3.org/2001/XMLSchema#anyURI`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1944,7 +1944,7 @@ This *datatype* has the following properties:
 Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        *No non-trival supertypes*
+Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1967,7 +1967,7 @@ This *datatype* has the following properties:
 Name                `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Type                `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern             `.*`
-Supertype           *No non-trival supertypes*
+Supertype           *No non-trivial supertypes*
 Abstract            `true`
 ------              -----------------------------------------------------------
 
