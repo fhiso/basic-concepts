@@ -11,19 +11,19 @@
 
 rdf:type
 	rdf:type rdf:Property ;
-	rdfs:range rdf:Class .
+	rdfs:range rdfs:Class .
 
 rdfs:Class
 	rdf:type rdfs:Class ;
 	rdfs:subClassOf rdfs:Resource ;
-	types:requiredProperty rdf:type, types:requiredProperty .
+	types:requiredProperty rdf:type .
 
 rdfs:subClassOf
 	rdf:type rdf:Property ;
 	rdfs:range rdfs:Class .
 
 rdfs:Resource
-	rdf:type rdf:Class ;
+	rdf:type rdfs:Class ;
 	types:requiredProperty rdf:type .
 
 rdf:Property
@@ -44,69 +44,76 @@ types:requiredProperty
 rdfs:Datatype
 	rdf:type rdfs:Class ;
 	rdfs:subClassOf rdfs:Class ;
-	types:requiredProperty rdf:type,
-                types:pattern, types:subTypeOf, types:isAbstract .
+	types:requiredProperty rdf:type, types:pattern, 
+		types:nonTrivialSupertypeCount, types:isAbstract .
 
 types:pattern
 	rdf:type rdf:Property ;
-	rdf:range types:Pattern ;
+	rdfs:range types:Pattern ;
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#patterns> .
 
 # TODO: this will be defined externally
 types:Pattern
 	rdf:type rdfs:Datatype ;
-	rdfs:subClassOf rdfs:Literal ;
 	types:pattern ".*" ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false ;
 	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#patterns> .  # TODO
+		<https://fhiso.org/TR/basic-concepts#patterns> .
 
-types:subTypeOf
+types:nonTrivialSupertype
 	rdf:type rdf:Property ;
-	rdf:range rdfs:Datatype ;
+	rdfs:range rdfs:Datatype ;
 	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#subtypes> .
+		<https://fhiso.org/TR/basic-concepts#non-trivial-types> .
+
+types:nonTrivialSupertypeCount
+	rdf:type rdf:Property ;
+	rdfs:range xsd:integer ;
+	rdfs:isDefinedBy
+		<https://fhiso.org/TR/basic-concepts#non-trivial-types> .
 
 types:isAbstract
 	rdf:type rdf:Property ;
-	rdf:range xsd:boolean ;
+	rdfs:range xsd:boolean ;
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#abstract-types> .
 
 xsd:string
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
-	types:subTypeOf xsd:anyAtomicType ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false .
 
 xsd:boolean
 	rdf:type rdfs:Datatype ;
 	types:pattern "true|false|1|0" ;
-	types:subTypeOf xsd:anyAtomicType ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false .
 
 xsd:integer
 	rdf:type rdfs:Datatype ;
 	types:pattern "[+-]?[0-9]+" ;
-	types:subTypeOf xsd:anyAtomicType ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false .
 
 xsd:anyURI
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
-	types:subTypeOf xsd:anyAtomicType ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false .
 	
 rdf:langString
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
-	types:subTypeOf xsd:anyAtomicType ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false .
 
 xsd:anyAtomicType
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
+	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract true .
 
 

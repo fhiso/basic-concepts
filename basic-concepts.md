@@ -1303,7 +1303,7 @@ a *subtype* of a second *datatype*, and that second *datatype* is a
 meaning that a *datatype* is by definition a *subtype* of itself.  The
 notion of a *supertype* is similarly transitive and reflexive.
 
-#### Non-trivial supertypes
+#### Non-trivial supertypes                          {non-trivial-types}
 
 The **trivial supertypes** of a *datatype* are certain *supertypes*
 whose status as a *supertype* of the *datatype* is implied by the data
