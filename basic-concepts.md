@@ -1,6 +1,6 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 12 March 2018
+date: 15 March 2018
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
@@ -798,7 +798,7 @@ is a *subclass* of `rdfs:Resource`.
 
 #### The universal superclass                           {#rdfs-resource}
 
-This standard uses `rdfs:Resource` as a **universal superclass**
+This standard uses `rdfs:Resource` as the **universal superclass**
 defined to be the *superclass* of all *classes*.
 
 : Class definition
@@ -1157,7 +1157,7 @@ Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/pattern`<br/>
-                    `https://terms.fhiso.org/types/subTypeOf`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`<br/>
                     `https://terms.fhiso.org/types/isAbstract`
 ------              -----------------------------------------------------------
 
@@ -1186,8 +1186,9 @@ A party defining a *datatype* *shall* specify a **pattern** for that
 *datatype*.  This is a regular expression which provides a constraint on
 the *lexical space* of the *datatype*.  Matching the *pattern* might not
 be sufficient to validate a *string* as being in the *lexical space* of
-the *datatype*, but a *string* that fails to match the *pattern* is
-guaranteed not to be in the *lexical space*.
+the *datatype*, but parties defining a *datatype* *must* ensure that all
+*strings* in the *lexical space* match the *pattern*, even if some
+*strings* outside the *lexical space* also match the *pattern*.
 
 {.note}  Patterns are included in this standard to provide a way for
 an application to find out about the *lexical space* of a unfamiliar
@@ -1239,27 +1240,29 @@ Possibly it is an `owl:Restriction`, which would be incompatible with
 this use.  Using `xsd:pattern` would also require us to use precisely
 the form of regular expression defined in Appendix G of [XSD Pt2].
 
-A *datatype* with a *pattern* other than `.*` is known as a **structured
-datatype**, while one with a *pattern* of `.*` is known as an
-**unstructured datatype**.
+A *datatype* with a *pattern* other than "`.*`" is known as a
+**structured datatype**, while one with a *pattern* of "`.*`" is known
+as an **unstructured datatype**.
 
 ### Subtypes                                                 {#subtypes}
 
-A *datatype* *may* be defined as a **subtype** of another *datatype*
-which is referred to as its **supertype**.  This is used to provide a
-more specific version of a more general *datatype*.  The *lexical space*
-of the *subtype* *shall* be a subset of the *lexical space* of the
-*supertype*, and if an application is unfamiliar with the *subtype* it
-*may* process it as if it were the *supertype*.  The *subtype* *must* be
-defined in such a way that at most this results in some loss of meaning
-but does not introduce any false implications about the dataset.  
+A *datatype* *may* be defined as a **subtype** of one or more other
+*datatype* which are referred to as its **supertypes**.  This is used to
+provide a more specific version of a more general *datatype*.  If an
+application is unfamiliar with the *subtype* it *may* process it as if
+it were one of its *supertypes*.  The *subtype* *must* be defined in
+such a way that at most this results in some loss of meaning but does
+not introduce any false implications about the dataset.  
 
-{.note}  This does not require a *subtype* to define a *pattern* if
-the *supertype* does.  Because the *lexical space* of the *subtype*
-*must* be a subset of that of the *supertype*, the *pattern* of the
-*supertype* may be used if the *subtype* does not define one.  This
-might be done if additional restrictions made on *lexical space* of the
-*subtype* cannot readily be expressed using a regular expression.
+{.ednote}  Would it be a useful simplification if this definition said
+something along the following lines?  If a *datatype* has more than one
+*supertype* which are not *abstract datatypes*, one of these
+non-abstract *datatypes* *shall* be the *supertype* of the others.
+This is similar to Java's rule on inheritance: you can multiply inherit
+interfaces but only singly inherit a class.   
+
+The *lexical space* of the *subtype* *shall* be a subset of the *lexical
+space* of the *supertype*.
 
 {.note}  It is the *lexical space* of the *subtype* that is
 required to be a subset of the *lexical space* of the *supertype*.  The
@@ -1281,9 +1284,33 @@ XML Schema's concept of derivation of a simple type by restriction per
 §3.16 of &#x5B;[XSD Pt1](https://www.w3.org/TR/xmlschema11-1/)].  XML
 Schema does not have concept compatible with this standard's notion of
 an *abstract datatype*, as in XML Schema only complex types can be
-abstract.  If it is desirable to describe a FHISO *abstract datatype* in
-XML Schema, it should be defined as a normal simple type, with the
-information that it is abstract conveyed by another means. 
+abstract and complex types are not *strings*.  If it is desirable to
+describe a FHISO *abstract datatype* in XML Schema, it should be defined
+as a normal simple type, with the information that it is abstract
+conveyed by another means. 
+
+All *datatypes* are implicitly a *subtype* of the `xsd:anyAtomicType`
+*abstract datatype* defined to be the *universal supertype* in
+{§anyAtomicType}.
+
+{.ednote}  The following paragraph is duplicated in {§subclasses}.
+
+The notion of a *subtype* is transitive, meaning that if a *datatype* is
+a *subtype* of a second *datatype*, and that second *datatype* is a
+*subtype* of a third *datatype*, then the first *datatype* is a
+*subtype* of the third.  The notion of a *subtype* is also reflexive,
+meaning that a *datatype* is by definition a *subtype* of itself.  The
+notion of a *supertype* is similarly transitive and reflexive.
+
+The **trivial supertypes** of a *datatype* are certain *supertypes*
+whose status as a *supertype* of the *datatype* is implied by the data
+model defined in this standard.  The *trivial supertypes* of a
+*datatype* include the *datatype* itself and the *universal supertype*,
+`xsd:anyAtomicType`.  A *supertype* which not a *trivial supertype* is
+called a **non-trivial supertype**.
+
+{.note} *Unions of datatypes*, as defined in {§unions}, are also
+*trivial supertypes*.
 
 The *property term* representing the *supertype* of a *datatype* is
 defined as follows:
@@ -1311,10 +1338,81 @@ constrains both the *lexical space* and the *value space*.  This is what
 `types:subTypeOf` provides.  This standard explicitly does not state
 whether `types:subTypeOf` is an `rdfs:subPropertyOf` `rdfs:subClassOf`.
 
-*Datatypes* which are not explicitly defined as *subtypes* of some other
-*datatype* are implicitly defined to be *subtypes* of one of 
-`rdf:langString` or `xsd:anyAtomicType`, as defined in {§langString} and
-{§anyAtomicType}, respectively.
+The `types:subTypeOf` *property* *may* be used to record any
+*supertype*, but *trivial supertypes* *should not* normally be recorded.
+
+{.note} As `types:subTypeOf` is a *required property* of
+`rdfs:Datatype`, if a *datatype* has no *non-trivial supertypes*, at
+least one *trivial supertype* *must* be recorded so that the *datatype*
+has a `types:subTypeOf` *property*.  
+
+A `types:subTypeOf` *property* *must* be used to record every
+*non-trivial supertype* of a *datatype* which is not implied by the
+transitivity of `types:subTypeOf` and the other `types:subTypesOf`
+*properties* present.
+
+{.example}  Suppose a hypothetical standard defines three *datatypes*,
+`DateTime`, `Date`, and `Year`.  If the standard specifies that `Year`
+has a `types:subTypeOf` *property* with *property value* `Date`, and
+that `Date` has a `types:subTypeOf` *property* with *property value*
+`DateTime`, it is not necessary for the standard to record that `Year`
+has a second `types:subTypeOf` *property* with *property value*
+`DateTime` as this is implied by the other two.  Nevertheless, the
+standard *may* do so.
+
+As a way of checking for data integrity during *discovery*, an
+additional *property* is provided representing the number of
+*non-trivial supertypes* of the *datatype* that are either recorded
+using `types:subTypeOf` *properties* or are implied by them via
+transitivity:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2001/XMLSchema#integer`
+------           -----------------------------------------------
+
+{.ednote} Should this have a *range* of `xsd:nonNegativeInteger`
+instead?
+
+This `types:nonTrivialSuperTypeCount` *property* is a *required
+property* of `rdfs:Datatype`, and must be specified (with a value of
+"`0`") even if there are no *non-trivial supertypes*.
+
+{.ednote ...}  These two *properties* are likely to be changed in a
+future draft.  A cleaner implementation would be to have a single
+`types:supertypes` *property* which is a list of the *non-trivial
+supertypes* of the *datatype*, however at the moment the data model does
+not support list-valued properties.  This is a recognised deficiency in
+the current data model that is likely to be changed, but which requires
+considerable work.
+
+The reason why a single list-valued *property* is inherently safe
+whereas a collection of a *properties* is that the list-valued property
+can be made a *required property* which *must* be present exactly once.
+If it is not, an application knows that is missing and will not assume
+it properly understands the *datatype*.  However if one of several
+`types:subTypeOf` *properties* goes missing, this might go unnoticed.
+This is particular relevant if the *properties* have been processed by
+RDF applications, as the RDF philosophy is that RDF triples can be taken
+in isolation and that removing one or more RDF triples merely loses
+information rather than altering the meaning of something.  It is
+therefore quite conceivable that an RDF triple encoding a *property*
+might go missing.
+
+In [CEV Concepts], a missing `types:subTypeOf` might result in a
+*datatype* being incorrectly thought not to conform to the *range* of
+some *citation element*, which might result in a valid *citation
+element* being discarded.  The importance of avoiding this is the reason
+why the current draft includes a `types:nonTrivialSuperTypeCount` as a
+check.
+{/}  
+
+In the *datatype* definition tables in this standard, a single
+*supertype* row is given which is understood to contain a complete list
+of all *non-trivial supertypes* and no *trivial supertypes*.
 
 ### Abstract datatypes                                 {#abstract-types}
 
@@ -1330,9 +1428,7 @@ defined on it serve to restrict the *lexical space* of all its
 be defined as the space of all *strings*.
 
 The *property* that represents whether or not a *datatype* is an
-*abstract datatype* has the following *property name*:
-
-    https://terms.fhiso.org/types/isAbstract
+*abstract datatype* defined as follows:
 
 : Property definition
 
@@ -1353,10 +1449,6 @@ A **language-tagged datatype** is a *datatype* whose values are
 *language-tagged strings* consisting of both a *string* from the
 *lexical space* of the *datatype* and a *language tag* to identify the
 language in which that particular *string* is written.  
-
-{.note} Because the *language tag* is not part of the *lexical space* of
-the *datatype*, and is not embedded in the *string*, a *pattern* cannot
-be used to constrain the *language tag*.
 
 *Language-tagged datatypes* *should* be used whenever a *datatype* is
 needed to represent textual data that is in a particular
@@ -1393,10 +1485,12 @@ noun.  The respelling would be tagged `eo`, the language code for
 Esperanto.
 {/}
 
-*Patterns* may be defined for *language-tagged datatypes* as for other
-*datatypes*.  Because *patterns* only constrain the *lexical space* of
-the *datatype*, they cannot be used to constrain the *language tag* in
-the value of a *language-tagged datatype*.
+*Language-tagged datatypes* *shall* define a *pattern*, just as other
+*datatypes* do.  
+
+{.note} Because the *language tag* is not part of the *lexical space* of
+the *datatype*, and is not embedded in the *string*, a *pattern* cannot
+be used to constrain the *language tag*.
 
 A *datatype* that is not a *language-tagged datatype* is called a
 **non-language-tagged datatype**.
@@ -1411,21 +1505,173 @@ microformat which is constrained by a *pattern* meaning it is a
 *structured datatype*, but it is also a *language-tagged datatype* as
 names can be translated and transliterated.
 
-*Subtypes* may be defined of *language-tagged datatypes*, just as they
-can be for other *datatypes*.  If the *supertype* is a *language-tagged
-datatype* then the *subtype* *must* also be; and if the *supertype* is
-not a *language-tagged datatype* then the *subtype* *must not* be.  The
-sole exception to this is that, the `rdf:langString` *language-tagged
-datatype* is defined in {§langString} to be a *subtype* of the
-`xsd:anyAtomicType` *non-language-tagged datatype*.
+A *language-tagged datatypes* *may* be used as a *supertype* of a
+*datatype*.  All *subtypes* of a *language-tagged datatype* *shall* also
+be *language-tagged datatypes*.
 
-This standard does not provide a *property* denoting whether or not a
-*datatype* is a *language-tagged datatype*.  Instead, this information
-is conveyed using the `types:subTypeOf` *property*.  *Language-tagged
-datatypes* *shall* include the `rdf:langString` *datatype* defined in
-{§langString} as a *supertype*, while *non-language-tagged datatypes* *shall*
-include the `xsd:anyAtomicType` *datatype* defined in {§anyAtomicType}
-as a *supertype*.
+{.ednote} An earlier unpublished draft of this standard also said that
+the *subtypes* of a *non-language-tagged datatypes* (other than
+`xsd:anyAtomicType`) were *required* to be *non-language-tagged*, with
+an exception for *subtypes*.  This requirement has been dropped to allow
+*unions* to be defined which contain a mixture of *language-tagged
+datatypes* and *non-language-tagged datatypes*.
+
+All *language-tagged datatypes* are implicitly a *subtype* of the
+`rdf:langString` *datatype* defined in {§langString}.
+
+{.note} As a result, there is no need for a *property* stating whether
+or not a *datatype* is a *language-tagged datatype* because this
+information is conveyed using the `types:subTypeOf` *property*.
+
+### Unions of datatypes                                        {#unions}
+
+A **union of datatypes** is an *abstract datatype* which is defined in
+terms of a unordered list of two or more distinct *datatypes* called its
+**constituent datatypes**.   The *constituent datatypes* *must not*
+themselves be *unions of datatypes*.  The *lexical space* of a *union of
+datatypes* is the union of the *lexical spaces* of each *constituent
+datatype*.  
+
+{.note}  There is no requirement that the *lexical spaces* of each
+constituent *datatype* be disjoint.
+
+Like any other *datatype*, a *union of datatypes* is a *term* with a
+*term name*.  It *must* also specify a *pattern*.
+
+{.ednote}  The following example describes a formalism for dates which
+has not yet been agreed nor even properly discussed.  It is likely to
+change.
+
+{.example ...}  FHISO plans to define a *datatype* for representing
+dates which has the following *datatype name*: 
+
+    https://terms.fhiso.org/dates/Date
+
+It is a *union of datatypes* with the following two *constituent
+datatypes*:
+
+    http://www.w3.org/1999/02/22-rdf-syntax-ns#langString
+    https://terms.fhiso.org/dates/AbstractDate
+
+The former is the *language-tagged datatype* defined in {§langString}
+and is used to record dates that are described in a way that cannot be
+converted to a structured form without loosing information.  The latter
+is an *abstract datatype* which serves as the *supertype* for various
+*structured datatypes* for dates.
+
+Because the `rdf:langString` *constituent datatype* is an *unstructured
+datatype*, every possible *string* is part of that of the *lexical
+space* of that *datatype*, and therefore also part of the *lexical
+space* of the *union of datatypes*.  This means the *pattern* specified
+for the *union of datatypes* *must* allow every possible *string*, and
+so *should* be "`.*`". 
+{/}
+
+{.ednote} In the second draft of [CEV Concepts], which is where they
+were previously defined, *unions of datatypes* were not themselves
+*datatypes* as they lacked a *term name* to identify them, did not 
+have a *pattern*, and could not be used as a *subtype* or *supertype*.
+As that draft noted, this is just a matter of nomenclature, and it seems
+more useful to make them proper *datatypes* in their own right.
+
+A *union of datatypes* *may* contain *language-tagged datatypes*,
+*non-language-tagged datatypes*, or a mixture of both.
+
+Each *constituent datatype* of a *union of datatypes* is a *subtype* of
+the *union of datatypes*.  Whenever a *union of datatypes* is
+*supertype* of some other *datatype* it is defined to be a *trivial
+datatype*.
+
+{.note}  This means that every *datatype* has an unbounded set of
+*trivial supertypes* because every possible *union of datatypes* which
+has the *datatype* as a *constituent datatype* is a *supertype* of it.
+The set of *non-trivial supertypes* remains finite. 
+
+A *datatype* *shall* be a *supertype* of a *union of datatypes* if and
+only if it is a *supertype* of every *constituent datatype* of the
+*union of datatypes*.  
+
+{.note}  Because the set of *supertypes* of each *constituent datatype*
+is unbounded, the set of *supertypes* of a *union of datatypes* is also
+unbounded as it contains every *union of datatypes* whose set of
+*constituent datatypes* is a superset of its own.  The set of
+*non-trivial supertypes* remains finite.
+
+{.example}  In previous example, neither `rdf:langString` nor
+`AbstractDate` has any *non-trivial supertypes*, and therefore neither
+does the `Date` *union of datatypes*.
+
+{.example}  In a *union of datatypes* whose *constituent datatypes* are
+all *language-tagged datatypes*, each *constituent datatype* is a
+*subtype* of `rdf:langString` and therefore `rdf:langString` is a
+*non-trivial supertype* of the *union of datatypes*.  This means the
+*union of datatypes* is classified as a *language-tagged datatype*.
+
+The *class* of *unions of datatypes* is defined as follows:
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Union`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSuperTypeCount`<br/>
+                    `https://terms.fhiso.org/types/isAbstract`<br/>
+                    `https://terms.fhiso.org/types/constituentDatatypeCount`
+------              -----------------------------------------------------------
+
+{.note} The main reason for defining a *class* for *unions of datatypes*
+is so that applications can distinguish *unions of datatypes* from other
+*datatypes* in order to check the number of *non-trivial subclasses* a
+class has, and whether this matches the number given in the
+`types:nonTrivialSuperTypeCount` *property*.  It also allows
+`types:constituentDatatypeCount` to be defined as a *required property*.
+
+The *property* which denotes a *constituent datatype* of a *union of
+datatypes* is defined as follows:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/constituentDatatype`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
+
+As a way of checking for data integrity during *discovery*, an
+additional *property* is provided representing the number of
+*constituent datatypes* of the *union of datatype*:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/constituentDatatypeCount`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2001/XMLSchema#integer`
+------           -----------------------------------------------
+
+{.ednote} Should this have a *range* of `xsd:nonNegativeInteger`
+instead?
+
+{.ednote ...}  These two *properties* are likely to be changed in a
+future draft.  Much as with the two *properties* for recording
+*supertypes* given in {§subtypes}, a cleaner implementation would be to
+have a single `types:unionOf` *property* which is a list of the
+*constituent dataptyes* of the *union of datatypes*, however at the
+moment the data model does not support list-valued properties.  This is
+a recognised deficiency in the current data model that is likely to be
+changed, but which requires considerable work.
+
+If and when list-valued *properties* are added to the data model, it may
+be that the `owl:unionOf` *property* defined in
+[OWL](https://www.w3.org/TR/owl-ref/) should be reused instead of
+inventing our own *property*.
+{/}
 
 ### Standard datatypes
 
@@ -1470,7 +1716,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#string`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Supertype        *No non-trival supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1516,7 +1762,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#boolean`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `true|false|1|0`
-Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Supertype        *No non-trival supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1604,7 +1850,7 @@ following properties:
 Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `[+-]?[0-9]+`
-Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Supertype        *No non-trival supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1653,7 +1899,7 @@ dependent on IRI scheme.
 Name             `http://www.w3.org/2001/XMLSchema#anyURI`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Supertype        *No non-trival supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1682,7 +1928,7 @@ This *datatype* has the following properties:
 Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
-Supertype        `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Supertype        *No non-trival supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
 
@@ -1695,7 +1941,7 @@ given in this section, and without reading [RDF Schema].
 
 The `xsd:anyAtomicType` *datatype* defined in defined §3.2.2 of
 &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] is used as the
-**ultimate supertype** of all *datatypes*.
+**universal supertype** of all *datatypes*.
 
 This *datatype* has the following properties:
 
@@ -1705,6 +1951,7 @@ This *datatype* has the following properties:
 Name                `http://www.w3.org/2001/XMLSchema#anyAtomicType`
 Type                `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern             `.*`
+Supertype           *No non-trival supertypes*
 Abstract            `true`
 ------              -----------------------------------------------------------
 
