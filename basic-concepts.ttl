@@ -53,14 +53,13 @@ types:pattern
 	rdfs:isDefinedBy
 		<https://fhiso.org/TR/basic-concepts#patterns> .
 
-# TODO: this will be defined externally
 types:Pattern
 	rdf:type rdfs:Datatype ;
 	types:pattern ".*" ;
 	types:nonTrivialSupertypeCount 0 ;
 	types:isAbstract false ;
 	rdfs:isDefinedBy
-		<https://fhiso.org/TR/basic-concepts#patterns> .
+		<https://fhiso.org/TR/patterns> .
 
 types:nonTrivialSupertype
 	rdf:type rdf:Property ;
