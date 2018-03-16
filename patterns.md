@@ -207,12 +207,7 @@ If S is an *atom* and *L*(S) is the set of strings matched by *S* then
 | S `{n}`    | all concatenations of exactly *n* strings in *L*(S)                       |
 | S `{n,}`   | all concatenations of at least *n* strings in *L*(S)                      |
 
-{.ednote ...} Do we need to define *concatenation*? Most standards I looked at
-were vague or undefined on this point.
-
-XML: just says "followed by", as e.g. "`A` `B` matches `A` followed by `B`."
-
-ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without definition. It does contain a description of the `String.prototype.concat` function: "Set *R* to the String value consisting of the code units of the previous value of *R* followed by the code units of nextString."
+{.ednote ...} Note that the text for *branch* avoids using the word "concatenation" as there is ambiguity in that word's suggestion of ordering, but that ambiguity does not apply for the use in the above table. We might still want to either formally define "concatenation" or re-work the above table to not use it.
 {/}
 
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
