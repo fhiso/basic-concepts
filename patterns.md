@@ -221,7 +221,7 @@ If S is an *atom* and *L*(S) is the set of strings matched by *S* then
 When the above table refers to "strings in *L*(S)", the strings do not need to be distinct.
 
 {.example} If *L*(S) is {"`a`", "`b`"} then *L*(S `*`) includes an infinite number of strings,
-including "", "`a`", "`b`", "`aa`", "`ab`", "`ba`", "`bb", "`aaa`", etc.
+including "", "`a`", "`b`", "`aa`", "`ab`", "`ba`", "`bb`", "`aaa`", etc.
 
 {.example} If *L*(S) is {"`a`", "`b`"} then *L*(S `{3}`) contains 8 strings:
 {"`aaa`", "`aab`", "`aba`", "`abb`", "`baa`", "`bab`", "`bba`", "`bbb`"}.
