@@ -1203,15 +1203,6 @@ the *datatype*, but parties defining a *datatype* *must* ensure that all
 an application to find out about the *lexical space* of a unfamiliar
 *datatype* through *discovery*.
 
-{.ednote ...}  Our current intention is to define our own dialect of
-regular expression.
-
-We also need to specify exactly what *matching* a *pattern*
-means.  In particular we want the complete *string* to match the
-*pattern*, so that "`Sept 2017`" does not match the *pattern*
-`[0-9]{4}`, despite the lack of `^`...`$` around the *pattern*.
-{/}
-
 {.example ...}  The XML Schema `date` type mentioned in a previous
 example has the following *pattern* (here split onto two lines for
 readability &mdash; the second line is an optional timezone which the
@@ -1239,6 +1230,11 @@ Range            `https://terms.fhiso.org/types/Pattern`
 {.note}  The `types:Pattern` *datatype* used as the *range* of this
 property is defined in a separate [FHISO Patterns] standard which
 defines the dialect of regular expressions which FHISO supports.
+
+{.ednote} We added [FHISO Patterns] after adding most of the 
+*pattern* examples in this and other current draft standards,
+and have not yet reviewed them to ensure they all match that
+regular expression syntax.
 
 {.ednote}  This standard does not use `xsd:pattern` as the *property
 term*, even though it is used as a predicate in 
