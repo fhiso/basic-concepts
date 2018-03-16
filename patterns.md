@@ -151,7 +151,7 @@ and does *not match* the string "`aa`".
 
 This section presents a set of definitions that fully define both
 the *lexical space* of the `types:Pattern` *datatype*
-and the set of *strings* matched by an given *pattern*.
+and the set of *strings* matched by a given *pattern*.
 It does this by introducing and naming several intermediate concepts.
 These intermediate concepts are presented for expository purposed only
 and may be changed or removed from future versions of this standard.
