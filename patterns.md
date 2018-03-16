@@ -130,7 +130,7 @@ As an alternative, the entire document could be re-written to define
 the "language of" a *pattern* as many theoretical computer science text do,
 which would greatly reduce the occurrences of the word "*match*".
 This draft has taken the position that "language" it too important a word
-in other genealogical concepts for its formal definition herein to be wise.
+in other genealogical contexts for its formal definition herein to be wise.
 {/}
 
 {.note} Those familiar with theoretic computer science might be used to
@@ -151,7 +151,7 @@ and does *not match* the string "`aa`".
 
 This section presents a set of definitions that fully define both
 the *lexical space* of the `types:Pattern` *datatype*
-and the set of *strings* matched by an given *pattern*.
+and the set of *strings* matched by a given *pattern*.
 It does this by introducing and naming several intermediate concepts.
 These intermediate concepts are presented for expository purposed only
 and may be changed or removed from future versions of this standard.
@@ -207,12 +207,7 @@ If S is an *atom* and *L*(S) is the set of strings matched by *S* then
 | S `{n}`    | all concatenations of exactly *n* strings in *L*(S)                       |
 | S `{n,}`   | all concatenations of at least *n* strings in *L*(S)                      |
 
-{.ednote ...} Do we need to define *concatenation*? Most standards I looked at
-were vague or undefined on this point.
-
-XML: just says "followed by", as e.g. "`A` `B` matches `A` followed by `B`."
-
-ECMA 262: uses the word "concatenation" 81 times (as of the 8th edition) without definition. It does contain a description of the `String.prototype.concat` function: "Set *R* to the String value consisting of the code units of the previous value of *R* followed by the code units of nextString."
+{.ednote ...} Note that the text for *branch* avoids using the word "concatenation" as there is ambiguity in that word's suggestion of ordering, but that ambiguity does not matter in the above table. We might still either formally define "concatenation" or re-work the above table to not use it in a future release of this standard.
 {/}
 
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
