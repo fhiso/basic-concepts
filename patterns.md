@@ -183,6 +183,14 @@ The *pieces* of a *branch* appear adjacent to one another with no intervening ch
 
 A *branch* *matches* a *string* $s$ if and only if a prefix of $s$ matches the first *piece* of the *branch* and the remainder of $s$ matches the remaining *pieces*.
 
+{.ednote ...} While the above is definition of *branch* *matching* does not appear to be ambiguous, is it formally incomplete as it does not define what it means for a *string* to "match the remaining pieces". The following is more rigorous, but also more verbose:
+
+A sequence of $n$ *pieces* *matches* a *string* $s$ if and only if $s$ can be represented as a concatenation of $n$ *strings* $s_1$ $s_2$ ... $s_n$
+such that $s_1$ *matches* the first *piece* in the sequence, $s_2$ matches the second *piece*, and so on with $s_n$ matching the last *piece*.
+
+A *branch* *matches* a *string* if either (a) the *branch* consists of only a single *piece* and that *piece* matches the *string*, or (b) the *branch* consists of a sequence of *pieces* and that sequence of *pieces* *matches* the *string*.
+{/}
+
 ##### Piece
 
 A **piece** consists of an *atom*, possibly followed by a **quantifier**.
@@ -207,8 +215,10 @@ If S is an *atom* and *L*(S) is the set of strings matched by *S* then
 | S `{n}`    | all concatenations of exactly *n* strings in *L*(S)                       |
 | S `{n,}`   | all concatenations of at least *n* strings in *L*(S)                      |
 
-{.ednote ...} Note that the text for *branch* avoids using the word "concatenation" as there is ambiguity in that word's suggestion of ordering, but that ambiguity does not matter in the above table. We might still either formally define "concatenation" or re-work the above table to not use it in a future release of this standard.
-{/}
+When the above table refers to "strings in *L*(S)", the strings do not need to be distinct.
+
+{.example} If *L*(S) is {"`a`", "`b`"} then *L*(S `*`) includes an infinite number of strings,
+including "", "`a`", "`b`", "`aa`", "`ab`", "`ba`", "`bb", "`aaa`", etc.
 
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
 
