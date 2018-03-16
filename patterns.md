@@ -130,7 +130,7 @@ As an alternative, the entire document could be re-written to define
 the "language of" a *pattern* as many theoretical computer science text do,
 which would greatly reduce the occurrences of the word "*match*".
 This draft has taken the position that "language" it too important a word
-in other genealogical concepts for its formal definition herein to be wise.
+in other genealogical contexts for its formal definition herein to be wise.
 {/}
 
 {.note} Those familiar with theoretic computer science might be used to
