@@ -1,6 +1,6 @@
 ---
 title: The Pattern Datatype
-date: 15 March 2018
+date: 16 March 2018
 numbersections: true
 ...
 # The Pattern Datatype
@@ -9,6 +9,15 @@ numbersections: true
 a regular expression dialect for use in FHISO standards.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
+
+The public [tsc-public@fhiso.org](https://tech.fhiso.org/tsc-public)
+mailing list is the preferred place for comments, discussion and other
+feedback on this draft.
+
+--------------           ---------------------------------------------
+Latest public version:   `https://fhiso.org/TR/patterns`
+This version:            `https://fhiso.org/TR/patterns-20180316`
+--------------           ---------------------------------------------
 {/}
 
 {.ednote ...}

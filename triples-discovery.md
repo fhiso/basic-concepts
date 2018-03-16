@@ -1,6 +1,6 @@
 ---
 title: Simple Triples Discovery Mechanism
-date: 15 March 2018
+date: 16 March 2018
 numbersections: true
 ...
 # Simple Triples Discovery Mechanism
@@ -9,6 +9,15 @@ numbersections: true
 simple, general-purpose discovery mechanism.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
+
+The public [tsc-public@fhiso.org](https://tech.fhiso.org/tsc-public)
+mailing list is the preferred place for comments, discussion and other
+feedback on this draft.
+
+--------------           ---------------------------------------------
+Latest public version:   `https://fhiso.org/TR/triples-discovery`
+This version:            `https://fhiso.org/TR/triples-discovery-20180316`
+--------------           ---------------------------------------------
 {/}
 
 FHISO's **Simple Triples Discovery Mechanism** (or **Triples
