@@ -73,7 +73,8 @@ application *must* also be *conformant* with [Basic Concepts].  Concepts
 defined in that standard are used here without further definition.
 
 {.note} In particular, precise meaning of *string*, *character*, 
-*term*, *datatype*, and *pattern* are given in [Basic Concepts].
+*term*, *datatype*, *structured non-language-tagged datatype*,
+and *pattern* are given in [Basic Concepts].
 
 Indented text in grey or coloured boxes does not form a normative part
 of this standard, and is labelled as either an example or a note.  
@@ -185,10 +186,12 @@ A *branch* *matches* a *string* $s$ if and only if a prefix of $s$ matches the f
 
 {.ednote ...} While the above is definition of *branch* *matching* does not appear to be ambiguous, is it formally incomplete as it does not define what it means for a *string* to "match the remaining pieces". The following is more rigorous, but also more verbose:
 
-A sequence of $n$ *pieces* *matches* a *string* $s$ if and only if $s$ can be represented as a concatenation of $n$ *strings* $s_1$ $s_2$ ... $s_n$
+> A sequence of $n$ *pieces* (where $n \ge 2$) *matches* a *string* $s$ if and only if $s$ can be represented as a concatenation of $n$ *strings* $s_1$ $s_2$ ... $s_n$
 such that $s_1$ *matches* the first *piece* in the sequence, $s_2$ matches the second *piece*, and so on with $s_n$ matching the last *piece*.
+>
+> A *branch* *matches* a *string* if either (a) the *branch* consists of only a single *piece* and that *piece* matches the *string*, or (b) the *branch* consists of a sequence of *pieces* and that sequence of *pieces* *matches* the *string*.
 
-A *branch* *matches* a *string* if either (a) the *branch* consists of only a single *piece* and that *piece* matches the *string*, or (b) the *branch* consists of a sequence of *pieces* and that sequence of *pieces* *matches* the *string*.
+Feedback is invited on which version is preferable.
 {/}
 
 ##### Piece
@@ -220,6 +223,9 @@ When the above table refers to "strings in *L*(S)", the strings do not need to b
 {.example} If *L*(S) is {"`a`", "`b`"} then *L*(S `*`) includes an infinite number of strings,
 including "", "`a`", "`b`", "`aa`", "`ab`", "`ba`", "`bb", "`aaa`", etc.
 
+{.example} If *L*(S) is {"`a`", "`b`"} then *L*(S `{3}`) contains 8 strings:
+{"`aaa`", "`aab`", "`aba`", "`abb`", "`baa`", "`bab`", "`bba`", "`bbb`"}.
+
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
 
 {.note} The above omits the lazy quantifiers `*?`, `+?`, etc., which some dialects allow to select between derivations of a particular string.
@@ -237,9 +243,9 @@ An **atom** is either a *normal character*, an *escaped character*, a
 
 An *atom* that is a parenthesized *regular expression* matches the same set of *strings* as its *regular expression* (the parentheses do not directly contribute to the *match*).
 
-An *atom* that is a *normal character* or *escaped character* matches any single-character string whose character is the character represented by the *normal character* or *escaped character*.
+An *atom* that is a *normal character* or *escaped character* matches any single-character string containing the character represented by the *normal character* or *escaped character*.
 
-An *atom* that is a *character class* matches any single-character *string* whose character is within the *character class*.
+An *atom* that is a *character class* matches any single-character *string* containing a character within the *character class*.
 
 #### Components that represent characters
 
@@ -321,10 +327,10 @@ or two *class characters* separated by a U+002D `-`.
 If a character range has two *class characters* the second MUST NOT have a numerically lesser code point than the first.
 
 A single-*class character* *character range* defines the singleton set containing only the character that its *class character* represents.
-A two-character *character range* defines the set of all *characters* whose code point is 
+A two-character *character range* defines the set of all *characters* with code points that are both 
 
-- numerically greater than or equal to the code point of the *character* that the first *class character* represents
-- numerically less than or equal to the code point of the *character* that the second *class character* represents
+- numerically greater than or equal to the code point of the *character* that the first *class character* represents, and
+- numerically less than or equal to the code point of the *character* that the second *class character* represents.
 
 ##### Negative Character Class
 A **negative character class** is a set of one or more *character ranges*, preceded by U+005E `^`, within brackets.
@@ -350,7 +356,7 @@ It *must not* be used for *pattern*-like regular expression variants
 that do not conform to this standard's definition of a *pattern*.
 
 {.example} In ECMAScript, "`/^.[.]$/`" is a regular expression that matches
-a two character string ending with a period.
+a two-character string ending with a period.
 Because this is not a valid *pattern*, it does not have the `types:Pattern` *datatype*.
 
 The *lexical space* of this *datatype* is the space of all *strings*
