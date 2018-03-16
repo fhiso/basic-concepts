@@ -272,7 +272,7 @@ The **banned characters** are '`^`', '`$`', '`&`', '`/`', and the escapable cont
 An **escaped character** is a U+005C `\` followed by a single character,
 which must be a *metacharacter*, a *class metacharacter*, a *banned character*, or one of U+0074 `t`, U+006E `n`, or U+0072 `r`.
 
-An escaped *metacharacter*, a *class metacharacter*, or *banned character* represents the *metacharacter*, a *class metacharacter*, or *banned character* itself.
+An escaped *metacharacter*, *class metacharacter*, or *banned character* represents the *metacharacter*, a *class metacharacter*, or *banned character* itself.
 
 An escaped U+0074 `\t` represents the *character* U+0009 (the horizontal tab).
 
