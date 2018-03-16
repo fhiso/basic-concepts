@@ -207,7 +207,7 @@ If S is an *atom* and *L*(S) is the set of strings matched by *S* then
 | S `{n}`    | all concatenations of exactly *n* strings in *L*(S)                       |
 | S `{n,}`   | all concatenations of at least *n* strings in *L*(S)                      |
 
-{.ednote ...} Note that the text for *branch* avoids using the word "concatenation" as there is ambiguity in that word's suggestion of ordering, but that ambiguity does not apply for the use in the above table. We might still want to either formally define "concatenation" or re-work the above table to not use it.
+{.ednote ...} Note that the text for *branch* avoids using the word "concatenation" as there is ambiguity in that word's suggestion of ordering, but that ambiguity does not matter in the above table. We might still either formally define "concatenation" or re-work the above table to not use it in a future release of this standard.
 {/}
 
 {.note} The above omits `{,n}`, which some regex dialects allow as a shorthand for `{0,n}`.
