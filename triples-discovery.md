@@ -88,10 +88,14 @@ issues, or points where there is not yet consensus; they will be
 resolved and removed for the final standard.  Examples and notes will be
 retained in the standard.
 
+<style text="text/css" scoped="scoped">
+.wrapping-arrow:after { content: "→"; }
+</style>
+
 In some of the examples in this standard, long lines are broken across
 multiple lines to improve readability.  Where this has occurred, the
 continuation lines are prefixed with a
-"\ensuremath{\color{gray}\rightarrow}<span style="content: '→'"></span>" 
+"\ensuremath{\color{gray}\rightarrow}<span class="wrapping-arrow"></span>" 
 to mark the continuation.  To get the actual text, this character needs
 to be removed, and the continuation line appended to the previous line
 with a single space *character* (U+0020) separating the previous line's
