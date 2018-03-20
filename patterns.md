@@ -245,7 +245,7 @@ The **metacharacters** are '`.`', '`\`', '`?`', '`*`', '`+`', '`{`', '`}`', '`(`
 
 The **banned characters** are '`^`', '`$`', '`&`', '`/`', and the escapable control characters U+0009, U+000A, and U+000D.
 
-{.note} The above REQUIRES that *metacharacters* do not appear as *normal characters* unescaped. Some dialects are more permissive, allowing e.g. `}` to appear unescaped, but that MUST NOT be done in *patterns*.
+{.note} The above *require*s that *metacharacters* do not appear as *normal characters* unescaped. Some dialects are more permissive, allowing e.g. `}` to appear unescaped, but that MUST NOT be done in *patterns*.
 
 {.note} The *banned characters* have special meaning in some regular expression dialects, and as such MUST NOT appear unescaped in any *pattern*.
 
@@ -301,6 +301,11 @@ A **positive character class** is a set of one or more *character ranges* within
 A *positive character class* defines the union of the sets defined by its *character ranges*.
 
 {.note} The ranges do not need to be mutually exclusive nor presented in any particular order.
+
+A *positive character class* with multiple *character ranges* *should not* both begin and end with the *class character* U+003A '`:`'.
+
+{.note} The recommendation against starting and ending with a `:` is to avoid conflict with a few regular expression engines that treat character classes such as "`[:alpha:]`" specially.
+Perhaps it should be a *must not* instad of a *should not* constraint?
 
 ##### Character Range
 A **character range** is either a single *class character*
@@ -358,7 +363,7 @@ following properties:
 ------           -----------------------------------------------
 Name             `https://terms.fhiso.org/types/Pattern`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
-Pattern          `.*`
+Pattern          `\(*([^\^\$\&\/\.\\\|\[\]?*+{}()]|\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|(\[\^?((\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|[^\^\$\&\/\.\\\|\[\]\-])(-(\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|[^\^\$\&\/\.\\\|\[\]\-]))?)+\]|\.))([?*+]|\{(0|[1-9][0-9]*)(,(0|[1-9][0-9]*)?)?\})?(\)([?*+]|\{(0|[1-9][0-9]*)(,(0|[1-9][0-9]*)?)?\})?)*(\|?\(*([^\^\$\&\/\.\\\|\[\]?*+{}()]|\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|(\[\^?((\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|[^\^\$\&\/\.\\\|\[\]\-])(-(\\[\^\$\&\/\.\\\|\[\]\-?*+{}()nrt]|[^\^\$\&\/\.\\\|\[\]\-]))?)+\]|\.))([?*+]|\{(0|[1-9][0-9]*)(,(0|[1-9][0-9]*)?)?\})?(\)([?*+]|\{(0|[1-9][0-9]*)(,(0|[1-9][0-9]*)?)?\})?)*)*`
 Supertype        *No non-trivial supertypes*
 Abstract         `false`
 ------           -----------------------------------------------
