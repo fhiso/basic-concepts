@@ -1308,7 +1308,7 @@ a *subtype* of a second *datatype*, and that second *datatype* is a
 meaning that a *datatype* is by definition a *subtype* of itself.  The
 notion of a *supertype* is similarly transitive and reflexive.
 
-#### Non-trivial supertypes                          {non-trivial-types}
+#### Non-trivial supertypes                         {#non-trivial-types}
 
 The **trivial supertypes** of a *datatype* are certain *supertypes*
 whose status as a *supertype* of the *datatype* is implied by the data
@@ -2057,6 +2057,12 @@ explicitly say this as FHISO's data model currently has no need for the
     Maler, François Yergeau, and John Cowan eds., 2006.  W3C
     Recommendation.  (See <https://www.w3.org/TR/xml11/>.)
 
+[XSD Pt2]
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
+    (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
+    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
+
 ### Other references
 
 [ANSEL]
@@ -2179,12 +2185,6 @@ explicitly say this as FHISO's data model currently has no need for the
     (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝), C. M. 
     Sperberg-McQueen and Henry S. Thompson, ed., 2012.  
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
-
-[XSD Pt2]
-:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
-    (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
-    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
-    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
 
 ----
 Copyright © 2017–18, [Family History Information Standards Organisation,
