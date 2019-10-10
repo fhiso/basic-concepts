@@ -1,12 +1,12 @@
 ---
 title: Basic Concepts for Genealogical Standards
-date: 16 March 2018
+date: 10 October 2019
 numbersections: true
 ...
 # Basic Concepts for Genealogical Standards
 
-{.ednote ...} This is a **first public draft** of a standard covering 
-basic concepts that are expected to be used in multiple FHISO standards.
+{.ednote ...} This is a **working draft** of a standard covering 
+basic concepts that are expected to be used in multiple standards.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time.
 
@@ -16,23 +16,26 @@ feedback on this draft.
 
 --------------           ---------------------------------------------
 Latest public version:   `https://fhiso.org/TR/basic-concepts`
-This version:            `https://fhiso.org/TR/basic-concepts-20180316`
+This version:            *URL to be determined*
+Previous version:        `https://fhiso.org/TR/basic-concepts-20180316`
 --------------           ---------------------------------------------
 {/}
 
 FHISO's **Basic Concepts for Genealogical Standards** standard defines
-various low-level concepts that will be used in many FHISO standards,
+various low-level concepts that are used in many genealogical standards,
 and whose definitions do not logically belong in any one particular
-higher-level standard.
+higher-level standard.  Having a single definition of these concepts
+eliminates the possibility of incompatibilities between standards
+arising due to small differences in these basic concepts.
 
-The definition of a *string* which is used in multiple FHISO standards
-is given in {§strings} of this standard, together with various related
-concepts such as *characters* and *whitespace*, and {§lang-tags} defines
-briefly how FHISO standards use *language tags*.  *Terms* are defined in
-{§terms} as a form of extensible identifier using IRIs, and {§iri-resn}
-discusses information that may be retrieved from these IRIs.
-The notion of a *datatype* is defined in {§datatypes}, which also
-includes details on how to specify a new *datatype*.
+*String* are used in practically all standards, and a standard
+definition is given in {§strings} of this standard, together with
+various related concepts such as *characters* and *whitespace*.  The use
+of *language tags* is defined briefly in {§lang-tags}.
+*Terms* are defined in {§terms} as a form of extensible identifier using
+IRIs, and {§iri-resn} discusses information that may be retrieved from
+these IRIs.  The notion of a *datatype* is defined in {§datatypes},
+which also includes details on how to specify a new *datatype*.
 
 The concepts of a *classes* and *properties* are defined in
 {§type-system}.  They provide an infrastructure for defining extensions
@@ -110,15 +113,27 @@ notational convenience to make the standard easier to read.
 the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
 section has been moved here to be more generally usable.
 
-**Characters** are specified by reference to their **code point** number
-in [ISO 10646], without regard to any particular character encoding.  In
-this standard, *characters* may be identified in this standard by their
-hexadecimal *code point* prefixed with "U+".
+**Characters** are atomic units of text which are specified by reference to
+their **code point** number in [Unicode], without regard to any particular
+character encoding.  
 
 {.note} The character encoding is a property of the serialisation, and
 not defined in this standard.  Non-Unicode encodings are not precluded,
 so long as it is defined how characters in that encoding corresponds to
 Unicode characters.
+
+{.ednote} The first draft of this standard defined *characters* by
+reference to the ISO 10646 standard.  This draft references the Unicode
+standard instead.  The two are standards are developed in parallel and
+kept in synch, but the Unicode standard is considerably more detailed.
+Even though the ISO standard is available for free, the Unicode standard
+is much more widely known.
+ 
+*Characters* may be identified in this standard by their hexadecimal
+*code point* prefixed with "U+".
+
+{.example}  The exclamation mark "`!`" is *code point* 33 in Unicode,
+or 21 in hexadecimal.  It this standard it written U+0021.
 
 *Characters* *must* match the `Char` production from
 &#x5B;[XML](https://www.w3.org/TR/xml11/)].
@@ -130,9 +145,8 @@ surrogates (which are reserved for encodings such as UTF-16 and not
 characters in their own right), and the invalid characters U+FFFE and
 U+FFFF.
 
-A **string** is a sequence of zero or more *characters*, and *should*
-only be used to encode textual data.  It matches the following `String`
-production:
+A **string** is a sequence of zero or more *characters* which is used to
+encode textual data.  It matches the following `String` production:
 
     String  ::=  Char*
 
@@ -167,6 +181,18 @@ retain the unnormalised form; however, an application doing so *must*
 ensure the *string* is in Normalization Form C upon export, this being
 the more usual form for use in documents.
 
+Applications *may* apply *line break normalisation*, as defined in
+{§whitespace}, to any *string*.  Data which relies on the differences
+between the various types of *line break* *should not* be represented in
+a *string*.
+
+{.note}  This standard defines a *string* as a way of encoding "textual
+data" without defining precisely what this means.  Data which relies on
+the difference between types of *line break* is not considered text for
+the purposes of the `text/*` family of MIME types, as described in
+§4.1.1 of [RFC 2046].  It is suggested that the phrase "textual data" in
+the definition of a string be interpreted similarly.
+
 *Characters* matching the `RestrictedChar` production from
 &#x5B;[XML](https://www.w3.org/TR/xml11/)] *should not* appear in
 *strings*, and applications *may* process such characters in an
@@ -186,21 +212,51 @@ Applications *must not* treat non-ASCII characters (other than C1
 control characters) as ANSEL, the character set properly used in [GEDCOM],
 as [ANSEL]'s non-ASCII characters do not correspond to `RestrictedChar`s.
 
+{.ednote}  Should we add next line (NEL; U+0085) to the list of
+*restricted characters*?  Adding NEL means applications have the option
+of treating all C1 escapes as the equivalent CP-1252 characters,
+including the ellipse which is at the *code point* used in Unicode for
+NEL, but breaks alignment with XML. 
+
 *Conformant* applications *must* be able to store and process *strings*
 containing arbitrary *characters* other than those matching the
 `RestrictedChar`.  In particular, applications *must* be able to handle
 *characters* which correspond to unassigned Unicode *code points* as
-they may be assigned in future versions of [ISO 10646].  Applications
+they may be assigned in future versions of [Unicode].  Applications
 *must* also be able to process *characters* outside Unicode's Basic
 Multilingual Plane &mdash; that is, *characters* with a *code point*
 of U+10000 or higher.
 
 {.note} This means applications *must not* represent *strings*
 internally in the UCS-2 encoding which does not accommodate *characters*
-outside the Basic Multilingual Plane.  The UTF-16 encoding defined in
-§2.6 of [ISO 10646] provides a 16-bit encoding that is backwards
-compatible with UCS-2 but allows arbitrary *characters* to be
+outside the Basic Multilingual Plane.  The UTF-16 encoding form defined
+in §2.5 and §2.6 of [Unicode] provides a 16-bit encoding that is
+backwards compatible with UCS-2 but allows arbitrary *characters* to be
 represented through the use of Unicode surrogate pairs.
+
+*Strings* *may* contain *characters* from the Private Use Areas defined
+in §23.5 of [Unicode].  The *characters* match the following
+`PrivateUseChar` production:
+
+    PrivateUseChar  ::=   [#xE000-#xF8FF] | [#F0000-#xFFFFD] 
+                            | [#100000-#x10FFFD]
+
+Standards which reference this standard *may* define how these are to be
+interpreted.  Absent a higher-level definition of how these *characters*
+are to be interpreted, applications *should not* use them but *must not*
+reject them.
+
+{.example}  A higher-level standard might require *characters* from the
+Private Use Areas to be interpreted according to [MUFI], which is a
+standard for encoding many obscure mediæval characters, ligatures and
+scribal abbreviations that are not current in Unicode in the Private Use
+Area.
+
+{.ednote}  Would it be simpler to just prohibit *characters* from the
+Private Use Area?  Or alternatively single out [MUFI] as the only
+allowed interpretation?
+
+### Whitespace and line breaks                             {#whitespace}
 
 **Whitespace** is defined as a sequence of one or more space
 *characters*, carriage returns, line feeds, or tabs.  It matches the
@@ -209,14 +265,14 @@ production `S` from &#x5B;[XML](https://www.w3.org/TR/xml11/)].
     S  ::=  (#x20 | #x9 | #xD | #xA)+
 
 {.note}  This definition only includes common ASCII whitespace
-*characters* and does not include every *character* in [ISO 10646] that
-could be considered to be a whitespace.  In particular, the vertical tab
+*characters* and does not include every Unicode *character* that
+could be considered to be whitespace.  In particular, the vertical tab
 (U+000B), form feed (U+000C), next line *character* (U+0085) and
 no-break space (U+00A0) are all explicitly excluded.
 
 **Whitespace normalisation** is the process of discarding any leading
-or trailing *whitespace*, and replacing other *whitespace* with a single
-space (U+0020) *character*.  
+or trailing *whitespace* from a *string*, and replacing all other
+*whitespace* in a *string* with a single space (U+0020) *character*.  
 
 {.note}  The definition of *whitespace normalisation* is identical to
 that in &#x5B;[XML](https://www.w3.org/TR/xml11/)].
@@ -225,6 +281,29 @@ In the event of a difference between the definitions of the `Char`,
 `RestrictedChar` and `S` productions given here and those in
 &#x5B;[XML](https://www.w3.org/TR/xml11/)], the definitions in the
 latest edition of XML 1.1 specification are definitive.
+
+A **line break** is defined as a line feed (U+000A), or carriage return
+(U+000D) followed by an *optional* line feed (U+000A).  It matches the
+following `LB` production:
+
+    LB  ::=  #xD #xA? | #xA
+
+{.note}  This definition of a *line break* matches the form of line
+endings used on Unix, Linux and modern Mac OS (U+000A), the
+traditional Mac OS form (U+000D), and Windows line endings (U+000D
+U+000A).  [UAX 14] also lists vertical tab (U+000B), form feed
+(U+000C), next line (U+0085), line separator (U+2028) and paragraph
+separator (U+2029) as forms of *line breaks*.  This standard does not
+include these in the `LB` production as they have specific meanings in
+addition to being *line breaks*.
+
+**Line break normalisation** is the process of replacing every *line
+break* in a *string*, regardless of its form, with the same
+implementation-defined form of *line break*.
+
+{.note}  It is anticipated but not required that applications will opt
+to normalise *line breaks* to the applicable native *line break*, for
+example U+000A in a Linux application.
 
 ## Language tags                                            {#lang-tags}
 
@@ -2003,11 +2082,6 @@ explicitly say this as FHISO's data model currently has no need for the
 
 ### Normative references
 
-[ISO 10646]
-:   ISO (International Organization for Standardization).  *ISO/IEC
-    10646:2014. Information technology &mdash; Universal Coded Character
-    Set (UCS).*  2014.
-
 [FHISO Patterns]
 :   FHISO (Family History Information Standards Organisation).
     *The Pattern Datatype*.  First public draft.
@@ -2050,9 +2124,13 @@ explicitly say this as FHISO's data model currently has no need for the
 
 [UAX 15]
 :   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
-    Normalization Forms" in *The Unicode Standard, Version 8.0.0.*
-    Mark Davis and Ken Whistler, eds., 2015.  (See
-    <http://unicode.org/reports/tr15/>.)
+    Normalization Forms".  Revision 48.
+    Mark Davis and Ken Whistler, eds., 2019.  
+    (See <http://unicode.org/reports/tr15/>.)
+
+[Unicode]
+:   The Unicode Consortium.  *The Unicode Standard*, version 12.1.0.
+    2019.  (See <https://www.unicode.org/versions/Unicode12.1.0/>.)
 
 [XML]
 :   W3C (World Wide Web Consortium). *Extensible Markup Language (XML) 1.1*, 
@@ -2133,6 +2211,11 @@ explicitly say this as FHISO's data model currently has no need for the
     15924:2004.  Codes for the representation of names of scripts.*
     2004.
 
+[MUFI]
+:   Medieval Unicode Font Initiative (MUFI).  *MUFI character
+    recommendation*, version 4.0.  2015.
+    (See <http://bora.uib.no/handle/1956/10699>.)
+
 [N-Triples]
 :   W3C (World Wide Web Consortium).  *RDF 1.1 N-Triples.*  David
     Becket, 2014.  W3C Recommendation.
@@ -2147,6 +2230,12 @@ explicitly say this as FHISO's data model currently has no need for the
 :   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
     Dan Brickley and R.&nbsp;V. Guha, eds., 2014.
     W3C Recommendation.  (See <https://www.w3.org/TR/rdf-schema>.)
+
+[RFC 2046]
+:   IETF (Internet Engineering Task Force).  *Multipurpose Internet Mail
+    Extensions (MIME) Part Two: Media Types*.  
+    N. Freed and N.  Borenstein, 1996.
+    (See <https://tools.ietf.org/html/rfc2046>.)
 
 [RFC 4122]
 :   IETF (Internet Engineering Task Force).  *A Universally Unique
@@ -2173,7 +2262,13 @@ explicitly say this as FHISO's data model currently has no need for the
     Jeremy J. Carroll and Jeff Z. Pan, eds., 2006.  W3C Working Group Note.  
     (See <https://www.w3.org/TR/swbp-xsch-datatypes/>.)
 
-[UN M.49]
+[UAX 14]
+:   The Unicode Consortium.  "Unicode Standard Annex 14: Unicode
+    Line Breaking Algorithm".  Revision 43.
+    Andy Heninger, ed., 2019. 
+    (See <http://unicode.org/reports/tr14/>.)
+
+UN M.49]
 :   United Nations, Statistics Division.  *Standard Country or Area
     Codes for Statistical Use*, revision 4.  United Nations publication,
     Sales No. 98.XVII.9, 1999.
@@ -2190,7 +2285,7 @@ explicitly say this as FHISO's data model currently has no need for the
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
 
 ----
-Copyright © 2017–18, [Family History Information Standards Organisation,
+Copyright © 2017–19, [Family History Information Standards Organisation,
 Inc](https://fhiso.org/).  
 The text of this standard is available under the
 [Creative Commons Attribution 4.0 International
