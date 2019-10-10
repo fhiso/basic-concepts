@@ -131,7 +131,10 @@ characters in their own right), and the invalid characters U+FFFE and
 U+FFFF.
 
 A **string** is a sequence of zero or more *characters*, and *should*
-only be used to encode textual data.
+only be used to encode textual data.  It matches the following `String`
+production:
+
+    String  ::=  Char*
 
 {.note ...} This definition of a *string* is identical to the definition
 of the `string` datatype defined in 
@@ -188,7 +191,7 @@ containing arbitrary *characters* other than those matching the
 `RestrictedChar`.  In particular, applications *must* be able to handle
 *characters* which correspond to unassigned Unicode *code points* as
 they may be assigned in future versions of [ISO 10646].  Applications
-*must* also be able to handle *characters* outside Unicode's Basic
+*must* also be able to process *characters* outside Unicode's Basic
 Multilingual Plane &mdash; that is, *characters* with a *code point*
 of U+10000 or higher.
 
@@ -207,9 +210,9 @@ production `S` from &#x5B;[XML](https://www.w3.org/TR/xml11/)].
 
 {.note}  This definition only includes common ASCII whitespace
 *characters* and does not include every *character* in [ISO 10646] that
-could be considered to be a whitespace.  For example, the vertical tab
-(U+000B), no-break space (U+00A0) and em space (U+2003) are all
-excluded.
+could be considered to be a whitespace.  In particular, the vertical tab
+(U+000B), form feed (U+000C), next line *character* (U+0085) and
+no-break space (U+00A0) are all explicitly excluded.
 
 **Whitespace normalisation** is the process of discarding any leading
 or trailing *whitespace*, and replacing other *whitespace* with a single
@@ -551,7 +554,7 @@ If the *term name* ends with a non-empty fragment identifier, then its
 *namespace name* is formed by removing the fragment identifier, leaving
 an IRI ending with a `#`.
 
-{.example ...}  [Basic Concepts] uses a *datatype* identified by the
+{.example ...}  This standard uses a *datatype* identified by the
 following *term name* IRI:
  
     http://www.w3.org/2001/XMLSchema#integer
@@ -567,7 +570,7 @@ Otherwise, if the *term name* ends with a non-empty path segment,
 then its *namespace name* is formed by removing the path segment,
 leaving an IRI ending with a `/`.
 
-{.example ...}  [Basic Concepts] defines a *property* identified by the
+{.example ...}  This standard defines a *property* identified by the
 following *term name* IRI:
 
     https://terms.fhiso.org/types/pattern

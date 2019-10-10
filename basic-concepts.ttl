@@ -11,7 +11,8 @@
 
 rdf:type
 	rdf:type rdf:Property ;
-	rdfs:range rdfs:Class .
+	rdfs:range rdfs:Class ;
+        rdfs:label "type" .
 
 rdfs:Class
 	rdf:type rdfs:Class ;
@@ -33,7 +34,8 @@ rdf:Property
 
 rdfs:range
 	rdf:type rdf:Property ;
-	rdfs:range rdfs:Class .
+	rdfs:range rdfs:Class ;
+        rdfs:label "range" .
 
 types:requiredProperty
 	rdf:type rdf:Property ;
