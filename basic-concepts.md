@@ -671,11 +671,11 @@ name* in full, the leading portion of the *term name* equal to the
 *namespace name* is replaced by its *prefix* followed by a colon
 (U+003A) separator.
 
-{.example}  The *term name* `http://www.w3.org/2000/01/rdf-schema#Class`
+{.example}  The *term name* `http://www.w3.org/2001/XMLSchema#string`
 is used in several places in this standard.  Instead of writing
-this in full, if the `rdfs` *prefix* is bound to its *namespace name*
-`http://www.w3.org/2000/01/rdf-schema#`, then this IRI can be written in
-*prefix form* as `rdfs:Class`.
+this in full, if the `xsd` *prefix* is bound to its *namespace name*
+`http://www.w3.org/2001/XMLSchema#`, this IRI can be written in
+*prefix form* as `xsd:string`.
 
 ## Underlying type system                                 {#type-system}
 
