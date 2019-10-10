@@ -109,9 +109,9 @@ notational convenience to make the standard easier to read.
 
 ## Characters and strings                                     {#strings}
 
-{.ednote}  The concepts related to *strings* were originally defined in
-the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  This
-section has been moved here to be more generally usable.
+{.ednote}  This section has been changed in this draft to define *line
+breaks* and to allow *line break normalisation* on any *string*.  The
+discussion on private use *characters* is also new.
 
 **Characters** are atomic units of text which are specified by reference to
 their **code point** number in [Unicode], without regard to any particular
@@ -305,9 +305,11 @@ implementation-defined form of *line break*.
 to normalise *line breaks* to the applicable native *line break*, for
 example U+000A in a Linux application.
 
-## Language tags                                            {#lang-tags}
+### Tagged strings                                     {#tagged-strings}
 
-{.ednote}  The material in this section is new in this draft.
+
+
+## Language tags                                            {#lang-tags}
 
 A **language tag** is a *string* that is used to represent a human
 language, and where appropriate the script and regional variant or
@@ -425,10 +427,6 @@ alongside it.
 
 ## Terms                                                        {#terms}
 
-{.ednote}  The concept of a *term* was originally defined in the 
-[CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.  It has
-been moved here to be more generally usable.
- 
 A **term** is a form of identifier used in FHISO standards to represent
 a concept which it is useful to be able to reference.  A *term*
 consists of a unique, machine-readable identifier, known as the **term
@@ -620,9 +618,6 @@ HTTP content negotiation respecting the `Accept` header.
 
 ### Namespaces                                             {#namespaces}
 
-{.ednote} The definition of a *namespace* is based on material in FHISO's 
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
-
 The **namespace** of a *term* is another *term* which identifies a
 collection of related *terms* defined by the same party.  The *term
 name* of the *namespace* is also referred to as its **namespace name**.
@@ -683,10 +678,6 @@ this in full, if the `rdfs` *prefix* is bound to its *namespace name*
 *prefix form* as `rdfs:Class`.
 
 ## Underlying type system                                 {#type-system}
-
-{.ednote} The material in this section is new in this draft, but draws
-heavily on FHISO's 
-[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
 
 {.note}  This section defines a basic type system for *terms* and a
 simple vocabulary for describing them.  This formalism provides a solid
@@ -1159,11 +1150,6 @@ all *classes* are a *subclass* of `rdfs:Resource`, thus `rdf:type` is a
 
 ## Datatypes                                                {#datatypes}
 
-{.ednote}  The concepts related to *datatypes* were originally defined
-in the [CEV Concepts](https://tech.fhiso.org/TR/cev-concepts) draft.
-This section and its subsections have been moved here to be more
-generally usable. 
- 
 A **datatype** is a *term* which serves as a formal description of the
 values that are permissible in a particular context.  Being a *term*, a
 *datatype* is identified by a *term name* which is an IRI.  The *term
