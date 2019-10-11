@@ -1634,9 +1634,9 @@ be *language-tagged datatypes*.
 {.ednote} An earlier unpublished draft of this standard also said that
 the *subtypes* of a *non-language-tagged datatypes* (other than
 `xsd:anyAtomicType`) were *required* to be *non-language-tagged*, with
-an exception for *subtypes*.  This requirement has been dropped to allow
-*unions* to be defined which contain a mixture of *language-tagged
-datatypes* and *non-language-tagged datatypes*.
+an exception for *subtypes* of `rdf:langString`.  This requirement has
+been dropped to allow *unions* to be defined which contain a mixture of
+*language-tagged datatypes* and *non-language-tagged datatypes*.
 
 All *language-tagged datatypes* are implicitly a *subtype* of the
 `rdf:langString` *datatype* defined in {§langString}.
@@ -1684,6 +1684,12 @@ The fact that this *string* appears to be a date and is self-evidently
 not in a natural language is irrelevant.  If the *string* is located in
 a document written in a format that allows a default *language tag* and
 one is provided, this *must* be used. 
+
+{.note} This definition of a *literal* is very closely aligned with the
+definition of a literal in [RDF Concepts].  The main differences are
+that this standard allows *subtypes* of `rdf:langString` to be defined,
+and [RDF Concepts] uses `xsd:string` as the default *datatype* in the
+case that no *language tag* is provided.
 
 ### Unions of datatypes                                        {#unions}
 
