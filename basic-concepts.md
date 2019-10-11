@@ -212,12 +212,6 @@ Applications *must not* treat non-ASCII characters (other than C1
 control characters) as ANSEL, the character set properly used in [GEDCOM],
 as [ANSEL]'s non-ASCII characters do not correspond to `RestrictedChar`s.
 
-{.ednote}  Should we add next line (NEL; U+0085) to the list of
-*restricted characters*?  Adding NEL means applications have the option
-of treating all C1 escapes as the equivalent CP-1252 characters,
-including the ellipse which is at the *code point* used in Unicode for
-NEL, but breaks alignment with XML. 
-
 *Conformant* applications *must* be able to store and process *strings*
 containing arbitrary *characters* other than those matching the
 `RestrictedChar`.  In particular, applications *must* be able to handle
@@ -307,7 +301,24 @@ example U+000A in a Linux application.
 
 ### Tagged strings                                     {#tagged-strings}
 
+A **tagged string** is a *string* which is accompanied by one or more
+supplementary *strings* called **tags** that provide further information
+to aid the interpretation of the *tagged string*.  
 
+{.note}  The *tags* are not part of the *tagged string* but are stored
+alongside it.  Thus the value of a *tagged string* is just the value of
+main string, without any associated *tags*.
+
+{.note}  This can considered a lightweight mechanism for recording
+specific pieces of metadata about the *tagged string*.  It is not
+intended as a framework for associating arbitrary metadata with a
+*string*.
+
+This standard defines two specific types of *tagged strings*.
+*Language-tagged strings*, which are defined {§lang-tagged-strings},
+have a single *tag* which is a *language tag*.  *Literals*, defined in
+{§literals}, extend this concept by adding a second *tag* which is a
+*datatype name*.
 
 ## Language tags                                            {#lang-tags}
 
@@ -418,12 +429,34 @@ applications to apply the conventional capitalisation of *language tags*
 defined in §2.1.1 of 
 &#x5B;[RFC 5646](https://tools.ietf.org/html/rfc5646)].
 
-A *string* which is accompanied by a *language tag* which identifies the
-language in which the *string* is written is called a **language-tagged
-string**.
+### Language-tagged strings                       {#lang-tagged-strings}
 
-{.note} The *language tag* is not itself part of *string*, but is stored
-alongside it.  
+A **language-tagged string** is type of *tagged string* with exactly one
+*tag* which is a *language tag* and *must* be present.  The *language
+tag* identifies the language in which the *tagged string* is written.  
+
+{.example}  The *string* "Les réseaux familiaux dans l'aristocratie
+byzantine" would be a *language-tagged string* if accompanied by the
+*language tag* `fr`, representing the French language.
+
+{.example ...}  *Language-tagged strings* are widely encountered in XML,
+where the `xml:lang` attribute provides the *language tag*.  For
+example,
+
+    <title xml:lang="de">Europäische Stammtafeln</title>
+{/}
+
+If no *language tag* is provided for a *language-tagged string*, either
+explicitly or implicitly, a default *language tag* of `und` *must* be
+used.  This is defined in 
+&#x5B;[ISO 639-2](http://www.loc.gov/standards/iso639-2/)] to mean an
+undetermined language. 
+
+{.note}  This does not prohibit higher-level standards from defining
+other defaults in particular contexts.  For example, a standard defining
+a serialisation format might allow documents to state their default
+*language tag*.  XML effectively does this by making the `xml:lang`
+attribute apply to all child elements.
 
 ## Terms                                                        {#terms}
 
@@ -698,9 +731,9 @@ which other *terms* may be defined.  Standards defining such contexts
 the third parties are permitted to define their own *terms* for use in
 that context.
 
-{.example ...}  A hypothetical standard might defined various *terms*
-representing events of genealogical interest that might occur during a
-person's lifetime.  Examples might include:
+{.example ...}  A hypothetical standard might define various *terms*
+representing events of genealogical interest that occur during a
+person's lifetime.  Examples could include:
 
     https://example.com/events/Baptism  
     https://example.com/events/Ordination
@@ -1151,7 +1184,7 @@ all *classes* are a *subclass* of `rdfs:Resource`, thus `rdf:type` is a
 ## Datatypes                                                {#datatypes}
 
 A **datatype** is a *term* which serves as a formal description of the
-values that are permissible in a particular context.  Being a *term*, a
+*strings* that are permissible in a particular context.  Being a *term*, a
 *datatype* is identified by a *term name* which is an IRI.  The *term
 name* of a *datatype* is also referred to as its **datatype name**.
 
@@ -1611,6 +1644,46 @@ All *language-tagged datatypes* are implicitly a *subtype* of the
 {.note} There is no need for a *property* stating whether
 or not a *datatype* is a *language-tagged datatype* because this
 information is conveyed using the `types:nonTrivialSupertype` *property*.
+
+### Literals                                                 {#literals}
+
+{.ednote} This section is new in the second draft of this standard.  The
+idea of a *literal* existed previously in [CEV Concepts], but the name
+is new.
+
+A **literal** is a type of *tagged string* with one or two *tags*: a
+*datatype name* which is used to specify the *datatype* which describes how
+the *tagged string* is to be interpreted and *must* be present; 
+and a *language tag* which identifies the language of the *string* and
+*may* be present, depending on the particular *datatype name*. 
+
+{.note}  The purpose of a *literal* is to allow a *string* to be tagged
+its *datatype*.  This is necessary in contexts where a value can be
+encoded using any of several different *datatypes*.
+
+If no *datatype name* is provided for a *literal*, either explicitly or
+implicitly, a default *datatype name* of `rdf:langString` *must* be
+used.
+
+{.note}  This does not prohibit higher-level standards from defining
+other defaults in particular contexts.  For example, a standard 
+might define the default *datatype* for an attribute recording a date of
+birth to be a suitable date *datatype*.
+
+A *literal* *shall* be tagged with a *language tag* if and only if the
+specified *datatype* is a *language-tagged datatype*.  If an application
+does not know whether a *datatype* is a *language-tagged datatype*, it
+*must* include a *language tag*.  If no *language tag* is provided and
+the *datatype* is not known to be a *non-language-tagged datatype*, a
+default *language tag* of `und` *must* be used.
+
+{.example}  If the *string* "`1820-01-29`" is encountered where a
+*literal* is expected, and no *datatype name* is provided, either
+explicitly or implicitly, the application *must* use `rdf:langString`.
+The fact that this *string* appears to be a date and is self-evidently
+not in a natural language is irrelevant.  If the *string* is located in
+a document written in a format that allows a default *language tag* and
+one is provided, this *must* be used. 
 
 ### Unions of datatypes                                        {#unions}
 
