@@ -133,7 +133,7 @@ is much more widely known.
 *code point* prefixed with "U+".
 
 {.example}  The exclamation mark "`!`" is *code point* 33 in Unicode,
-or 21 in hexadecimal.  It this standard it written U+0021.
+or 21 in hexadecimal.  In this standard it written U+0021.
 
 *Characters* *must* match the `Char` production from
 &#x5B;[XML](https://www.w3.org/TR/xml11/)].
