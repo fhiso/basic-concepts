@@ -183,7 +183,7 @@ the more usual form for use in documents.
 
 Applications *may* apply *line break normalisation*, as defined in
 {§whitespace}, to any *string*.  Data which relies on the differences
-between the various types of *line break* *should not* be represented in
+between the various types of *line break* *must not* be represented in
 a *string*.
 
 {.note}  This standard defines a *string* as a way of encoding "textual
@@ -193,33 +193,14 @@ the purposes of the `text/*` family of MIME types, as described in
 §4.1.1 of [RFC 2046].  It is suggested that the phrase "textual data" in
 the definition of a string be interpreted similarly.
 
-*Characters* matching the `RestrictedChar` production from
-&#x5B;[XML](https://www.w3.org/TR/xml11/)] *should not* appear in
-*strings*, and applications *may* process such characters in an
-implementation-defined manner or reject *strings* containing them.
-
-    RestrictedChar  ::=  [#x1-#x8] | [#xB-#xC] | [#xE-#x1F]
-                           | [#x7F-#x84] | [#x86-#x9F]
-
-{.note} This includes all C0 and C1 control characters except tab
-(U+0009), line feed (U+000A), carriage return (U+000D) and next line
-(U+0085).
-
-{.example} As *conformant* applications can process C1 control
-characters in an implementation-defined manner, they can opt to handle
-Windows-1252 quotation marks in data masquerading as Unicode.
-Applications *must not* treat non-ASCII characters (other than C1
-control characters) as ANSEL, the character set properly used in [GEDCOM],
-as [ANSEL]'s non-ASCII characters do not correspond to `RestrictedChar`s.
-
 *Conformant* applications *must* be able to store and process *strings*
-containing arbitrary *characters* other than those matching the
-`RestrictedChar`.  In particular, applications *must* be able to handle
-*characters* which correspond to unassigned Unicode *code points* as
-they may be assigned in future versions of [Unicode].  Applications
-*must* also be able to process *characters* outside Unicode's Basic
-Multilingual Plane &mdash; that is, *characters* with a *code point*
-of U+10000 or higher.
+containing arbitrary *characters*, except *restricted characters* as
+defined in {§restricted-chars}.  In particular, applications *must*
+be able to handle *characters* which correspond to unassigned Unicode
+*code points* as they may be assigned in future versions of [Unicode].
+Applications *must* also be able to process *characters* outside
+Unicode's Basic Multilingual Plane – that is, *characters* with a
+*code point* of U+10000 or higher.
 
 {.note} This means applications *must not* represent *strings*
 internally in the UCS-2 encoding which does not accommodate *characters*
@@ -227,28 +208,6 @@ outside the Basic Multilingual Plane.  The UTF-16 encoding form defined
 in §2.5 and §2.6 of [Unicode] provides a 16-bit encoding that is
 backwards compatible with UCS-2 but allows arbitrary *characters* to be
 represented through the use of Unicode surrogate pairs.
-
-*Strings* *may* contain *characters* from the Private Use Areas defined
-in §23.5 of [Unicode].  The *characters* match the following
-`PrivateUseChar` production:
-
-    PrivateUseChar  ::=   [#xE000-#xF8FF] | [#F0000-#xFFFFD] 
-                            | [#100000-#x10FFFD]
-
-Standards which reference this standard *may* define how these are to be
-interpreted.  Absent a higher-level definition of how these *characters*
-are to be interpreted, applications *should not* use them but *must not*
-reject them.
-
-{.example}  A higher-level standard might require *characters* from the
-Private Use Areas to be interpreted according to [MUFI], which is a
-standard for encoding many obscure mediæval characters, ligatures and
-scribal abbreviations that are not current in Unicode in the Private Use
-Area.
-
-{.ednote}  Would it be simpler to just prohibit *characters* from the
-Private Use Area?  Or alternatively single out [MUFI] as the only
-allowed interpretation?
 
 ### Whitespace and line breaks                             {#whitespace}
 
@@ -319,6 +278,68 @@ This standard defines two specific types of *tagged strings*.
 have a single *tag* which is a *language tag*.  *Literals*, defined in
 {§literals}, extend this concept by adding a second *tag* which is a
 *datatype name*.
+
+### Restricted characters                            {#restricted-chars}
+
+*Characters* matching the `RestrictedChar` production from
+&#x5B;[XML](https://www.w3.org/TR/xml11/)] are called **restricted
+characters**.  They *should not* appear in *strings*, and applications
+*may* process such characters in an implementation-defined manner or
+reject *strings* containing them.
+
+    RestrictedChar  ::=  [#x1-#x8] | [#xB-#xC] | [#xE-#x1F]
+                           | [#x7F-#x84] | [#x86-#x9F]
+
+{.note} This includes all C0 and C1 control characters except tab
+(U+0009), line feed (U+000A), carriage return (U+000D) and next line
+(U+0085).
+
+{.example} As *conformant* applications can process C1 control
+characters in an implementation-defined manner, they can opt to handle
+Windows-1252 quotation marks in data masquerading as Unicode.
+Applications *must not* treat non-ASCII characters (other than C1
+control characters) as ANSEL, the character set properly used in [GEDCOM],
+as [ANSEL]'s non-ASCII characters do not correspond to `RestrictedChar`s.
+
+{.note} The ability to reject *strings* containing *restricted
+characters* is interpreted quite broadly.  An application *may* treat
+the *string* as an error and refuse to parse the dataset containing it,
+or *may* drop the *string* from the dataset with or without a warning.
+
+### Private use characters                                  {#pua-chars}
+
+*Characters* from the Private Use Areas defined in §23.5 of [Unicode]
+are called **private use characters** and match the following
+production:
+
+    PrivateUseChar  ::=   [#xE000-#xF8FF] | [#F0000-#xFFFFD] 
+                            | [#100000-#x10FFFD]
+
+*Private use characters* *may* be used *tagged strings* if one of
+the *tags* defines how *private use chracters* are defined, and
+applications *must* be able to store and process such *strings*.
+
+{.example}  A future standard might define an `x-mufi` private use
+language subtag (per §2.2.7 of [RFC 5646]), which is used to mean that
+*private use chracters* are to be interpreted according to [MUFI], a
+standard for encoding many obscure mediæval characters, ligatures and
+scribal abbreviations that are not current in Unicode.  A *string* with
+a *language tag* like `non-x-mufi` would then be interpreted as saying
+the *string* was in Old Norse and used [MUFI] *private use characters*.  
+
+Any *private use characters* that are encountered outside a *tagged
+string*, or in a *tagged string* in which all of the *tags* are known
+to not explicitly permit the use of *private use characters*, *shall* be
+considered *restricted characters*.  *Private use characters* in *tagged
+strings* where any *tag* is unknown to the application *must not* be
+considered *restricted characters*.
+
+{.example}  A *language-tagged string* with *language tag* `pt-BR`
+(meaning Brazilian Portuguese) uses only well-known *language tag*
+components that do not explicitly permit the use of *private use
+characters*.  If *private use characters* are found in such a *string*,
+the *string* *may* be treated as an error or handled in an
+implementation-defined manner.
 
 ## Language tags                                            {#lang-tags}
 
