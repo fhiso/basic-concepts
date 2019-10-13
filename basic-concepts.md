@@ -111,7 +111,7 @@ notational convenience to make the standard easier to read.
 
 {.ednote}  This section has been changed in this draft to define *line
 breaks* and to allow *line break normalisation* on any *string*.  The
-discussion on private use *characters* is also new.
+discussion on *private use characters* is also new.
 
 **Characters** are atomic units of text which are specified by reference to
 their **code point** number in [Unicode], without regard to any particular
@@ -329,17 +329,23 @@ the *string* was in Old Norse and used [MUFI] *private use characters*.
 
 Any *private use characters* that are encountered outside a *tagged
 string*, or in a *tagged string* in which all of the *tags* are known
-to not explicitly permit the use of *private use characters*, *shall* be
-considered *restricted characters*.  *Private use characters* in *tagged
-strings* where any *tag* is unknown to the application *must not* be
-considered *restricted characters*.
+to not define the use of *private use characters*, *shall* be considered
+*restricted characters*.  *Private use characters* in *tagged strings*
+where any *tag* is unknown to the application *must not* be considered
+*restricted characters*.
 
 {.example}  A *language-tagged string* with *language tag* `pt-BR`
 (meaning Brazilian Portuguese) uses only well-known *language tag*
-components that do not explicitly permit the use of *private use
-characters*.  If *private use characters* are found in such a *string*,
-the *string* *may* be treated as an error or handled in an
-implementation-defined manner.
+components that do not define how *private use characters* are used.  If
+*private use characters* are found in such a *string*, the *string*
+*may* be treated as an error or handled in an implementation-defined
+manner.
+
+{.note} Neither the `und` *language tag* nor the `rdf:langString`
+*datatype*, which are the default *tags* for *language-tagged strings*
+and *literals* as defined in {§lang-tagged-strings} and {§literals},
+define the use of *private use characters*, so explicit *tags* *must* be
+provided if *private use characters* are to be interpreted reliably.
 
 ## Language tags                                            {#lang-tags}
 
@@ -467,17 +473,16 @@ example,
     <title xml:lang="de">Europäische Stammtafeln</title>
 {/}
 
-If no *language tag* is provided for a *language-tagged string*, either
-explicitly or implicitly, a default *language tag* of `und` *must* be
-used.  This is defined in 
+If no *language tag* is present in the serialisation of a
+*language-tagged string*, either explicitly or implicitly, a default
+*language tag* of `und` *must* be used.  This is defined in 
 &#x5B;[ISO 639-2](http://www.loc.gov/standards/iso639-2/)] to mean an
 undetermined language. 
 
-{.note}  This does not prohibit higher-level standards from defining
-other defaults in particular contexts.  For example, a standard defining
-a serialisation format might allow documents to state their default
-*language tag*.  XML effectively does this by making the `xml:lang`
-attribute apply to all child elements.
+{.note}  This wording is intended to allow serialisation formats to
+have a default *language tag* which implicitly applies to all
+*strings* in a document or section of a document.  XML does this by
+making the `xml:lang` attribute apply to all child elements.
 
 ## Terms                                                        {#terms}
 
@@ -1682,19 +1687,21 @@ and a *language tag* which identifies the language of the *string* and
 its *datatype*.  This is necessary in contexts where a value can be
 encoded using any of several different *datatypes*.
 
-If no *datatype name* is provided for a *literal*, either explicitly or
-implicitly, a default *datatype name* of `rdf:langString` *must* be
-used.
+If no *datatype name* is present in the serialisation of a *literal*,
+either explicitly or implicitly, a default *datatype name* of
+`rdf:langString` *must* be used.
 
-{.note}  This does not prohibit higher-level standards from defining
-other defaults in particular contexts.  For example, a standard 
-might define the default *datatype* for an attribute recording a date of
-birth to be a suitable date *datatype*.
+{.note}  This allows standards to have another *datatype name* which is
+used implicitly in a particular contexts.  For example, a standard might
+define the default *datatype* for an attribute recording a date of birth
+to be a suitable date *datatype*.
 
-A *literal* *shall* be tagged with a *language tag* if and only if the
-specified *datatype* is a *language-tagged datatype*.  If an application
-does not know whether a *datatype* is a *language-tagged datatype*, it
-*must* include a *language tag*.  If no *language tag* is provided and
+A *literal* *shall* be tagged with a *language tag* if the specified
+*datatype* is a *language-tagged datatype*, and *should not* be
+otherwise.  If an application does not know whether the *datatype* is a
+*language-tagged datatype*, it *must* include a *language tag*.  
+
+If no *language tag* is present in the serialisation of a *literal* and
 the *datatype* is not known to be a *non-language-tagged datatype*, a
 default *language tag* of `und` *must* be used.
 
