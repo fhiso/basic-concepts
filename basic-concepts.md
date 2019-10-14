@@ -432,7 +432,7 @@ a successor RFC.
 
 {.note} The chief purpose of canonical form is to replace deprecated
 language codes and other subtags with the value found in the
-`Preferred-Value` field in [IANA Lang Subtags].  It never result in the
+`Preferred-Value` field in [IANA Lang Subtags].  It never results in the
 removal of script subtag, even when they are the default script for the
 language as defined by a `Suppress-Script` field.
 
