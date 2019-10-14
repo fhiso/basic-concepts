@@ -321,7 +321,7 @@ applications *must* be able to store and process such *strings*.
 
 {.example}  A future standard might define an `x-mufi` private use
 language subtag (per §2.2.7 of [RFC 5646]), which is used to mean that
-*private use chracters* are to be interpreted according to [MUFI], a
+*private use characters* are to be interpreted according to [MUFI], a
 standard for encoding many obscure mediæval characters, ligatures and
 scribal abbreviations that are not current in Unicode.  A *string* with
 a *language tag* like `non-x-mufi` would then be interpreted as saying
