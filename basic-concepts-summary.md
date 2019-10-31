@@ -79,7 +79,7 @@ The introductory text and first section set up the flow of the document itself. 
     3. We can also have abstract datatypes: that is, types that cannot be represented directly but may have multiple subtypes.
     4. We can also add language information to a datatype if (portions of) the value have a human language as well as an internal machine-parseable structure.
     5. It's OK to say something "this value is either a date or a name" by using a union datatype
-    6. We have standard datatypes for Booleans, strings, integers, IRIs, language-tagged strings, and (for technical reasons) an "anything" type called xsd:anyAtomicType
+    6. We have standard datatypes for Booleans, strings, integers, IRIs, language-tagged strings, and (for technical reasons) an "anything" type called `xsd:anyAtomicType`
 
 ## References
 
