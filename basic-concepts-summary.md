@@ -54,9 +54,11 @@ The introductory text and first section set up the flow of the document itself. 
     
     1. Classes
     
-        - A class describes a group of other terms, such the class "event" describing terms such as "baptism" and "emigration"
-        - A class is a term, with all the extensibility and other benefits that provides
-        - For object-oriented programmers, this is our data parallel to OO class hierarchies; but need not match every class one might put in an actual class hierarchy, only those with external conceptual significance
+        - A class describes a group of other terms.
+            
+            This can be used both to provide enumerations (e.g., "mother", "father", and "child" belonging to the class "role in family") and property type hierarchies (e.g. "stillbirth" belonging to both "birth" and "death", and "birth" and "death" belonging to "life event", which belongs to "event")
+        
+        - A class represented by a term, with all the extensibility and other benefits that provides
         - This mechanism allows a hierarchy of types, enabling different tools to interoperate without needing to think about concepts at the same level of granularity as one another
     
     2. Properties
@@ -69,7 +71,7 @@ The introductory text and first section set up the flow of the document itself. 
 6. Datatypes
     
     - A datatype describes how some value type is encoded as a string; they are intended for simple types like numbers, dates, and the like
-    - A datatype is a term, with all the extensibility and other benefits that provides
+    - A datatype is represented by a term, with all the extensibility and other benefits that provides
     - Datatypes have lexical space—that is, the set of strings that could be valid values (e.g., "`23`" is part of the lexical space of "integers" but "`gold`" is not)
     
     There are several sub-parts:
