@@ -20,6 +20,14 @@ FHISO's **Type Systems for Genealogical Standards** standard defines various low
 
 The definitions in this standard are of two kinds: a set of definitions of concepts and a set of definitions of how those concepts can be represented in data. This separation of definitions is maintained in part to support standards where some concepts are represented only implicitly.
 
+{.note ...}
+This document's conceptual definitions include *entity*, *entity class*, *formal property*, *predicate*, *direct object*, and *value space*.
+
+This document's representation definitions include *class*, *property*, *property name*, *property value*, *property term*, *required property*, *datatype*, *lexical space*, *pattern*, *literal*, *datatype tag*, and *literal value*. It also defines several specific *terms* and *datatypes*.
+
+This document also defines *alias*, *member*, *subclass*, *superclass*, *subject*, and *range*, which apply to both concepts and their representations.
+{/}
+
 ## Conventions used
 
 Where this standard gives a specific technical meaning to a word or phrase, that word or phrase is formatted in bold text in its initial definition, and in italics when used elsewhere. The key words **must**, **must not**, **required**, **shall**, **shall not**, **should**, **should not**, **recommended**, **not recommended**, **may** and **optional** in this standard are to be interpreted as described in &#x5b;[RFC 2119](https://tools.ietf.org/html/rfc2119)].
@@ -32,7 +40,7 @@ If a *conformant* application encounters data that does not conform to this stan
 
 This standard depends on FHISO's **Basic Concepts for Genealogical Standards** standard. To be *conformant* with this standard, an application *must* also be *conformant* with [Basic Concepts]. Concepts defined in that standard are used here without further definition.
 
-{.note} In particular, precise meaning of *string*, *language tag*, *term*, *prefix notation*, and *prefix* are given in [Basic Concepts].
+{.note} In particular, precise meaning of *string*, *language tag*, *term*, *term name*, *IRI*, *prefix notation*, and *prefix* are given in [Basic Concepts].
 
 Indented text in grey or coloured boxes does not form a normative part of this standard, and is labelled as either an example or a note.
 
@@ -67,7 +75,7 @@ An **entity** is a single identifiable concept.
 
 {.example} The concept "numbers represented in base-10 using ASCII digits without place separators" is an *entity* which is formalized by the `xsd:integer` *datatype*.
 
-A *term*, as defined in [Basic Standards], pairs an *entity* with an IRI. Multiple *terms* identifying the same *entity* may exist, but a new *term* for an *entity* *should not* be created if an existing *term* for that *entity* is known. Terms are said to **alias** each other if they refer to the same *entity*.
+A *term*, as defined in [Basic Standards], identifies an *entity* by pring it with an *IRI*. Multiple *terms* identifying the same *entity* may exist, but a new *term* for an *entity* *should not* be created if an existing *term* for that *entity* is known. Terms are said to **alias** each other if they refer to the same *entity*.
 
 {.note} *Aliasing* *terms* arise naturally in several situations, including when multiple data models develop *terms* for the same feature independently and when researchers introduce *terms* for the historical *entities* referenced in each of several sources only to later discover they were all the same *entity*.
 
@@ -78,7 +86,7 @@ A formatted citation like
 
 > FHISO (Family History Information Standards Organisation). *The Pattern Datatype*.  First public draft.
 
-can be seen as asserting the author, title, and version of a document; the document is an *entity*, but no *term* or *datatype* is present in the cutation to identify it as such; we understand it's presence from the context of a citation.
+can be seen as asserting the author, title, and version of a document; the document is an *entity*, but no *term* or *datatype* is present in the citation to identify it as such; we understand the *entity's* presence implicitly from the context of it being a citation.
 {/}
 
 ## Classes {#classes}
@@ -87,7 +95,7 @@ An **entity class** is an *entity* identifying a particular context or use in wh
 
 {.note} *Entity class* is intentionally broad enough to cover both the ideas of a class in the object-oriented sense (the context including the set of members each object of the class contains and their meaning) and a named enumeration (the context being the meaning of the enumeration name). An *entity class* could be used to describe almost any set of *entities*, provided there is some context or use case that defines that set.
 
-A *class* is a *term* that identifies an *entity class*.
+A **class** is a *term* that identifies an *entity class*.
 
 The *class* of all *entities* is `rdfs:Resource`.
 The *class* of all *entity classes* is `rdfs:Class`.
@@ -165,7 +173,7 @@ A *datatype* has a **value space** which is the *entity class* of *entities* whi
 
 {.example} XML Schema defines an integer type in §3.4.13 of \[[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)\] which is well-suited for use in this standard. FHISO uses this type where integer values occur. 
 
-The mapping from lexical representations to logical values need not be one-to-one. If a *datatype* has multiple lexical representations of the same logical value, a *conformant* application *must* treat these representations equivalently and *may* change a *string* of that *datatype* to be a different but equivalent lexical representation.
+The mapping from lexical representations to *entities* need not be one-to-one. If a *datatype* has multiple lexical representations of the same *entity*, a *conformant* application *must* treat these representations equivalently and *may* change a *string* of that *datatype* to be a different but equivalent lexical representation.
 
 {.note} This allows applications to store such *strings* internally using any representation of that *entity* (such as a database field or a variable) without retaining the original lexical representation.
 
@@ -205,8 +213,9 @@ The `rdfs:Datatype` *term* is defined in §2.4 of \[RDF Schema\].
 
 {.note} Making `rdfs:Datatype` a *subclass* of `rdfs:Class` says that a *datatype name* *may* be used where a *class name* is expected. In many situations this is desirable. For example, the *range* of a *property* is, in general, a *class name*, but frequently a *datatype name* will be used: for example, the *range* of `types:isAbstract` is the `xsd:boolean` *datatype*. By making `rdfs:Datatype` a *subclass* of `rdfs:Class`, the *range* of `rdfs:range` can be `rdfs:Class`.
 
+One *datatype* can be a **subtype** of another *datatype*. The latter *datatype* is called the **supertype** of the former. The *value space* of the *subtype* *shall* be a *subclass* of the *value space* of the *supertype*. Each *string* in the *lexical space* of the *subtype* *shall* also be in the *lexical space* of the *supertype*, and *shall* map to the same *entity* in both *datatypes*.
 
-The *datatype* `xsd:anyURI` can represent any *entity* as a *term*; as such, it can be used to represent any *value space*.
+{.example} Consider the *datatype* `xsd:anyURI`, which can represent any *entity* as a *term*, and the *datatype* `xsd:integer`, which represents integers using ASCII digits. The *entity class* of integers is a *subclass* of the *entity class* of all *entities*, and the *lexical space* of `xsd:integer` is a subset of the *lexical space* of `xsd:anyURI` (in particular, every integer is a valid relative IRI). However, `xsd:integer` is not a *subtype* of `xsd:anyURI` because the two are not guaranteed to map each *string* in the *lexical space* of `xsd:integer` to the same *entity*.
 
 
 
