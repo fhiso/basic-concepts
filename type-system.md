@@ -23,7 +23,7 @@ The definitions in this standard are of two kinds: a set of definitions of conce
 {.note ...}
 This document's conceptual definitions include *entity*, *entity class*, *formal property*, *predicate*, *direct object*, and *value space*.
 
-This document's representation definitions include *class*, *property*, *property name*, *property value*, *property term*, *required property*, *datatype*, *lexical space*, *pattern*, *literal*, *datatype tag*, and *literal value*. It also defines several specific *terms* and *datatypes*.
+This document's representation definitions include *class*, *property*, *property name*, *property value*, *property term*, *required property*, *datatype*, *lexical space*, *subtype*, *supertype*, *pattern*, *literal*, *datatype tag*, and *literal value*. It also defines several specific *terms* and *datatypes*.
 
 This document also defines *alias*, *member*, *subclass*, *superclass*, *subject*, and *range*, which apply to both concepts and their representations.
 {/}
@@ -75,7 +75,7 @@ An **entity** is a single identifiable concept.
 
 {.example} The concept "numbers represented in base-10 using ASCII digits without place separators" is an *entity* which is formalized by the `xsd:integer` *datatype*.
 
-A *term*, as defined in [Basic Standards], identifies an *entity* by pring it with an *IRI*. Multiple *terms* identifying the same *entity* may exist, but a new *term* for an *entity* *should not* be created if an existing *term* for that *entity* is known. Terms are said to **alias** each other if they refer to the same *entity*.
+A *term*, as defined in [Basic Standards], identifies an *entity* by pairing it with an *IRI*. Multiple *terms* identifying the same *entity* may exist, but a new *term* for an *entity* *should not* be created if an existing *term* for that *entity* is known. Terms are said to **alias** each other if they refer to the same *entity*.
 
 {.note} *Aliasing* *terms* arise naturally in several situations, including when multiple data models develop *terms* for the same feature independently and when researchers introduce *terms* for the historical *entities* referenced in each of several sources only to later discover they were all the same *entity*.
 
@@ -86,7 +86,7 @@ A formatted citation like
 
 > FHISO (Family History Information Standards Organisation). *The Pattern Datatype*.  First public draft.
 
-can be seen as asserting the author, title, and version of a document; the document is an *entity*, but no *term* or *datatype* is present in the citation to identify it as such; we understand the *entity's* presence implicitly from the context of it being a citation.
+can be seen as asserting the author, title, and version of a document. The document being described is an *entity*, but no *term* or *datatype* is present in the citation to identify it as such; we understand the *entity's* presence implicitly from the context of this being a citation.
 {/}
 
 ## Classes {#classes}
@@ -123,8 +123,8 @@ The *range* is itself a *formal property* of the *predicate*.
 {.ednote} to do: Look up and, where appropriate, mirror the language of RDF in the above.
 
 A **property** identifies a *formal property*.
-The *predicate* of the *formal property* is represented by the **property name** of the *predicate*, which is a *term*.
-The *direct object* of the *formal property* is represented by the **property value** of the *predicate*, which is either a *term* or *literal value*.
+The *predicate* of the *formal property* is represented by the **property name** of the *property*, which is a *term*.
+The *direct object* of the *formal property* is represented by the **property value** of the *property*, which is either a *term* or *literal value*.
 The representation of the *subject* of a *property* may vary across different standards and is not specified by this standard.
 
 A *property* which identifies a *class* to which an *entity* belongs uses the *property name* `rdf:type` and has *range* `rdfs:Class`.
@@ -138,7 +138,7 @@ Both `rdf:type` and `rdfs:range` are *property terms*.
 
 ### Required properties {#required-props}
 
-A *property* which *must* be provided when a third party defining a new *term* in some particular *class* is called a **required property**.
+A *property* which *must* be provided when a third party is defining a new *term* in some particular *class* is called a **required property**.
 
 {.example ...}
 The notion of a *datatype* is defined in {§datatypes} of this standard, and is common to many FHISO standards. *Datatypes* are identified by a *term* known as their *datatype name*, and any party defining a *datatype* for use with FHISO standards is *required* to specify its *pattern*, *supertype* if any, and whether it is an *abstract datatype*. These pieces of information are specified via three *properties* called `types:pattern`, `types:nonTrivialSupertype` and `types:isAbstract`. These three *properties* are therefore the *required properties* for *datatypes*. In fact, *datatypes* have a fourth *required property* which is their *type*: i.e. a statement that the *term* is a *datatype*.
@@ -217,6 +217,27 @@ One *datatype* can be a **subtype** of another *datatype*. The latter *datatype*
 
 {.example} Consider the *datatype* `xsd:anyURI`, which can represent any *entity* as a *term*, and the *datatype* `xsd:integer`, which represents integers using ASCII digits. The *entity class* of integers is a *subclass* of the *entity class* of all *entities*, and the *lexical space* of `xsd:integer` is a subset of the *lexical space* of `xsd:anyURI` (in particular, every integer is a valid relative IRI). However, `xsd:integer` is not a *subtype* of `xsd:anyURI` because the two are not guaranteed to map each *string* in the *lexical space* of `xsd:integer` to the same *entity*.
 
+{.example} Consider the *datatype* `xsd:integer`, which represents integers using ASCII digits; and the *datatype* `xsd:nonNegativeInteger`, which uses the same representation of the smaller set of non-negative integers. The *entity class* of non-negative integers is a *subclass* of the *entity class* of all integers, and the *lexical space* of `xsd:nonNegativeinteger` is a subset of the *lexical space* of `xsd:integer`, and both are guarnateed to map any *string* in the *lexical space* of `xsd:nonNegativeInteger` to the same *entity*; thus, `xsd:nonNegativeInteger` is a *subtype* of `xsd:integer`.
+
+{.note} The concept of a *subtype* in this standard corresponds to
+XML Schema's concept of derivation of a simple type by restriction per
+§3.16 of &#x5B;[XSD Pt1](https://www.w3.org/TR/xmlschema11-1/)].  XML
+Schema does not have concept compatible with this standard's notion of
+an *abstract datatype*, as in XML Schema only complex types can be
+abstract and complex types are not *strings*.  If it is desirable to
+describe a FHISO *abstract datatype* in XML Schema, it should be defined
+as a normal simple type, with the information that it is abstract
+conveyed by another means. 
+
+The **trivial supertypes** of a *datatype* are certain *supertypes*
+whose status as a *supertype* of the *datatype* is implied by the data
+model defined in this standard.  The *trivial supertypes* of a
+*datatype* include the *datatype* itself and the *universal supertype*,
+`xsd:anyAtomicType`.  A *supertype* which is not a *trivial supertype* is
+called a **non-trivial supertype**.
+
+{.note} *Unions of datatypes*, as defined in {§unions}, are also
+*trivial supertypes*.
 
 
 ### Patterns
@@ -299,7 +320,7 @@ An example *literal value* thus might be
 |`タイコノヸズ ルテル | タイコノヸズ`|`types:CreatorsName`| `ja`   |
 {/}
 
-Because the *datatype* `xsd:anyURI` has as its *value space* `rds:Resource`, an `xsd:anyURI` *literal* can be used in any *literal value* provided it's identified *entity* is a member of the *literal value*'s *value space*. 
+Because the *datatype* `xsd:anyURI` has as its *value space* `rds:Resource`, an `xsd:anyURI` *literal* can be used in any *literal value* provided identifies an *entity* that is a member of the *literal value*'s *value space*. 
 
 {.note} An *entity* represented with *datatype* `xsd:anyURI` is equivalent to a *term*, as defined in [Basic Concepts].
 Including a *term* in a *literal value* allows *properties* to be defined with that *literal value*'s underlying *entity* as its *subject*.
@@ -308,7 +329,1047 @@ Including a *term* in a *literal value* allows *properties* to be defined with t
 Suppose a data model defines a *property* `http://example.com/birth-date`
 describing the date of the birth of its *subject* person,
 with *range* being a date.
+The *property value* for that *property* for Аспарух, Khan of Bulgaria might be
 
-...
+|string                        |datatype            |language|
+|------------------------------|--------------------|--------|
+|`ABT 640`                     |`elf:DateValue`     | `und`  |
+|`ex:dates/asparuhs-birth`     |`xsd:anyURI`        | `und`  |
+
+The first entry gives a datatype, but since this is just a rough estimate we probably want to say other things about it.
+The second entry provides a term for this date, allowing us to refer to the date itself in other properties if we wish, for example, so say some other person is two years older than Аспарух.
 {/}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+
+
+## Term Definitions
+
+This section contains the *properties* of the *terms* defined in this document.
+
+
+: Property definition: *types*
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note}  The `rdf:type` *property term* is defined §3.3 of [RDF Schema],
+however implementers may safely use this *property term* for the
+purposes of this standard without reading [RDF Schema].  The
+decision to use this RDF *term* in FHISO's standards rather than invent
+a new *term* allows for greater compatibility with existing third-party
+vocabularies.
+
+
+: Class definition: *class*
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+------              -----------------------------------------------------------
+
+{.note}  This can be thought of as a *class* of *classes*.  It is not
+merely an arcane abstraction: it serves a useful role in *discovery*.
+If *discovery* is carried out on the *term name* of a *class*, it is
+useful to be able to indicate that the *term* is a *class*.  This can be
+done by saying the *type* of the *term* is `rdfs:Class`.
+
+{.note ...}  Although the `rdfs:Class` *class* is defined in §2.2 of [RDF
+Schema], this standard does not require support for any of the
+facilities in [RDF Schema], nor are parties defining *classes* or
+*terms* required to do so in a manner compatible with RDF.  An
+implementer may safely use the `rdfs:Class` *class* for the purposes of
+this standard using just the information given in this section without
+reading [RDF Schema] or otherwise being familiar with RDF.  
+
+The decision to use `rdfs:Class` and other *terms* from [RDF Schema] is
+due to FHISO's practice of reusing facilities from existing standards when
+they are a good match for our requirements, rather than inventing our
+own versions with similar functionality.  It also allows future
+standards and vendor extensions the option of reusing existing
+third-party vocabularies where appropriate, as most such vocabularies
+are also aligned with RDF.
+{/}
+
+{.note}  There is no need for a further level of abstraction to
+represent the *type* of `rdfs:Class`.  As `rdfs:Class` is just another
+*class*, albeit a fairly special one, the *type* of `rdfs:Class` is
+`rdfs:Class`.
+
+
+: Property definition: *subclass*
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#subClassOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note}  The `rdfs:subClassOf` *property term* is defined §3.4 of 
+[RDF Schema], however implementers may safely use this *property term*
+for the purposes of this standard without reading [RDF Schema].  The
+decision to use this RDF *term* in FHISO's standards rather than invent
+a new *term* allows for greater compatibility with existing third-party
+vocabularies.  
+
+: Class definition: *entity*
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+------              -----------------------------------------------------------
+
+{.note}  The `rdfs:Resource` *class* is defined in §2.1 of [RDF
+Schema].
+
+{.note}  The `rdfs:Resource` *class* is useful with the `rdfs:subClassOf` 
+*property* when defining a *class* which has no other *superclass*.
+
+
+: Class definition: *property*
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://www.w3.org/2000/01/rdf-schema#range`
+------              -----------------------------------------------------------
+
+{.note}  The `rdf:Property` *term* is defined in §2.8 of [RDF Schema].
+As with the `rdfs:Class` *term*, an implementer may safely use
+the `rdf:Property` *terms* for the purposes of this standard without
+reading [RDF Schema].
+
+{.ednote} The notion of *cardinality* may also be moved here from [CEV
+Concepts].
+
+
+: Property definition: *range*
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#range`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+{.note} The *range* of the `rdfs:range` *property* is defined above to
+be `rdfs:Class`, although the *property value* of an `rdfs:range`
+*property* can be either a *class name* or a *datatype name*.  This
+works because `rdfs:Datatype` is defined as a *subclass* of
+`rdfs:Class`, and therefore a *datatype name* can be used where a
+*class name* is required.
+
+{.ednote}  We may need to introduce the concepts of the
+**domain** of a *property term*, currently in our 
+[Vocabularies policy](https://tech.fhiso.org/policies/vocabularies).
+Careful consideration will be needed before the *domain* is introduced
+to ensure it does not cause forwards compatibility problems if new uses
+are found for the *property*.
+
+
+: Property definition: *required properties*
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/requiredProperty`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+------           -----------------------------------------------
+
+{.ednote}  This data model does not provide a convenient mechanism for
+the *property value* to be a list.  Therefore, instead of one
+`requiredProperties` *property* whose value is a list of *property
+names*, *classes* will normally have multiple `requiredProperty`
+*properties* each of whose value is a single *property name*.
+
+
+: Class definition: *datatype*
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSupertypeCount`<br/>
+                    `https://terms.fhiso.org/types/isAbstract`
+------              -----------------------------------------------------------
+
+{.note}  The `rdfs:Datatype` *term* is defined in §2.4 of [RDF Schema].
+
+{.note  ...}  The *class* of *datatypes*, `rdfs:Datatype`, is defined here to
+be a *subclass* of the *class* of all *classes*, `rdfs:Class`.  This may
+appear counter-intuitive as new *classes* are normally defined to be a
+*subclass* only of `rdfs:Resource`, the *universal superclass*.  The
+reason for doing this is partly for compatibility with its definition in
+[RDF Schema], but the reasons [RDF Schema] took this unusual decision
+are also valid here.
+
+Making `rdfs:Datatype` a *subclass* of `rdfs:Class` says that a *datatype
+name* *may* be used where a *class name* is expected.  In many
+situations this is desirable.  For example, the *range* of a *property*
+is, in general, a *class name*, but frequently a *datatype name* will be
+used: for example, the *range* of `types:isAbstract` is the
+`xsd:boolean` *datatype*.  By making `rdfs:Datatype` a *subclass* of
+`rdfs:Class`, the *range* of `rdfs:range` can be `rdfs:Class`.
+{/}
+
+
+: Property definition: *pattern*
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/pattern`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `https://terms.fhiso.org/types/Pattern`
+------           -----------------------------------------------
+
+{.note}  The `types:Pattern` *datatype* used as the *range* of this
+property is defined in a separate [FHISO Patterns] standard which
+defines the dialect of regular expressions which FHISO supports.
+
+{.ednote}  This standard does not use `xsd:pattern` as the *property
+term*, even though it is used as a predicate in 
+[OWL 2](https://www.w3.org/TR/owl2-syntax/).  Its use would pose a
+difficulty because none of the relevant W3C specifications
+indicate what the `rdfs:domain` of `xsd:pattern` is supposed to be.
+Possibly it is an `owl:Restriction`, which would be incompatible with
+this use.  Using `xsd:pattern` would also require us to use precisely
+the form of regular expression defined in Appendix G of [XSD Pt2].
+
+All *datatypes* are implicitly a *subtype* of the `xsd:anyAtomicType`
+*abstract datatype* defined to be the *universal supertype* in
+{§anyAtomicType}.
+
+
+: Property definition: *non-trivial supertype*
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/nonTrivialSupertype`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
+
+{.ednote}  An earlier unpublished draft of this standard reused the
+`rdfs:subClassOf` *property* to represent the *supertype* of a
+*datatype*.  This introduced a fairly obscure incompatibility with RDF.
+RDF only requires that the value space of a *subtype* is a subset of the
+value space of the *supertype*: it says nothing about their *lexical
+spaces*.  Thus in RDF it would be possible for `xsd:boolean` to be a
+*subclass* of `xsd:integer` if the boolean values "true" and "false" are
+considered to be identical to the integer values 1 and 0, respectively
+(though in fact they're not).  This is despite the *strings* "`true`"
+and "`false`" being part of *lexical space* of `xsd:boolean` but not of
+`xsd:integer`.  This means a stronger relationship is needed which
+constrains both the *lexical space* and the *value space*.  This is what
+`types:nonTrivialSupertype` provides.  This standard explicitly does not
+state whether `types:nonTrivialSupertype` is an `rdfs:subPropertyOf`
+`rdfs:subClassOf`.
+
+The `types:nonTrivialSupertype` *property* *must not* be used to record 
+a *trivial supertypes* of the *datatype*.
+
+A `types:nonTrivialSupertype` *property* *must* be used to record every
+*non-trivial supertype* of a *datatype* which is not implied by the
+transitivity of `types:nonTrivialSupertype` and the other
+`types:nonTrivialSupertype` *properties* present.
+
+{.example}  Suppose a hypothetical standard defines three *datatypes*,
+`DateTime`, `Date`, and `Year`.  If the standard specifies that `Year`
+has a `types:nonTrivialSupertype` *property* with *property value* `Date`, and
+that `Date` has a `types:nonTrivialSupertype` *property* with *property value*
+`DateTime`, it is not necessary for the standard to record that `Year`
+has a second `types:nonTrivialSupertype` *property* with *property value*
+`DateTime` as this is implied by the other two.  Nevertheless, the
+standard *may* do so.
+
+As a way of checking for data integrity during *discovery*, an
+additional *property* is provided representing the number of
+*non-trivial supertypes* of the *datatype* that are either recorded
+using `types:nonTrivialSupertype` *properties* or are implied by them via
+transitivity:
+
+: Property definition: number of *non-trivial supertypes*
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/nonTrivialSupertypeCount`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2001/XMLSchema#integer`
+------           -----------------------------------------------
+
+{.ednote} Should this have a *range* of `xsd:nonNegativeInteger`
+instead?
+
+This `types:nonTrivialSupertypeCount` *property* is a *required
+property* of `rdfs:Datatype`, and must be specified (with a value of
+"`0`") even if there are no *non-trivial supertypes*.
+
+An application which finds out about a *datatype* through *discovery*
+*must not* assume it knows the *supertypes* of the *datatype* unless it
+has verified that the number of *non-trivial supertypes* specified with
+the `types:nonTrivialSupertype` *property* or implied by the
+transitivity of that *property* is equal to the value of the
+`types:nonTrivialSupertypeCount` *property*.
+
+{.ednote ...}  These two *properties* are likely to be changed in a
+future draft.  A cleaner implementation would be to have a single
+`types:supertypes` *property* which is a list of the *non-trivial
+supertypes* of the *datatype*, however at the moment the data model does
+not support list-valued properties.  This is a recognised deficiency in
+the current data model that is likely to be changed, but which requires
+considerable work.
+
+The reason why a single list-valued *property* is inherently safe
+whereas a collection of a *properties* is not is that the list-valued property
+can be made a *required property* which *must* be present exactly once.
+If it is not, an application knows that is missing and will not assume
+it properly understands the *datatype*.  However if one of several
+`types:nonTrivialSupertype` *properties* goes missing, this might go unnoticed.
+This is particular relevant if the *properties* have been processed by
+RDF applications, as the RDF philosophy is that RDF triples can be taken
+in isolation and that removing one or more RDF triples merely loses
+information rather than altering the meaning of something.  It is
+therefore quite conceivable that an RDF triple encoding a *property*
+might go missing.
+
+In [CEV Concepts], a missing `types:nonTrivialSupertype` might result in a
+*datatype* being incorrectly thought not to conform to the *range* of
+some *citation element*, which might result in a valid *citation
+element* being discarded.  The importance of avoiding this is the reason
+why the current draft includes a `types:nonTrivialSupertypeCount` as a
+check.
+{/}  
+
+In the *datatype* definition tables in this standard, a single
+*supertype* row is given which is understood to contain a complete list
+of all *non-trivial supertypes* and no *trivial supertypes*.
+
+{.ednote} A future version of this standard needs to address what
+changes may be made to an existing *datatype* hierarchy.  Specifically,
+can a new *non-trivial supertype* be injected into an existing
+hierarchy?  Doing so changes the number of *non-trivial supertypes* a
+*datatype* has, so at present it would break third-party *subtypes*.  A
+related question is whether a third party can inject their own
+*non-trivial supertype* into your *datatype* hierarchy.  Probably they
+should not be allowed to, and most use cases where this might be needed
+can hopefully be accommodated with a *union of datatypes*.
+
+
+
+
+
+
+
+
+
+### Unions of datatypes                                        {#unions}
+
+A **union of datatypes** is an *abstract datatype* which is defined in
+terms of a unordered list of two or more distinct *datatypes* called its
+**constituent datatypes**.   The *constituent datatypes* *must not*
+themselves be *unions of datatypes*.  The *lexical space* of a *union of
+datatypes* is the union of the *lexical spaces* of each *constituent
+datatype*.  
+
+{.note}  There is no requirement that the *lexical spaces* of each
+constituent *datatype* be disjoint.
+
+Like any other *datatype*, a *union of datatypes* is a *term* with a
+*term name*.  It *must* also specify a *pattern*.
+
+{.ednote}  The following example describes a formalism for dates which
+has not yet been agreed nor even properly discussed.  It is likely to
+change.
+
+{.example ...}  FHISO plans to define a *datatype* for representing
+dates which has the following *datatype name*: 
+
+    https://terms.fhiso.org/dates/Date
+
+It is a *union of datatypes* with the following two *constituent
+datatypes*:
+
+    http://www.w3.org/1999/02/22-rdf-syntax-ns#langString
+    https://terms.fhiso.org/dates/AbstractDate
+
+The former is the *language-tagged datatype* defined in {§langString}
+and is used to record dates that are described in a way that cannot be
+converted to a structured form without loosing information.  The latter
+is an *abstract datatype* which serves as the *supertype* for various
+*structured datatypes* for dates.
+
+Because the `rdf:langString` *constituent datatype* is an *unstructured
+datatype*, every possible *string* is part of that of the *lexical
+space* of that *datatype*, and therefore also part of the *lexical
+space* of the *union of datatypes*.  This means the *pattern* specified
+for the *union of datatypes* *must* allow every possible *string*, and
+so *should* be "`.*`". 
+{/}
+
+{.ednote} In the second draft of [CEV Concepts], which is where they
+were previously defined, *unions of datatypes* were not themselves
+*datatypes* as they lacked a *term name* to identify them, did not 
+have a *pattern*, and could not be used as a *subtype* or *supertype*.
+As that draft noted, this is just a matter of nomenclature, and it seems
+more useful to make them proper *datatypes* in their own right.
+
+A *union of datatypes* *may* contain *language-tagged datatypes*,
+*non-language-tagged datatypes*, or a mixture of both.
+
+Each *constituent datatype* of a *union of datatypes* is a *subtype* of
+the *union of datatypes*.  Whenever a *union of datatypes* is
+*supertype* of some other *datatype* it is defined to be a *trivial
+datatype*.
+
+{.note}  This means that every *datatype* has an unbounded set of
+*trivial supertypes* because every possible *union of datatypes* which
+has the *datatype* as a *constituent datatype* is a *supertype* of it.
+The set of *non-trivial supertypes* remains finite. 
+
+A *datatype* *shall* be a *supertype* of a *union of datatypes* if and
+only if it is a *supertype* of every *constituent datatype* of the
+*union of datatypes*.  
+
+{.note}  Because the set of *supertypes* of each *constituent datatype*
+is unbounded, the set of *supertypes* of a *union of datatypes* is also
+unbounded as it contains every *union of datatypes* whose set of
+*constituent datatypes* is a superset of its own.  The set of
+*non-trivial supertypes* remains finite.
+
+{.example}  In previous example, neither `rdf:langString` nor
+`AbstractDate` has any *non-trivial supertypes*, and therefore neither
+does the `Date` *union of datatypes*.
+
+{.example}  In a *union of datatypes* whose *constituent datatypes* are
+all *language-tagged datatypes*, each *constituent datatype* is a
+*subtype* of `rdf:langString` and therefore `rdf:langString` is a
+*non-trivial supertype* of the *union of datatypes*.  This means the
+*union of datatypes* is classified as a *language-tagged datatype*.
+
+The *class* of *unions of datatypes* is defined as follows:
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Union`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/nonTrivialSupertypeCount`<br/>
+                    `https://terms.fhiso.org/types/isAbstract`<br/>
+                    `https://terms.fhiso.org/types/constituentDatatypeCount`
+------              -----------------------------------------------------------
+
+{.note} The main reason for defining a *class* for *unions of datatypes*
+is so that applications can distinguish *unions of datatypes* from other
+*datatypes* in order to check the number of *non-trivial supertypes* a
+*datatype* has, and whether this matches the number given in the
+`types:nonTrivialSupertypeCount` *property*.  It also allows
+`types:constituentDatatypeCount` to be defined as a *required property*.
+
+The *property* which denotes a *constituent datatype* of a *union of
+datatypes* is defined as follows:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/constituentDatatype`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
+
+As a way of checking for data integrity during *discovery*, an
+additional *property* is provided representing the number of
+*constituent datatypes* of the *union of datatype*:
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/constituentDatatypeCount`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2001/XMLSchema#integer`
+------           -----------------------------------------------
+
+{.ednote} Should this have a *range* of `xsd:nonNegativeInteger`
+instead?
+
+{.ednote ...}  These two *properties* are likely to be changed in a
+future draft.  Much as with the two *properties* for recording
+*supertypes* given in {§subtypes}, a cleaner implementation would be to
+have a single `types:unionOf` *property* which is a list of the
+*constituent dataptyes* of the *union of datatypes*, however at the
+moment the data model does not support list-valued properties.  This is
+a recognised deficiency in the current data model that is likely to be
+changed, but which requires considerable work.
+
+If and when list-valued *properties* are added to the data model, it may
+be that the `owl:unionOf` *property* defined in
+[OWL](https://www.w3.org/TR/owl-ref/) should be reused instead of
+inventing our own *property*.
+{/}
+
+### Standard datatypes
+
+This standard recommends the use of the `xsd:string`, `xsd:boolean`,
+`xsd:integer` and `xsd:anyURI` *datatypes* defined in &#x5B;[XSD
+Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent *strings*,
+*booleans*, *integers* and IRIs, respectively.  They are described in
+the following subsections.
+
+{.note ...} XML Schema does not give its types IRIs, but it does give
+them `id`s, and following the best practice advice given in §2.3 of 
+&#x5B;[SWBP XSD DT](https://www.w3.org/TR/swbp-xsch-datatypes/)]
+gives them IRIs like this:
+
+    http://www.w3.org/2001/XMLSchema#integer
+
+These types are also recommended for use in RDF by §5.1 of 
+&#x5B;[RDF Concepts](https://www.w3.org/TR/rdf11-concepts/)].
+RDF requires all *datatypes* to be identified by an IRI, and 
+IRIs such as the one above are used for XML Schema *datatypes*.
+{/}
+
+This section also contains a summary of the `rdf:langString` *datatype*
+which is used heavily by FHISO technologies.
+
+{.note}  The *datatypes* described in this section are not intended to
+be an exhaustive list of *datatypes* usable with FHISO technologies, but
+rather is a list of the most common ones.  Other XML Schema *datatypes*
+*may* also be suitable, as *may* *datatypes* from other third-party
+standards.  Other FHISO standards will define additional *datatypes*.
+
+#### The `xsd:string` datatype
+
+Some FHISO standards make limited use of the `xsd:string` *datatype*
+defined in §3.3.1 of &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].  
+This is an *unstructured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#string`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        *No non-trivial supertypes*
+Abstract         `false`
+------           -----------------------------------------------
+
+It is a general-purpose *datatype* whose lexical space is the space of
+all *strings*; however it is not a *language-tagged datatype* and
+therefore it *should not* be used to contain text in a human-readable
+natural language.
+
+{.note}  This type is not the ultimate *supertype* of all
+*non-language-tagged* datatypes.  This is because many other XML Schema
+*datatypes*, including `xsd:boolean` and `xsd:integer` are not defined as
+*subtypes* of `xsd:string` in XML Schema.
+
+Use of this *datatype* is generally *not recommended*: data that is in
+a human-readable form *should* use a *language-tagged datatype*, while
+data that is not human-readable *should* use a *structured datatype*.
+
+If an application encounters a *string* with the `xsd:string`
+*datatype* in a context where a *language-tagged string* would be
+permitted, the application *may* change the *datatype* to
+`rdf:langString` and assign the *string* a *language tag* of `und`,
+meaning an undetermined language.
+
+{.note} The `xsd:string` *datatype* is included in this standard in
+order to align this data model more closely with the RDF data model, and
+in particular the [CEV RDFa] bindings which use this *datatype* as the
+default when no *language tag* is present.  The above rule allowing
+conversion to `rdf:langString` means that applications *may* ignore the
+`xsd:string` *datatype*.
+
+#### The `xsd:boolean` datatype
+
+A **boolean** is a *datatype* with precisely two logical values:
+**true** and **false**.  FHISO standards represent *booleans* using the
+`xsd:boolean` *datatype* defined in §3.3.2 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].
+This is a *structured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#boolean`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `true|false|1|0`
+Supertype        *No non-trivial supertypes*
+Abstract         `false`
+------           -----------------------------------------------
+
+The *lexical space* of this *datatype* includes four different
+*strings* so that the two logical values of the *datatype* each have two
+alternative lexical representations.  The value *true* *may* be
+represented by either "`true`" or "`1`", while the value *false* *may*
+be represented by either "`false`" or "`0`".  *Conformant* applications
+*shall not* attach any significance to which of the alternative lexical
+representations is used, and *may* replace any instance of "`1`" in a
+*boolean* *string* with "`true`", or "`0`" with "`false`", but not vice
+versa.  Where possible, the numeric representations, "`0`" and "`1`",
+*should not* be used.
+
+{.note} The numeric representations are allowed because `xsd:boolean`
+allows them, and alignment with the XML Schema *datatype* is desirable
+as it is widely used in third-party standards.  Appendix E.4 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] defines the
+alphabetic representations, "`true`" and "`false`", to be the canonical
+forms of the datatype, and this standard does similarly.
+
+{.note} Even though the preferred forms of the allowed values of
+`xsd:boolean` are "`true`" and "`false`", which are in English, it is
+not a *language-tagged datatype* because the values *must not* be
+present in translated form.  A Romanian dataset, for example, would
+still use the value "`false`" rather than translating it as
+"`adevărat`".
+
+#### The `xsd:integer` datatype                               {#integer}
+
+FHISO uses the `xsd:integer` *datatype* defined in §3.4.13 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent
+integers.  It *must not* be used for values which are typically but not
+invariably integers.
+
+{.example}  Quantities that are invariably integer-valued do not
+occur all that frequently in genealogy.  The page number of material
+being cited is normally an integer, but not invariably as a page number
+of a colour plate might be "facing p.&nbsp;102" and prefatory pages are
+often numbered with Roman numerals.  For this reason, page numbers
+should not be represented with integers.  House numbers are similar, as
+it is not uncommon to find houses with numbers like "12A" in some
+countries.  
+
+{.example}  The number of children born to a couple is an example of a
+value which is integer-valued.  The number might be unknown or might only
+be known within certain bounds, but ultimately it is an integer: a
+couple cannot have 2.4 children. 
+
+This *datatype* can represent arbitrarily large integers, but
+unless otherwise stated, applications *may* opt not to support values
+greater than 2&thinsp;147&thinsp;483&thinsp;647 or less than
+&minus;2&thinsp;147&thinsp;483&thinsp;648.  In the event an unsupported
+value is encountered, an implementation *may* handle it in an
+implementation-defined manner, but *must not* convert it to a different
+integer.
+
+{.note}  This permits applications to represent an `xsd:integer` as a
+signed 32-bit integer except where otherwise noted.
+
+The *lexical space* of this *datatype* is the space of all *strings*
+consisting of a finite-length sequence of one or more decimal digits
+(U+0030 to U+0039, inclusive), optionally preceded by a `+` or `-` sign
+(U+002B or U+002D, respectively).  
+
+{.example}  Thus the *string* "`137`" is within the *lexical space* of
+this *datatype*, but "`20.000`" and "`四十二`" are not, despite being
+normal ways of representing integers in certain cultures.
+
+This *datatype* has several alternative representations of the same
+logical integer value.  This arises because leading zeros are permitted,
+the `+` sign is optional, and the value `-0` is permitted.  Applications
+*may* remove any leading `+` sign and any leading zeros preceding a
+non-zero digit, and *may* rewrite `-0` as `0`.
+
+{.note}  This ensures that applications do not need to preserve the
+original lexical form of an integer, only its value.
+
+This is a *structured non-language-tagged datatype* which has the
+following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#integer`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `[+-]?[0-9]+`
+Supertype        *No non-trivial supertypes*
+Abstract         `false`
+------           -----------------------------------------------
+
+{.ednote}  Its *supertype* is actually `xsd:decimal`, but this is not a
+supported *datatype* in this standard.
+
+{.note}  &#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] also
+provides a range of signed and unsigned *datatypes* for integers
+represented in a specified number of bytes.  The *datatypes* are
+`xsd:byte`, `xsd:short`, `xsd:int`, `xsd:long` and their unsigned
+equivalents.  FHISO discourage the use of all of these *datatypes* in
+conjunction with FHISO standards as there very few genealogical contexts
+where an integer is required but where the value can be guaranteed
+always to fit in these fixed sized *datatypes*.
+
+{.ednote}  This draft does not include specific guidance on the use of
+`xsd:positiveInteger` and `xsd:nonNegativeInteger`.
+
+#### The `xsd:anyURI` datatype                                 {#anyURI}
+
+FHISO uses the `xsd:anyURI` *datatype* defined in §3.3.17 of
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] to represent
+*strings* which are valid IRIs.
+
+{.note} Despite the name of this *datatype* it is used to represent any
+IRI, not just those which are valid URIs.  This misleading naming arose
+because XML Schema 1.0 did restrict the *datatype* to just URIs as IRIs
+were yet to be standardised.  XML Schema 1.1 broadened the definition to
+include IRIs and FHISO uses this broader definition of the *datatype*.
+
+Formally this is an *unstructured datatype* with no restrictions imposed
+on its *lexical space*; nevertheless, this *datatype* *should* only be
+used with *strings* which match the `IRI-reference` production in §2.2
+of &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)] which matches
+both absolute and relative IRIs.
+
+{.note} FHISO are following the definition in §3.3.17 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] in making this an
+*unstructured type*.  XML Schema does this because the rules for
+validating an IRI are complex, subject to frequent updates, and
+dependent on IRI scheme.
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#anyURI`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        *No non-trivial supertypes*
+Abstract         `false`
+------           -----------------------------------------------
+
+#### The `rdf:langString` datatype                         {#langString}
+
+The `rdf:langString` *datatype* defined in §2.5 of [RDFS] is used as the
+general-purpose *unstructured language-tagged datatype*.  No constraints
+are placed on the *lexical space* of this *datatype*; the only
+restriction placed on the use or semantics of this *datatype* is that it
+*should* contain text in a human-readable form.  
+
+Any *language-tagged datatype* that is not defined to be a *subtype* of
+some other *datatype* *shall* implicitly be considered to be a *subtype*
+of the `rdf:langString` *datatype*.
+
+{.note}  Together with the requirement in {§lang-types} that
+*language-tagged datatypes* *must not* be *subtypes* of
+*non-language-tagged datatypes*, this ensures that `rdf:langString` is
+the ultimate *supertype* of all *language-tagged datatypes*.
+
+This *datatype* has the following properties:
+
+: Datatype definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
+Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern          `.*`
+Supertype        *No non-trivial supertypes*
+Abstract         `false`
+------           -----------------------------------------------
+
+{.note} Although this type is formally defined in the RDF Schema
+specification, this standard requires no knowledge of RDF; an
+implementer may safely use this *datatype* using just the information
+given in this section, and without reading [RDF Schema].
+
+#### The `xsd:anyAtomicType` datatype                   {#anyAtomicType}
+
+The `xsd:anyAtomicType` *datatype* defined in defined §3.2.2 of
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)] is used as the
+**universal supertype** of all *datatypes*.
+
+This *datatype* has the following properties:
+
+: Datatype definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2001/XMLSchema#anyAtomicType`
+Type                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Pattern             `.*`
+Supertype           *No non-trivial supertypes*
+Abstract            `true`
+------              -----------------------------------------------------------
+
+{.note}  The `xsd:anyAtomicType` *datatype* is defined §3.2.2 of 
+&#x5B;[XSD Pt2](https://www.w3.org/TR/xmlschema11-2/)].  That standard
+does not define it as an *abstract datatype* as XML Schema's notion of
+abstract types does not extend to simple types.  Neverthless,
+`xsd:anyAtomicType` is treated specially by XML Schema in a way that
+is similar to this standard's definition of an *abstract datatype*.  It
+is also not considered an "RDF-compatible XSD type" in §5.1 of 
+[RDF Concepts] which means it *should not* be used as a *datatype* in
+RDF; again, this is similar to this standard's notion of an *abstract
+datatype*.
+
+Any *non-language-tagged datatype* not defined to be a *subtype* of
+any other *datatype* *shall* implicitly be considered to be a *subtype*
+of the `xsd:anyAtomicType` *datatype*.
+
+{.ednote}  In RDF, `xsd:anyAtomicType` is a *subclass* of
+`rdfs:Literal`.  So is `rdf:langString`.  This standard does not
+explicitly say this as FHISO's data model currently has no need for the
+`rdfs:Literal` *class*.
+
+## References
+
+### Normative references
+
+[FHISO Patterns]
+:   FHISO (Family History Information Standards Organisation).
+    *The Pattern Datatype*.  First public draft.
+
+[RDFS]
+:   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
+    W3C Recommendation, 2014.
+    (See <https://www.w3.org/TR/rdf-schema>.)
+
+[RFC 2119]
+:   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
+    use in RFCs to Indicate Requirement Levels.*  Scott Bradner, eds., 1997.
+    (See <https://tools.ietf.org/html/rfc2119>.)
+
+[RFC 3987]
+:   IETF (Internet Engineering Task Force).  *RFC 3987:
+    Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
+    Michel Suignard, eds., 2005. (See <https://tools.ietf.org/html/rfc3987>.)
+
+[RFC 5646]
+:   IETF (Internet Engineering Task Force).  *RFC 5646:
+    Tags for Identifying Languages.*  Addison Phillips and Mark Davis,
+    eds., 2009.  (See <https://tools.ietf.org/html/rfc5646>.)
+
+[RFC 7230]
+:   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
+    Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7230>.)
+
+[RFC 7231]
+:   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
+    Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7231>.)
+
+[Triples Discovery]
+:   FHISO (Family History Information Standards Organisation).
+    *Simple Triples Discovery Mechanism*.  First public draft.
+
+[UAX 15]
+:   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
+    Normalization Forms".  Revision 48.
+    Mark Davis and Ken Whistler, eds., 2019.  
+    (See <http://unicode.org/reports/tr15/>.)
+
+[Unicode]
+:   The Unicode Consortium.  *The Unicode Standard*, version 12.1.0.
+    2019.  (See <https://www.unicode.org/versions/Unicode12.1.0/>.)
+
+[XML]
+:   W3C (World Wide Web Consortium). *Extensible Markup Language (XML) 1.1*, 
+    2nd edition.  Tim Bray, Jean Paoli, C. M. Sperberg-McQueen, Eve
+    Maler, François Yergeau, and John Cowan eds., 2006.  W3C
+    Recommendation.  (See <https://www.w3.org/TR/xml11/>.)
+
+[XSD Pt2]
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
+    (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
+    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
+
+### Other references
+
+[ANSEL]
+:   NISO (National Information Standards Organization).
+    *ANSI/NISO Z39.47-1993.
+    Extended Latin Alphabet Coded Character Set for Bibliographic Use*.
+    1993.  (See 
+    <http://www.niso.org/apps/group_public/project/details.php?project_id=10>.)
+    Standard withdrawn, 2013.
+
+[CEV Concepts]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: General Concepts".  Third public draft.
+    See <https://fhiso.org/TR/cev-concepts>.
+
+[CEV RDFa]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: Bindings for RDFa*.  Third public draft.
+    (See <https://fhiso.org/TR/cev-rdfa-bindings>.)
+
+[CEV Vocabulary]
+:   FHISO (Family History Information Standards Organisation).
+    *Citation Elements: Vocabulary*.  Exploratory draft.
+
+[GEDCOM]
+:   The Church of Jesus Christ of Latter-day Saints.
+    *The GEDCOM Standard*, draft release 5.5.1.  2 Oct 1999.
+
+[IANA Lang Subtags]
+:   IANA (Internet Assigned Numbers Authority).  *Language Subtag
+    Registry*.  Online data file.  (See
+    <http://www.iana.org/assignments/language-subtag-registry>.)
+
+[ISO 639-1]
+:   ISO (International Organization for Standardization).  *ISO
+    639-1:2002.  Codes for the representation of names of languages
+    &mdash; Part 1: Alpha-2 code*.  2002.
+
+[ISO 639-2]
+:   ISO (International Organization for Standardization).  *ISO
+    639-2:1998.  Codes for the representation of names of languages
+    &mdash; Part 2: Alpha-3 code*.  1998.  (See
+    <http://www.loc.gov/standards/iso639-2/>.)
+
+[ISO 639-3]
+:   ISO (International Organization for Standardization).  *ISO
+    639-3:2007.  Codes for the representation of names of languages
+    &mdash; Part 3: Alpha-3 code for comprehensive coverage of
+    languages*.  2007.  
+
+[ISO 639-5]
+:   ISO (International Organization for Standardization).  *ISO
+    639-5:2007.  Codes for the representation of names of languages
+    &mdash; Part 5: Alpha-3 code for language families and groups*.
+    2008.  
+
+[ISO 3166-1]
+:   ISO (International Organization for Standardization).  *ISO
+    3166-1:2006.  Codes for the representation of names of countries and
+    their subdivisions -- Part 1: Country codes*.  2006.
+    (See <https://www.iso.org/iso-3166-country-codes.html>.)
+
+[ISO 15924]
+:   ISO (International Organization for Standardization).  *ISO
+    15924:2004.  Codes for the representation of names of scripts.*
+    2004.
+
+[MUFI]
+:   Medieval Unicode Font Initiative (MUFI).  *MUFI character
+    recommendation*, version 4.0.  2015.
+    (See <http://bora.uib.no/handle/1956/10699>.)
+
+[N-Triples]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 N-Triples.*  David
+    Becket, 2014.  W3C Recommendation.
+    (See <https://www.w3.org/TR/n-triples/>.)
+
+[RDF Concepts]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 Concepts and Abstract
+    Syntax.*  Richard Cyganiak, David Wood and Markus Lanthaler, eds.,
+    2014.  W3C Recommendation.  (See <https://www.w3.org/TR/rdf11-concepts/>.)
+
+[RDF Schema]
+:   W3C (World Wide Web Consortium). *RDF Schema 1.1*.
+    Dan Brickley and R.&nbsp;V. Guha, eds., 2014.
+    W3C Recommendation.  (See <https://www.w3.org/TR/rdf-schema>.)
+
+[RFC 2046]
+:   IETF (Internet Engineering Task Force).  *Multipurpose Internet Mail
+    Extensions (MIME) Part Two: Media Types*.  
+    N. Freed and N.  Borenstein, 1996.
+    (See <https://tools.ietf.org/html/rfc2046>.)
+
+[RFC 4122]
+:   IETF (Internet Engineering Task Force).  *A Universally Unique
+    IDentifier (UUID) URN Namespace*.  P. Leach, M. Mealling and R.
+    Salz, ed., 2005.  (See <https://tools.ietf.org/html/rfc4122>.)
+
+[RFC 4648]
+:   IETF (Internet Engineering Task Force).  *RFC 4648:  The Base16,
+    Base32, and Base64 Data Encodings*.   S. Josefsson, ed., 2006.
+    (See <https://tools.ietf.org/html/rfc4648>.)
+
+[RFC 7159]
+:   IETF (Internet Engineering Task Force).  *RFC 7159:  The JavaScript
+    Object Notation (JSON) Data Interchange Format*.  T. Bray, ed., 2014.
+    (See <https://tools.ietf.org/html/rfc7159>.)
+
+[RFC 7469]
+:   IETF (Internet Engineering Task Force).  *Public Key Pinning
+    Extension for HTTP*.  C. Evans, C. Palmer and R. Sleevi, ed., 2015.
+    (See <https://tools.ietf.org/html/rfc7469>.)
+
+[SWBP XSD DT]
+:   W3C (World Wide Web Consortium). *XML Schema Datatypes in RDF and OWL*.
+    Jeremy J. Carroll and Jeff Z. Pan, eds., 2006.  W3C Working Group Note.  
+    (See <https://www.w3.org/TR/swbp-xsch-datatypes/>.)
+
+[UAX 14]
+:   The Unicode Consortium.  "Unicode Standard Annex 14: Unicode
+    Line Breaking Algorithm".  Revision 43.
+    Andy Heninger, ed., 2019. 
+    (See <http://unicode.org/reports/tr14/>.)
+
+UN M.49]
+:   United Nations, Statistics Division.  *Standard Country or Area
+    Codes for Statistical Use*, revision 4.  United Nations publication,
+    Sales No. 98.XVII.9, 1999.
+
+[XML Names]
+:   W3C (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
+    Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
+    W3C Recommendation.  (See <https://www.w3.org/TR/xml-names11/>.)
+
+[XSD Pt1]
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language
+    (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝), C. M. 
+    Sperberg-McQueen and Henry S. Thompson, ed., 2012.  
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
+
+-->
+
+----
+Copyright © 2017–19, [Family History Information Standards Organisation,
+Inc](https://fhiso.org/).  
+The text of this standard is available under the
+[Creative Commons Attribution 4.0 International
+License](https://creativecommons.org/licenses/by/4.0/).
