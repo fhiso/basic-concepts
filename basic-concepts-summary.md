@@ -20,7 +20,7 @@ The introductory text and first section set up the flow of the document itself. 
     - But limited just like XML: no nulls or surrogates.
     - Strings are sequences of characters.
     - Strings can be normalized, as defined by Unicode.
-        For example, "é" (U+00E9) and " ́e" (U+0301 U+0065) are two different Unicode encodings for the same glyph
+        For example, "`é`" (U+00E9) and "` ́e`" (U+0301 U+0065) are two different Unicode encodings for the same glyph
         and can be converted into one another.
     - Some characters are "restricted": things like the ASCII bell, the backspace character, etc.
         Applications don't need to handle these.
