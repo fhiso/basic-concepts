@@ -38,6 +38,8 @@ Changes from the type systems part of [Basic Concepts]:
     - *domain* of a predicate (as suggested in an ednote of [Basic Concepts])
     - *sub-predicate* and *super-predicate* (the property parallel of subclass)
     - *trivial property* (a *property* entailed by the existence of its *sub-property*)
+
+I have kept, for now, the decision used in [Basic Concepts] (and RDF) to have `rdfs:Datatype` be a *subclass* of `rdfs:Class`, but I think that decision is wrong; what RDF should have done was say that `rdfs:Class` is a *subtype* of `xsd:anyURI` and that fields typed `rdfs:Class` are really typed "any *literal value*". I'm not sure if diverging from RDF is worth the gained internal consistency, hence not diverging in this draft.
 {/}
 
 ## Entities and their representation
@@ -279,6 +281,8 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
 ------              -----------------------------------------------------------
 
 When treated as a *class*, a *datatype name* refers to the *datatype*'s *value space*.
+
+{.ednote} supertype `rdfs:Class` matches RDF, and allows for `rdfs:Class` to be used to indicate fields that can be IRIs or datatype values. It is more correct to say that `rdfs:Class` is a *subtype* of `xsd:anyURI` and those fields accept any *literal value* (a concept for which we do not yet have an *term*). It is not clear to me if that departure from RDF is worth the added internal consistency.
 
 
 ### Standard properties
