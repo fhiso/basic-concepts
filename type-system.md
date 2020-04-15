@@ -85,7 +85,7 @@ A *datatype* whose *lexical space* could contain elements of multiple human lang
 A *datatype* that is not a *language-tagged datatype* is called a
 **non-language-tagged datatype**.
 
-
+{.ednote} Maybe add here: "*Terms* form a *non-language-tagged datatype* whose *lexical space* is the set of IRIs; thus each *term* is a *literal value*."
 
 ### Literal sets
 
@@ -496,6 +496,15 @@ Pattern          `.*`
 Value Space      `http://www.w3.org/2000/01/rdf-schema#Resource`
 Supertype        *No non-trivial supertypes*
 ------           -----------------------------------------------
+
+A *compliant* system *must not* introduce a new *literal value* with the `xsd:anyURI` *datatype*
+unless converting it to a URI
+using the algorithm specified in §3.1 of [RFC 3987]
+and back to a IRI again
+using the algorithm specified in §3.2 of [RFC 3987]
+yields the original IRI.
+
+
 
 
 ### The `rdf:langString` datatype                         {#langString}
