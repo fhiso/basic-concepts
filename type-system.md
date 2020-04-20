@@ -1,179 +1,195 @@
 ---
 title: A Type System for Genealogical Standards
-date: 11 April 2020
+date: 20 April 2020
 author:
     - Luther Tychonievich
     - Richard Smith
 numbersections: true
 ...
 
-{.ednote ...}
+# A Type System for Genealogical Standards
+
+{.ednote}
 This document is an **early draft** of a revision to part of [Basic Concepts] with just the new ideas/presentation.
-It has very few notes or examples; more will be added after the content is agreed upon.
+Lead-in text and more notes or examples will be added after the content is agreed upon.
 
-Changes from the type systems part of [Basic Concepts]:
+{.ednote ...}
+ Changes since 11 April 2020 exploratory draft:
 
--   Reorder the material to put parallel structures close together.
-
--   Separate terminology for concepts and their representations.
-
--   Formalization of the meaning of datatype as an unambiguous mapping form string to entity.
-    Formalization of supertype as having a superst of that mapping. Hence:
-    
-    - unions are no longer datatypes, and no datatype is abstract.
-        
-        If a serialisation allows values from more than one datatype in a field,
-        it must also provide some way to determine the appropriate datatype tag.
-
-    - The `types:nonTrivialSupertypeCount` property is ill-defined
-        as there can be infinitely many non-trivial supertypes of any structured type.
-        
-        The discovery goal of this count should be implemented by requiring discovery providers to provide all relevant information
-        and to use a transport protocol that can verify the full message is received.
-
--   Several new ideas, either for parallelism or based on expected usage:
-    
-    - *blank node identifier* (a dataset-local *term*, as used in RDF-related standards; also what ELF XREF Identifiers would map to if turned into terms)
-    - *literal set* (a generalization of translation sets from CEV)
-    - *domain* of a predicate (as suggested in an ednote of [Basic Concepts])
-    - *sub-predicate* and *super-predicate* (the property parallel of subclass)
-    - *trivial property* (a *property* entailed by the existence of its *sub-property*)
-
-I have kept, for now, the decision used in [Basic Concepts] (and RDF) to have `rdfs:Datatype` be a *subclass* of `rdfs:Class`, but I think that decision is wrong; what RDF should have done was say that `rdfs:Class` is a *subtype* of `xsd:anyURI` and that fields typed `rdfs:Class` are really typed "any *literal value*". I'm not sure if diverging from RDF is worth the gained internal consistency, hence not diverging in this draft.
+- Clarify that not all IRIs are terms, adding blank nodes as an example.
+- Rename to match RDF:
+    - "canonical form" to "cannonical representation"
+    - "literal value" to "literal"
+    - "entity class" to "class"
+    - "formal property" to "property"
+    - "property" to "statement"
+    - "sub-predicate" to "subproperty"
+- Clarify that datatype is not a subclass of class, but that some data formats (including RDF) use a datatype name to refer to the datatype's value space in certain contexts
+- Remove the "supertype" field from datatypes's tables as all were blank before
+- Change `types:nonTrivialSupertype` into `types:supertype`
+- Remove `xsd:anyURI` and `xsd:string`, "datatypes" that lack *value spaces*
+- Add `types:Term` as the *datatype* for *terms*
+- Add *list* concept and *delimited list* *datatype*
+- Add *unions* of both *classes* and *datatypes*
+- Remove "characteristic property"
+- Add *statement* as a representation of a *property*
+- Alphabetize {§standard-class}, {§standard-property}, and {§standard-datatype}
 {/}
+
+{.ednote ...} In our 15 April meeting many revisions were suggested. I have chosen not to implement some, explained with rationale below.
+
+- Provide *datatypes* with the ability to say "this *datatype* *must* only be used with *language-tag* $x$".
+    I could not come up with a problem that this solved,
+    but could see it complicating specifications which then may need to explicitly state a "change the *datatype* to `zxx`" step during parsing.
+    
+    If I find a value tagged both `en-US` and `xsd:integer`, proceeding according to `xsd:integer` without worrying about the contextually-meaningless `en-US` tag seems to be correct to me.
+
+- Have a *term* for "the *class* the *entity* was introduced to be a *member* of."
+    Intent does not otherwise appear in this document, and I was unable to come up with a problem that its addition would solve.
+
+- Keep and refine the notion of a "characteristic property," considering all of
+    - every *entity* of this class has at least one (e.g., *class*'s *superclass*)
+    - every *entity* of this class has exactly one (e.g., person's birth)
+    - every *entity* of this class has exactly one list-valued (e.g., an integer's prime factorization)
+    
+    I was unable to find a problem any of these would solve.
+
+- Include both RDF- and XSD-style datatypes. Upon deeper review, these proved to be identical and to match what I'd already written.
+{/}
+
+
 
 ## Entities and their representation
 
 An **entity** is a single identifiable concept.
 
 This standard provides two ways to represent an *entity*:
-using a *term* or a *literal value*;
+using a *term* or a *literal*;
 other standards *may* add additional ways to represent *entities*.
 
-### Terms
+### Terms {#terms}
 
 A **term**, as defined in [Basic Concepts], is an IRI that identifies an *entity*.
 
 Multiple *terms* may identify the same *entity*; such *terms* are said to be **aliases**.
 A new *alias* for an *entity* *should not* be introduced where an existing *term* for that *entity* is known.
 
-A **blank node identifier** is a *term* whose IRI is an absolute IRI with "`_`" (a single U+005F) as its scheme.
-Within a single dataset, every instance of a particular *blank node identifier* refers to the same *entity*;
-however, the same *blank node identifier* may refer to a different *entity* in each dataset (and each version of the same dataset) in which it appears.
+Not all IRIs are *terms*: to be a *term*, an IRI *must* identify a single *entity* independently of the context in which the IRI appears. 
 
-### Literal values
+{.example} Relative IRIs and blank-node identifiers are IRIs, but are not *terms*.
 
-A **datatype** is an *entity* that describes how certain *strings* can be mapped directly to certain *entities* such that the identity and meaning of each *entity* can be inferred directly from that *datatype*'s treatment of the *string*.
+
+### Literals
+
+A **datatype** is an *entity* that describes a mapping between *strings* and *entities*.
 A *term* identifying a *datatype* is called a **datatype name**.
 A *datatype name* that is a *tag* in a *tagged string* is called a **datatype tag**.
 
 The set of *strings* that a *datatype* interprets as valid values is called the *datatype*'s **lexical space**.
-The *datatype* defines which *entity* each *string* in the *datatype*'s *lexical space* represents.
 
-A *datatype* *must* define the single *entity* that each *string* in its *lexical space* represents.
-Multiple *strings* *may* represent the same *entity*
-and, if so, *may* identify one such representation as the *entity*'s **canonical form**.
+The *datatype* defines exactly one *entity* each *string* in the *datatype*'s *lexical space* represents.
+Multiple *strings* *may* represent the same *entity*;
+if so, the *datatype* *may* identify one such representation as the *entity*'s **canonical representation**.
 A *conformant* application *must not* attach any significance
 to which of the alternative lexical representations is used
-and *should* use *canonical form* where possible.
+and *should* the use *canonical representation* where possible.
 
-A **literal value** is a *tagged string* where one *tag* is a *datatype tag* and the *string* is in the *lexical space* of the *datatype* which that *datatype tag* identifies.
-A *literal value* is a representation of the *entity* which the *string* represents according to that *datatype*.
+A **literal** is a *tagged string* where one *tag* is a *datatype tag* and the *string* is in the *lexical space* of the *datatype* which that *datatype tag* identifies.
+A *literal* is a representation of the *entity* which the *string* represents according to that *datatype*.
 
-Every *literal value* also has a *language tag*, which *may* be provided implicitly and *may* be `und` if language is not a meaningful concept for *entities* described by the *literal value*'s *datatype*.
+Every *literal* also has a *language tag*, which *may* be provided implicitly and *shall* be `zxx` if language is not a meaningful concept for *entities* described by the *literal*'s *datatype*.
 A *datatype* whose *lexical space* could contain elements of multiple human languages is called a **language-tagged datatype**.
 A *datatype* that is not a *language-tagged datatype* is called a
 **non-language-tagged datatype**.
 
-{.ednote} Maybe add here: "*Terms* form a *non-language-tagged datatype* whose *lexical space* is the set of IRIs; thus each *term* is a *literal value*."
+*Terms* form a *non-language-tagged datatype* whose *lexical space* is a subset of IRIs; thus each *term* is a *literal*.
 
 ### Literal sets
 
-A **literal set** is a set of *literal values* that are presented together and all identify the same *entity*.
+A **literal set** is a set of *literals* that are presented together and all identify the same *entity*.
 
-When receiving a *literal set*, a *conformant* application *must not* discard any *literal value* from the set unless it retains enough information to recreate it or another *literal value* with the same *datatype* and *language tag*.
-An application *must not* rely on reconstructing a *literal value* of a given *language tag* from another *literal value* with a different *language tag* unless the construction process used is able to recreate the exact same linguistic representation.
+When receiving a *literal set*, a *conformant* application *must not* discard any *literal* from the set unless it retains enough information to recreate it or another *literal* with the same *datatype* and *language tag*.
+An application *must not* rely on reconstructing a *literal* of a given *language tag* from another *literal* with a different *language tag* unless the construction process used is able to recreate the exact same linguistic representation.
 
 {.example ...} FHISO's current draft microformat for creator names might be used to create the following *literal set* for the name of one of the authors of this document
 
 *datatype tag*      *language tag*  *string*
 --------------      ---------       ------------------------------------------
-`cev:CeatorsName`   `en`            `Luther Tychonievich`
+`cev:CeatorsName`   `en`            `Tychonievich, Luther | Tychonievich`
 `cev:CeatorsName`   `en`            `Tychonievich, Luther`
-`cev:CeatorsName`   `ja-Latn`       `Taikonovizu Ruteru`
-`cev:CeatorsName`   `ja`            `タイコノヸズ ルテル`
+`cev:CeatorsName`   `ja-Latn`       `Taikonevizu Ruteru | Taikonevizu`
+`cev:CeatorsName`   `ja`            `タイコネヸズ ルテル | タイコネヸズ`
+`elf:PersonalName`  `en`            `Luther /Tychonievich/`
 
 Because the first two use the same *language tag* and *datatype*, only one need be stored.
 Because the `en` and `ja` versions cannot be created from one another, both must be stored.
 If the application knows the standard Katakana-to-Romanji mapping, the `ja-Latn` can be created from `ja` and can thus be discarded; otherwise both must be preserved.
+The last uses a different *datatype*, and should be preserved unless the application knows how to covert between the two *datatypes*.
 {/}
 
+Every *literal* is also a *literal set* with one element.
 
 ### Patterns
+
+The *lexical space* of a *datatype* *may* be difficult or impossible to write code to fully specify.
+
+{.example} Leap seconds are inserted into the Gregorian calendar based on observation. As such, it is not possible to know if a value with the time part "`23:59:60`" is in the *lexical space* of a Gregorian date-time *datatype* without knowing if a leap second was inserted on that particular date or not.
 
 A *datatype* *may* be accompanied by a **pattern**,
 an *entity* representing a readily-computed superset of the *lexical space* of the *datatype*.
 A *datatype* for representing *patterns* is given in [FHISO Patterns].
 
 A *datatype* with a *pattern* other than "`.*`" is known as a **structured datatype**,
-while one with a *pattern* of "`.*`" is known as an **unstructured datatype**.
+while one with no *pattern* or a *pattern* of "`.*`" is known as an **unstructured datatype**.
 
 
+## Classes and their representation
 
-## Entity classes and their representation
+A **class** is an *entity* identifying a set of *entities* defined by a particular context or use the *entities* share.
+An *entity* is said to be a **member** of an *class* if the context or use of the *class* applies to the *entity*.
 
-An **entity class** is an *entity* identifying a particular context or use in which other *entities* may be defined.
-An *entity* is said to be a **member** of an *entity class* if the context or use of the *entity class* applies to the *entity*.
+The *class* that can be represented by a particular *datatype* is called the **value space** of that *datatype*.
 
-<!-- ### Value spaces -->
+A **class name** is a *term* that identifies a *class*.
 
-The *entity class* that can be represented by a particular *datatype* is called the **value space** of that *datatype*.
+## Properties and their representations
 
-<!-- ### Classes -->
-
-A **class** is a *term* that identifies an *entity class*.
-
-
-## Formal properties and their representations
-
-A **formal property** is a particular piece of information that might be provided when defining some *entity*.
-The *entity* being defined is called the **subject** of the *formal property*,
-In addition to the *subject*, every *formal property* has both
+A **property** of an *entity* is a particular piece of information about that *entity*.
+The *entity* being defined is called the **subject** of the *property*.
+In addition to the *subject*, every *property* has both
 
 *  a **predicate**, which is the *entity* identifying the nature of the information in the *property*; and
 *  a **direct object**, which is the information about the *subject* of the *property*.
 
-The **domain** of a *predicate* is the *entity class* of *subjects* to which a *formal property* with that *predicate* may apply.
+The **domain** of a *predicate* is the *class* of *subjects* to which a *property* with that *predicate* may apply.
 
-The **range** of a *predicate* is the *entity class* of *direct objects* it can be paired with.
+The **range** of a *predicate* is the *class* of *direct objects* it can be paired with.
 
-### Properties
-
-A **property** identifies a *formal property*.
-The *predicate* of the *formal property* is represented by the **property name** of the *property*, which is a *term*.
-The *direct object* of the *formal property* is represented by the **property value** of the *property*, which is either a *term* or *literal value*.
-The representation of the *subject* of a *property* may vary across different standards and is not specified by this standard.
+A **statement** is a representation of a *property*
+using a *term* called the **property name** to identify the *predicate*
+and a *literal set* called the **property value** to identify the *direct object*.
+The representation of the *subject* of a *statement* may vary between standards and is not specified by this standard.
 
 A *term* introduced to be a *property name* is called a **property term**.
 
-*Properties* *shall not* have default *property values* that apply when the *property* is absent;
-however standards *may* define how a *conformant* application handles the absence of a *property*.
-
+<!--
 ### Characteristic properties
+
+{.ednote} Revisit this entire section
 
 The context or use case defining an *entity class* may entail that all *members* of that *entity class* have at least one *formal property* with a particular *predicate*.
 If so, that *predicate* is said to be a **characteristic predicate** of the *entity class*.
 
 A standard may identify a *characteristic predicate* of an *entity class* to be a **required property**,
 meaning a *property* with that *predicate* *must* be provided when defining a *term* in that *entity class*.  
-
+-->
 
 
 ## Sub- and super-classes, datatypes, and properties
 
-One *entity class* may be a **subclass** of another *entity class*.
-The later *entity class* is called the **superclass** of the former *entity class*.
-The *subclass* denotes a more specialised version of the context denoted by its *superclass*.
+One *class* may be a **subclass** of another *class*.
+The later *class* is called the **superclass** of the former *class*.
+The defining context of a *subclass* is a more specialised version of the context denoted by its *superclass*.
 Thus, every *member* of the *subclass* is also a *member* of the *superclass*.
 
 One *datatype* may be a **subtype** of another *datatype*.
@@ -181,60 +197,105 @@ The latter *datatype* is called the **supertype** of the former.
 The *value space* of the *subtype* *shall* be a *subclass* of the *value space* of the *supertype*.
 Each *string* in the *lexical space* of the *subtype* *shall* also be in the *lexical space* of the *supertype*, and *shall* represent the same *entity* in both *datatypes*.
 
-One *predicate* may be a **sub-predicate** of another *predicate*.
-The latter *predicate* is called the **super-predicate** of the former.
-The *domain* of the *sub-predicate* *shall* be a *subclass* of the *domain* of the *super-predicate*.
-The *range* of the *sub-predicate* *shall* be a *subclass* of the *range* of the *super-predicate*.
-Each *subject* that has a *formal property* with the *sub-predicate* as its *predicate*
-also has a *formal property* with the *super-predicate* as its predicate with the same *direct object* for both *formal properties*.
+One *predicate* may be a **subproperty** of another *predicate*.
+The latter *predicate* is called the **superproperty** of the former.
+The *domain* of the *subproperty* *shall* be a *subclass* of the *domain* of the *superproperty*.
+The *range* of the *subproperty* *shall* be a *subclass* of the *range* of the *superproperty*.
+Each *subject* that has a *property* with the *subproperty* as its *predicate*
+also has a *property* with the *superproperty* as its predicate with the same *direct object* for both *properties*.
 
 ### Trivial super-classes, datatypes, and properties
 
-Every *entity class* has two **trivial superclasses**:
-the *entity class* itself and the *entity class* of all *entities*.
+Every *class* has two **trivial superclasses**:
+the *class* itself and the *class* of all *entities*.
 A *superclass* that is not a *trivial superclass* is called a **non-trivial superclass**.
 
 A *datatype* has one **trivial supertype**:
 the *datatype* itself.
 A *supertype* that is not a *trivial supertype* is called a **non-trivial supertype**.
 
-Every *predicate* has one **trivial super-predicate**:
+Every *predicate* has one **trivial superproperty**:
 the *predicate* itself.
-A *super-predicate* that is not a *trivial super-predicate* is called a **non-trivial super-predicate**.
+A *superproperty* that is not a *trivial superproperty* is called a **non-trivial superproperty**.
 
-If an *entity* has two *formal property* with the same *direct object*,
-where one *formal property*'s *predicate* is a *super-predicate* of the other,
-the *formal property* with the *super-predicate* is said to be a **trivial property** of the *entity*.
-A *formal property* that is not a *trivial property* is called a **non-trivial property**.
-
-
+If an *entity* has two *properties* with the same *direct object*,
+where one *property*'s *predicate* is a *superproperty* of the other,
+the *property* with the *superproperty* is said to be a **trivial property** of the *entity*.
+A *property* that is not a *trivial property* is called a **non-trivial property**.
 
 
-## Standard entities
+## Lists
+
+A **list** is an ordered sequence of entities which may contain duplicates.
+Every list has a finite **length**, which is a non-negative integer.
+For each integer *k* between 1 and the *length* of the *list*, inclusive,
+there is exactly one *entity* contained in the list that is called the __*k*^th^ item__ of the *list*; *k* is called an **index** in the *list* of that *entity*.
+If a single *entity* appears in the *list* more than once, it will have more than one *index* in the *list*.
+An *entity* is called an **item** of a *list* if it is a *k^th^ item* of the *list* for some *k*.
+
+{.note} The above formalizes the common notion of a list, array, or tuple in most programming languages, and the concept of a finite sequence, enumeration, or tuple in mathematics. It uses 1-based (not 0-based) indexing. It does not allow skipped indexes or missing items.
+
+{.ednote} Is "*item*" the best word? Both "element" an "item" are used interchangeably by <https://www.w3.org/TR/xmlschema-2/>; "member" is used <https://www.w3.org/TR/rdf-schema/>
+
+A *list* with length 0 is said to be **empty**.
+
+A *class* is said to be an **item type** of a *list*
+if every *item* in the *list* is a *member* of a *class*.
+Every *class* is an *item type* of an *empty* *list*.
+
+{.note} This specification does not define "before", "after", "earlier", "later", "first", "last", etc. Standards requiring these notions may refer to "a lesser *index*" or the like.
+
+
+### Delimited Lists
+
+A **delimited list type** is a *datatype* defined by
+another *datatype*, called the *delimited list type*'s **item datatype**,
+and a *pattern*, called the *delimited list type*'s **delimiter**.
+The *value space* of the *delimited list type* is a set of *lists* whose *item type* is the *item datatype*'s *value space*.
+A *literal* with a *delimited list type* as its *datatype* is called a **delimited list**.
+
+A *string* in the *lexical space* of a *delimited list type*
+is mapped to an *entity* by splitting the *string* on occurrences of the *delimiter* and mapping the portions of the *string* between *delimiters* into *items* of a *list* using the *item datatype*.
+If the empty *string* is not in the *lexical space* of the *item datatype*, empty *strings* are skipped during this conversion.
+
+{.ednote} TO DO: add "split" as a defined operation in [FHISO Patterns].
+We could add it here, but it has enough nuances that I believe it better belongs there.
+
+*Delimited list types* *should* be defined with a *delimiter* that is not a substring of any string in the *item datatype*'s *lexical space*.
+Failure to do so may result in only a subset of the *item datatype*'s *value space* being representable as *items* of the *list*.
+
+{.note} [XSD Pt2]'s lists are *delimited lists* with *delimiter* `[ \t\n\r]+`.
+
+
+
+## Unions
+
+The **union** of a set of *classes* is a *class* defined to have as a *member* exactly those *entities* that are *members* of at least one *class* in the set.
+
+The **union** of a *list* of two or more of *datatypes* is a *datatype* whose *lexical space* contains all *strings* in any of the *items* in the *list*.
+Each *string* in the *union*'s *lexical space* maps to one *entity*, as defined by an *item* in the *list* which has the *string* in its *lexical space*.
+If the *string* is in the *lexical space* of multiple *items*, the one with the least *index* is used.
+
+{.note} The *union* of a *list* of *datatypes* is a *supertype* of the *1^st^ item* in the *list*, but in general not a *supertype* of a later *item* unless that *item*'s *lexical space* is disjoint with the *lexical spaces* of all preceding *items*.
+
+{.note} This definition of the *union* of *datatypes* is consistent with [XSD Pt2].
+
+{.ednote} Neither the above nor [XSD Pt2] requires that each datatype in the list actually contribute meaning. For example, the list (`xsd:string`, `xsd:integer`) is allowed, but is actually equal to `xsd:string`. Do we want to address this?
+
+{.ednote} Do we have a motivating use-case for datatype unions? Nullable types are the most common use I can find elsewhere; not sure if they apply for us or not. If we cannot identify their use, I'd rather remove them as unnecessary complexity.
+
+
+
+## Standard entities    {#standard-entity}
 
 Several *entities* are defined here for use in FHISO standards.
 Each is given with a canonical *term* that *should* be used to identify the *entity* in preference of other *terms*.
 
-### Standard classes
-
-#### Entities
-
-The *class* of all *entities* is `rdfs:Resource`.
-
-: Class definition
-
-------              -----------------------------------------------------------
-Name                `http://www.w3.org/2000/01/rdf-schema#Resource`
-Type                `http://www.w3.org/2000/01/rdf-schema#Class`
-Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-------              -----------------------------------------------------------
-
-`rdfs:Resource` is a *trivial superclass* of every *entity class*.
-The only *superclass* of `rdfs:Resource` is itself.
+### Standard classes        {#standard-class}
 
 #### Classes
 
-The *class* of all *entity classes* is `rdfs:Class`.
+The *class* of all *classes* is `rdfs:Class`.
 
 : Class definition
 
@@ -243,23 +304,6 @@ Name                `http://www.w3.org/2000/01/rdf-schema#Class`
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-------              -----------------------------------------------------------
-
-#### Predicates
-
-The *class* of all *predicates* is `rdf:Property`.
-
-: Class definition
-
-------              -----------------------------------------------------------
-Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-
-Type                `http://www.w3.org/2000/01/rdf-schema#Class`
-
-Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
-
-Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
-                    `http://www.w3.org/2000/01/rdf-schema#range`
 ------              -----------------------------------------------------------
 
 
@@ -274,75 +318,191 @@ Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
-Superclass          `http://www.w3.org/2000/01/rdf-schema#Class`
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/pattern`
 ------              -----------------------------------------------------------
 
-When treated as a *class*, a *datatype name* refers to the *datatype*'s *value space*.
 
-{.ednote} supertype `rdfs:Class` matches RDF, and allows for `rdfs:Class` to be used to indicate fields that can be IRIs or datatype values. It is more correct to say that `rdfs:Class` is a *subtype* of `xsd:anyURI` and those fields accept any *literal value* (a concept for which we do not yet have an *term*). It is not clear to me if that departure from RDF is worth the added internal consistency.
+Common data formats, including RDF, allow a *datatype name* to be used
+in contexts expecting a *class name*; when so used, these formats implicitly convert the *datatype name* into reference to the *datatype*'s *value space*.
+
+{.note} [RDF Schemas] goes so far as to codify this usage by saying the *superclass* of `rdfs:Datatype` is `rdfs:Class`, despite RDF defining a datatype as a (lexical space, value space, lexical-to-value mapping) tuple and a class as a set of entities.
+
+{.ednote} To be clear, RDF's "datatype is a subclass of class" claim, if interpreted literally, is the mathematically-invalid claim that a set of tuples is a set of sets:
+$$\big\{(\ell,v,f) \;\big|\; (\ell \subseteq \Sigma^*) \land (v \in C) \land (f:\ell\rightarrow v) \big\} \quad \subseteq \quad C$$
+
+#### Delimited list types
+
+The *class* of all *delimited list types* is `types:DelimitedList`.
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Superclass          `http://www.w3.org/2000/01/rdf-schema#Datatype`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/pattern`<br/>
+                    `https://terms.fhiso.org/types/delimiter`<br/>
+                    `http://www.w3.org/2001/XMLSchema#itemType`
+------              -----------------------------------------------------------
 
 
-### Standard properties
+#### Entities
 
-#### Type of a term
+The *class* of all *entities* is `rdfs:Resource`.
 
-While an *entity* may belong to many *entity classes*,
-the one it was introduced as a member of is called its **type**.
-The *property term* representing the *type* of an *entity* is `rdf:type`.
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/2000/01/rdf-schema#Resource`
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+------              -----------------------------------------------------------
+
+
+`rdfs:Resource` is a *trivial superclass* of every *class*.
+The only *superclass* of `rdfs:Resource` is itself.
+
+
+#### Lists
+
+The *class* of all *lists* is `types:List`.
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `https://terms.fhiso.org/types/List`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `https://terms.fhiso.org/types/itemType`<br/>
+                    `http://www.w3.org/2001/XMLSchema#length`
+------              -----------------------------------------------------------
+
+{.note} We do not use `rdf:List` because it is instead the class of singly-linked nodes; while a singly-linked node can be used to create a *list*, it can also be used in other ways.
+
+{.note} We do not use `xsd:list` because it is instead the set of *delimited list types* that use the *delimiter* `[ \t\r\n]+`.
+
+
+
+#### Predicates
+
+The *class* of all *predicates* is `rdf:Property`.
+
+: Class definition
+
+------              -----------------------------------------------------------
+Name                `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+
+Type                `http://www.w3.org/2000/01/rdf-schema#Class`
+
+Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
+                    `http://www.w3.org/2000/01/rdf-schema#range`
+------              -----------------------------------------------------------
+
+
+
+### Standard properties     {#standard-property}
+
+#### Delimiter of a delimited list type
+
+The *property term* representing the *delimiter* of a *delimited list type* is `type:delimiter`.
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+Name             `https://terms.fhiso.org/types/delimiter`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/2000/01/rdf-schema#Class`
-Domain           `http://www.w3.org/2000/01/rdf-schema#Resource`
+Range            `https://terms.fhiso.org/types/Pattern`
+Domain           `https://terms.fhiso.org/types/DelimitedList`
 ------           -----------------------------------------------
 
-#### Superclass of a class
+#### Domain of a property
 
-The *property term* representing the *superclass* of an *entity class* is `rtf:subClassOf`.
+The *property term* representing the *domain* of a *predicate* is `rdfs:domain`.
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `http://www.w3.org/2000/01/rdf-schema#subClassOf`
-Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/2000/01/rdf-schema#Class`
-Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
-------           -----------------------------------------------
-
-
-#### Range of a property
-
-The *property term* representing the *range* of a *predicate* is `rdf:range`.
-
-: Property definition
-
-------           -----------------------------------------------
-Name             `http://www.w3.org/2000/01/rdf-schema#range`
+Name             `http://www.w3.org/2000/01/rdf-schema#domain`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 ------           -----------------------------------------------
 
-#### Required property of a class
+#### Item of a list
 
-A standard may declare a *predicate* to be a **required property** of an *entity class*,
-meaning that a *formal property* with that *predicate* *must* be provided for every *entity* of that *entity class*.
-The *property term* representing a *required property* of an *entity class* is `types:requiredProperty`.
+The *property term* representing an *item* of a *list* is `rdfs:member`.
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/requiredProperty`
+Name             `http://www.w3.org/2000/01/rdf-schema#member`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
-Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
+Range            `http://www.w3.org/2000/01/rdf-schema#Resource`
+Domain           `https://terms.fhiso.org/types/List`
 ------           -----------------------------------------------
+
+The *property term* representing the *k^th^ item* of a *list* is the concatenation of the `rdf:` prefix, an underscore U+005F, and the *canonical representation* of *k* in the `xsd:integer` *datatype*.
+All such *predicates* are *subproperties* of `rdfs:member`
+and share `rdfs:member`'s *domain* and *range*.
+
+{.example} "`http://www.w3.org/1999/02/22-rdf-syntax-ns#_3`"
+is the *property term* for the *3^rd^ item* of a *list*.
+
+{.note} Although RDF introduces the "`rdf:_`number" *property names*, it only partially defines them because it limits itself to semantics that can be encoded entirely in RDF statements. This standard can be seen as imposing additional requirements on RDF's definition of "`rdf:_`number"
+
+{.ednote} `rdfs:ContainerMembershipProperty` is the *class* of all *k^th^ item* *properties*, but I don't see a need to specify that for FHISO standards.
+
+#### Item datatype of a delimited list datatype
+
+The *property term* representing the *item datatype* of a *delimited list* *datatype* is `xsd:itemType`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#itemType`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Domain           `https://terms.fhiso.org/types/DelimitedList`
+------           -----------------------------------------------
+
+#### Item type of a list
+
+The *property term* representing the *item type* of a *list* is `types:itemType`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/itemType`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+Domain           `https://terms.fhiso.org/types/List`
+------           -----------------------------------------------
+
+
+#### Length of a list
+
+The *property term* representing the *length* of a *list* is `xsd:length`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#length`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            non-negative integers
+Domain           `https://terms.fhiso.org/types/List`
+------           -----------------------------------------------
+
+{.note} `xsd:length` is defined broadly more broadly in [XSD Pt2] that just the length of lists: it also counts *characters* in a *string*, octets in binary data, etc.
+
 
 #### Pattern of a datatype
 
@@ -357,19 +517,113 @@ Range            `https://terms.fhiso.org/types/Pattern`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Datatype`
 ------           -----------------------------------------------
 
-#### Supertype of a datatype
+{.note} We do not use `xsd:pattern`
+because its *range* is the set of XSD regular expressions instead of a FHISO patterns.
+FHISO patterns are intended to be readily implemented in any programming language, using a different syntax and more limited subset of the components than XSD regular expressions.
 
-The *property term* representing a *non-trivial supertype* of a *datatype* is `types:nonTrivialSupertype`.
+
+#### Range of a property
+
+The *property term* representing the *range* of a *predicate* is `rdfs:range`.
 
 : Property definition
 
 ------           -----------------------------------------------
-Name             `https://terms.fhiso.org/types/nonTrivialSupertype`
+Name             `http://www.w3.org/2000/01/rdf-schema#range`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+------           -----------------------------------------------
+
+#### Required property of a class
+
+A standard may declare a *predicate* to be a **required property** of an *class*,
+meaning that a *formal property* with that *predicate* *must* be provided for every *entity* of that *class*.
+The *property term* representing a *required property* of an *class* is `types:requiredProperty`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/requiredProperty`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+*Required properties* of various *classes* used in FHISO standards are included in {§standard-class}.
+A *predicate* *must not* be a *required property* of a *class* unless every *member* of the *class* is guaranteed to have at least one *property* with that *predicate*.
+
+#### Superclass of a class
+
+The *property term* representing the *superclass* of an *entity class* is `rdfs:subClassOf`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#subClassOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
+------           -----------------------------------------------
+
+#### Superproperty of a predicate
+
+The *property term* representing a *superproperty* of a *predicate* is `rdfs:subPropertyOf`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2000/01/rdf-schema#subPropertyOf`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+------           -----------------------------------------------
+
+#### Supertype of a datatype
+
+The *property term* representing a *supertype* of a *datatype* is `types:supertype`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `https://terms.fhiso.org/types/supertype`
 Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Datatype`
 ------           -----------------------------------------------
 
+#### Type of a term
+
+The *property term* representing the *member* of a *class* is `rdf:type`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `http://www.w3.org/2000/01/rdf-schema#Class`
+Domain           `http://www.w3.org/2000/01/rdf-schema#Resource`
+------           -----------------------------------------------
+
+#### Union of a list of datatypes
+
+The *property term* representing the *list* of *datatypes* that a *union* *datatype* is constructed from is `xsd:union`.
+
+: Property definition
+
+------           -----------------------------------------------
+Name             `http://www.w3.org/2001/XMLSchema#union`
+Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
+Range            `https://terms.fhiso.org/types/List`
+Domain           `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Range Item Type  `http://www.w3.org/2000/01/rdf-schema#Datatype`
+------           -----------------------------------------------
+
+{.note} While [XSD Pt1] does not use `xsd:union` as a predicate per se, it does use it as a defining child element in datatype definitions, roughly matching our notion of *property*.
+
+{.note} The *domain* above is listed as all *datatypes*, not just those normally thought of as unions.
+This is because a *datatype* defined by `xsd:union` is just an ordinary *datatype*; there is no "union type" *subclass* of `rdfs:Datatype`.
+For example, `xsd:integer` is the *datatype* it is whether it was defined as-is or whether it was initially defined as the union of a negative-integer and non-negative-integer *datatype*.
 
 
 
@@ -378,38 +632,10 @@ Domain           `http://www.w3.org/2000/01/rdf-schema#Datatype`
 
 
 
-
-## Standard datatypes
+## Standard datatypes       {#standard-datatype}
 
 Several *datatypes* are described here for use in FHISO standards.
 
-
-### The `xsd:string` datatype
-
-Some FHISO standards make limited use of the `xsd:string` *datatype* defined in §3.3.1 of [XSD Pt2].
-This is an *unstructured non-language-tagged datatype* which has the following properties:
-
-: Datatype definition
-
-------           -----------------------------------------------
-Name             `http://www.w3.org/2001/XMLSchema#string`
-Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
-Pattern          `.*`
-Value Space      all *strings*
-Supertype        *No non-trivial supertypes*
-------           -----------------------------------------------
-
-Note that both its lexical pace and its value space is "all *strings*":
-this *datatype* does not assign meaning to *strings* other than their contained sequence of characters.
-
-Use of this *datatype* is *not recommended*.
-Data in a human-readable form *should* use a *language-tagged datatype* instead.
-Data that is not human-readable *should* use a *structured datatype* instead.
-
-If an application encounters a *string* with the `xsd:string` *datatype*
-in a context where a *language-tagged string* would be permitted,
-the application *may* change the *datatype* to `rdf:langString`
-and assign the *string* a *language tag* of `und`, meaning an undetermined language.
 
 ### The `xsd:boolean` datatype
 
@@ -426,14 +652,13 @@ Name             `http://www.w3.org/2001/XMLSchema#boolean`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `true|false|1|0`
 Value Space      the two *entities* *true* and *false*
-Supertype        *No non-trivial supertypes*
 ------           -----------------------------------------------
 
 The *lexical space* of this *datatype* includes four *strings*
 so that the two logical values of the *datatype* each have two alternative lexical representations.
 *True* *may* be represented by either "`true`" or "`1`";
 *false* *may* be represented by either "`false`" or "`0`".
-The *canonical forms* are "`true`" and "`false`".
+The *canonical representations* are "`true`" and "`false`".
 
 
 ### The `xsd:integer` datatype                               {#integer}
@@ -449,7 +674,6 @@ Name             `http://www.w3.org/2001/XMLSchema#integer`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `[+-]?[0-9]+`
 Value Space      all integers
-Supertype        *No non-trivial supertypes known to this standard*
 ------           -----------------------------------------------
 
 This *datatype* *must not* be used for values which are typically but not invariably integers.
@@ -474,36 +698,47 @@ This *datatype* has several alternative representations of each integer value
 because leading zeros are permitted,
 the `+` sign is optional,
 and the value `-0` is permitted.
-The *canonical forms* 
+The *canonical representations* 
 do not use the `+` sign,
 do not have leading zeros on non-zero values,
 and represent zero as "`0`".
 
-### The `xsd:anyURI` datatype                                 {#anyURI}
+### The `types:Term` datatype                                 {#Term}
 
-FHISO standards represent *terms* using the `xsd:anyURI` *datatype*
-defined in §3.3.17 of [XSD Pt2].
-Formally this is an *unstructured datatype* with no restrictions imposed on its *lexical space*;
-nevertheless, this *datatype* *should* only be used with *strings* which match the `IRI-reference` production in §2.2 of [RFC 3987]
-which matches both absolute and relative IRIs.
+FHISO standards represent *terms* using the `types:Term` *datatype*.
+This is a *structured non-language-tagged datatype* which has the following properties:
+
 
 : Datatype definition
 
 ------           -----------------------------------------------
-Name             `http://www.w3.org/2001/XMLSchema#anyURI`
+Name             `ttps://terms.fhiso.org/types/Term`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
-Pattern          `.*`
+Pattern          `[a-zA-Z][a-zA-Z0-9+\-.]*:.*`
 Value Space      `http://www.w3.org/2000/01/rdf-schema#Resource`
-Supertype        *No non-trivial supertypes*
 ------           -----------------------------------------------
 
-A *compliant* system *must not* introduce a new *literal value* with the `xsd:anyURI` *datatype*
+<!--
+`ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )`, see RFC 2234 for definition
+-->
+
+This *lexical space* of this *datatype* is limited to *strings* which match the `absolute-IRI` production in §2.2 of [RFC 3987].
+Other requirements and recommendations regarding *terms* are given in {§terms} and in [Basic Concepts].
+
+{.note ...} Those requirements and recommendations include
+
+A *compliant* system *must not* introduce a new *literal* with the `xsd:anyURI` *datatype*
 unless converting it to a URI
 using the algorithm specified in §3.1 of [RFC 3987]
 and back to a IRI again
 using the algorithm specified in §3.2 of [RFC 3987]
 yields the original IRI.
 
+Not all IRIs are *terms*: to be a *term*, an IRI *must* identify a single *entity* independently of the context in which the IRI appears. 
+{/}
+
+
+{.note} We do not use `xsd:anyURI` because its *lexical space* includes relative IRIs, blank node identifiers, and other IRIs that are not valid *terms*.
 
 
 
@@ -520,15 +755,10 @@ Name             `http://www.w3.org/1999/02/22-rdf-syntax-ns#langString`
 Type             `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Pattern          `.*`
 Value Space      all human-readable *strings*
-Supertype        *No non-trivial supertypes*
 ------           -----------------------------------------------
 
-No constraints are placed on the *lexical space* of this *datatype*.
-The only restriction placed on the use or semantics of this *datatype*
-is that it *should* contain text in a human-readable form.
 
-{.ednote ...} [Basic Concepts] said all *language-tagged datatypes* were *subtypes* of `rdf:langString` but given the revised definition of *datatype*, I believe that that is no longer true.
-{/}
+
 
 
 ## References
@@ -537,12 +767,12 @@ is that it *should* contain text in a human-readable form.
 
 [Basic Concepts]
 :   FHISO (Family History Information Standards Organisation).
-    *Basic Concepts for Genealogical Standards*.  First public draft.
+    *Basic Concepts for Genealogical Standards*. Richard Smith, ed., 2019.  First public draft.
 
 
 [FHISO Patterns]
 :   FHISO (Family History Information Standards Organisation).
-    *The Pattern Datatype*.  First public draft.
+    *The Pattern Datatype*. Luther Tychonievich and Richard Smith, eds., 2018. First public draft.
 
 [RFC 3987]
 :   IETF (Internet Engineering Task Force).  *RFC 3987:
@@ -552,5 +782,17 @@ is that it *should* contain text in a human-readable form.
 [XSD Pt2]
 :   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
     (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
-    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
+    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
     W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
+
+### Non-normative references
+
+[RDF Schema]
+:   W3C (World Wide Web Consortium). *RDF Schema 1.1*. Dan Brickley and R. V. Guha, eds.,  2014. W3C Recommendation. (See <http://www.w3.org/TR/rdf-schema/>.) 
+
+[XSD Pt1]
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
+    (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝),
+    C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
+
