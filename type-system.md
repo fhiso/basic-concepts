@@ -274,7 +274,7 @@ The **union** of a set of *classes* is a *class* defined to have as a *member* e
 
 The **union** of a *list* of two or more of *datatypes* is a *datatype* whose *lexical space* contains all *strings* in any of the *items* in the *list*.
 Each *string* in the *union*'s *lexical space* maps to one *entity*, as defined by an *item* in the *list* which has the *string* in its *lexical space*.
-If the *string* is in the *lexical space* of multiple *items*, the one with the least *index* is used.
+If the *string* is in the *lexical space* of multiple *items*, the *item* with the least *index* is used.
 
 {.note} The *union* of a *list* of *datatypes* is a *supertype* of the *1^st^ item* in the *list*, but in general not a *supertype* of a later *item* unless that *item*'s *lexical space* is disjoint with the *lexical spaces* of all preceding *items*.
 
