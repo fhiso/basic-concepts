@@ -146,7 +146,7 @@ while one with no *pattern* or a *pattern* of "`.*`" is known as an **unstructur
 ## Classes and their representation
 
 A **class** is an *entity* identifying a set of *entities* defined by a particular context or use the *entities* share.
-An *entity* is said to be a **member** of an *class* if the context or use of the *class* applies to the *entity*.
+An *entity* is said to be a **member** of a *class* if the context or use of the *class* applies to the *entity*.
 
 The *class* that can be represented by a particular *datatype* is called the **value space** of that *datatype*.
 
@@ -264,7 +264,7 @@ We could add it here, but it has enough nuances that I believe it better belongs
 *Delimited list types* *should* be defined with a *delimiter* that is not a substring of any string in the *item datatype*'s *lexical space*.
 Failure to do so may result in only a subset of the *item datatype*'s *value space* being representable as *items* of the *list*.
 
-{.note} [XSD Pt2]'s lists are *delimited lists* with *delimiter* `[ \t\n\r]+`.
+{.note} [XSD Pt2]'s lists are *delimited lists* with *delimiter* "`[ \t\n\r]+`".
 
 
 
@@ -280,7 +280,9 @@ If the *string* is in the *lexical space* of multiple *items*, the one with the 
 
 {.note} This definition of the *union* of *datatypes* is consistent with [XSD Pt2].
 
-{.ednote} Neither the above nor [XSD Pt2] requires that each datatype in the list actually contribute meaning. For example, the list (`xsd:string`, `xsd:integer`) is allowed, but is actually equal to `xsd:string`. Do we want to address this?
+{.ednote} [XSD Pt2] 2.4.1.3 refers to order, not index, but does not fully define what order means in this context. It is not the value order implied by section 2.2.3 of that document; it appears instead to be the order of elements in the underlying list. That order is defined in this document using the notion of indexes, leading to the above definition.
+
+{.ednote} Neither the above nor [XSD Pt2] requires that each datatype in the list actually contribute meaning. For example, the union of the list (`xsd:string`, `xsd:integer`) is allowed, but is actually equal to `xsd:string`. Do we want to address this?
 
 {.ednote} Do we have a motivating use-case for datatype unions? Nullable types are the most common use I can find elsewhere; not sure if they apply for us or not. If we cannot identify their use, I'd rather remove them as unnecessary complexity.
 
@@ -388,7 +390,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
 
 {.note} We do not use `rdf:List` because it is instead the class of singly-linked nodes; while a singly-linked node can be used to create a *list*, it can also be used in other ways.
 
-{.note} We do not use `xsd:list` because it is instead the set of *delimited list types* that use the *delimiter* `[ \t\r\n]+`.
+{.note} We do not use `xsd:list` because it is instead the set of *delimited list types*.
 
 
 
@@ -501,7 +503,7 @@ Range            non-negative integers
 Domain           `https://terms.fhiso.org/types/List`
 ------           -----------------------------------------------
 
-{.note} `xsd:length` is defined broadly more broadly in [XSD Pt2] that just the length of lists: it also counts *characters* in a *string*, octets in binary data, etc.
+{.note} `xsd:length` is defined more broadly in [XSD Pt2] that just the length of lists: it also counts *characters* in a *string*, octets in binary data, etc.
 
 
 #### Pattern of a datatype
@@ -537,9 +539,9 @@ Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 
 #### Required property of a class
 
-A standard may declare a *predicate* to be a **required property** of an *class*,
+A standard may declare a *predicate* to be a **required property** of a *class*,
 meaning that a *formal property* with that *predicate* *must* be provided for every *entity* of that *class*.
-The *property term* representing a *required property* of an *class* is `types:requiredProperty`.
+The *property term* representing a *required property* of a *class* is `types:requiredProperty`.
 
 : Property definition
 
@@ -680,13 +682,10 @@ This *datatype* *must not* be used for values which are typically but not invari
 
 This *datatype* can represent arbitrarily large integers,
 but unless otherwise stated,
-applications *may* opt not to support values greater than 2&thinsp;147&thinsp;483&thinsp;647
-or less than &minus;2&thinsp;147&thinsp;483&thinsp;648.
+applications *may* opt not to support values that lie outside the range of a 32-bit signed two's-compliment integer (i.e. $-2^{31}$ through $2^{31}-1$ inclusive).
 In the event an unsupported value is encountered,
 a *conformant* application *may* handle it in an implementation-defined manner,
 but *must not* convert it to a different integer.
-
-{.ednote} I'd be in favor of simplifying the $[-2^{31}, 2^{31}-1]$ range to "*may* opt not to support values with more than nine digits."
 
 The *lexical space* of this *datatype*
 is the set of all *strings* consisting of a finite-length sequence of one or more decimal digits
