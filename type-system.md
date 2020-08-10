@@ -280,7 +280,7 @@ If the *string* is in the *lexical space* of multiple *items*, the *item* with t
 
 {.note} This definition of the *union* of *datatypes* is consistent with [XSD Pt2].
 
-{.ednote} [XSD Pt2] 2.4.1.3 refers to order, not index, but does not fully define what order means in this context. It is not the value order implied by section 2.2.3 of that document; it appears instead to be the order of elements in the underlying list. That order is defined in this document using the notion of indexes, leading to the above definition.
+{.ednote} [XSD Pt2] 2.4.1.3 refers to order, not index, but does not fully define what order means in this context. It is not the value order implied by section 2.2.3 of that document; it appears instead to be the order of elements in the underlying list. That list-position order is defined in this document using the notion of indexes, leading to the above definition.
 
 {.ednote} Neither the above nor [XSD Pt2] requires that each datatype in the list actually contribute meaning. For example, the union of the list (`xsd:string`, `xsd:integer`) is allowed, but is actually equal to `xsd:string`. Do we want to address this?
 
