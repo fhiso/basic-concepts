@@ -744,7 +744,7 @@ Not all IRIs are *terms*: to be a *term*, an IRI *must* identify a single *entit
 ### The `rdf:langString` datatype                         {#langString}
 
 FHISO standards represent human-readable text using the `rdf:langString` *datatype*
-defined in §2.5 of [RDFS].
+defined in §2.5 of [RDF Schema].
 This is an *unstructured language-tagged datatype* which has the following properties:
 
 : Datatype definition
