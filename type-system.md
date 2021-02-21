@@ -177,7 +177,7 @@ A *term* introduced to be a *property name* is called a **property term**.
 
 {.ednote} Revisit this entire section
 
-The context or use case defining an *entity class* may entail that all *members* of that *entity class* have at least one *formal property* with a particular *predicate*.
+The context or use case defining an *entity class* may entail that all *members* of that *entity class* have at least one *property* with a particular *predicate*.
 If so, that *predicate* is said to be a **characteristic predicate** of the *entity class*.
 
 A standard may identify a *characteristic predicate* of an *entity class* to be a **required property**,
@@ -272,7 +272,7 @@ Failure to do so may result in only a subset of the *item datatype*'s *value spa
 
 The **union** of a set of *classes* is a *class* defined to have as a *member* exactly those *entities* that are *members* of at least one *class* in the set.
 
-The **union** of a *list* of two or more of *datatypes* is a *datatype* whose *lexical space* contains all *strings* in any of the *items* in the *list*.
+The **union** of a *list* of two or more of *datatypes* is a *datatype* whose *lexical space* contains all *strings* in the *lexical space* of any of the *items* in the *list*.
 Each *string* in the *union*'s *lexical space* maps to one *entity*, as defined by an *item* in the *list* which has the *string* in its *lexical space*.
 If the *string* is in the *lexical space* of multiple *items*, the *item* with the least *index* in the *list* is used.
 
@@ -342,7 +342,7 @@ The *class* of all *delimited list types* is `types:DelimitedList`.
 : Class definition
 
 ------              -----------------------------------------------------------
-Name                `http://www.w3.org/2000/01/rdf-schema#Datatype`
+Name                `https://terms.fhiso.org/types/DelimitedList`
 
 Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 
@@ -540,7 +540,7 @@ Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 #### Required property of a class
 
 A standard may declare a *predicate* to be a **required property** of a *class*,
-meaning that a *formal property* with that *predicate* *must* be provided for every *entity* of that *class*.
+meaning that a *property* with that *predicate* *must* be provided for every *entity* of that *class*.
 The *property term* representing a *required property* of a *class* is `types:requiredProperty`.
 
 : Property definition
