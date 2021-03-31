@@ -1,5 +1,5 @@
 ---
-title: A Type System for Genealogical Standards
+title: Type System for Genealogical Standards
 date: 20 April 2020
 author:
     - Luther Tychonievich
@@ -7,59 +7,115 @@ author:
 numbersections: true
 ...
 
-# A Type System for Genealogical Standards
+# Type System for Genealogical Standards
 
-{.ednote}
-This document is an **early draft** of a revision to part of [Basic Concepts] with just the new ideas/presentation.
-Lead-in text and more notes or examples will be added after the content is agreed upon.
+{.ednote ...} This is a **working draft** of a standard covering 
+type systems that are expected to be used in multiple standards.
+This document is not endorsed by the FHISO membership, and may be
+updated, replaced or obsoleted by other documents at any time.
 
-{.ednote ...}
- Changes since 11 April 2020 exploratory draft:
+The public [tsc-public@fhiso.org](https://tech.fhiso.org/tsc-public)
+mailing list is the preferred place for comments, discussion and other
+feedback on this draft.
 
-- Clarify that not all IRIs are terms, adding blank nodes as an example.
-- Rename to match RDF:
-    - "canonical form" to "cannonical representation"
-    - "literal value" to "literal"
-    - "entity class" to "class"
-    - "formal property" to "property"
-    - "property" to "statement"
-    - "sub-predicate" to "subproperty"
-- Clarify that datatype is not a subclass of class, but that some data formats (including RDF) use a datatype name to refer to the datatype's value space in certain contexts
-- Remove the "supertype" field from datatypes's tables as all were blank before
-- Change `types:nonTrivialSupertype` into `types:supertype`
-- Remove `xsd:anyURI` and `xsd:string`, "datatypes" that lack *value spaces*
-- Add `types:Term` as the *datatype* for *terms*
-- Add *list* concept and *delimited list* *datatype*
-- Add *unions* of both *classes* and *datatypes*
-- Remove "characteristic property"
-- Add *statement* as a representation of a *property*
-- Alphabetize {§standard-class}, {§standard-property}, and {§standard-datatype}
+--------------           ---------------------------------------------
+Latest public version:   `https://fhiso.org/TR/basic-concepts`
+This version:            *URL to be determined*
+Previous version:        `https://fhiso.org/TR/basic-concepts-20180316`
+--------------           ---------------------------------------------
 {/}
 
-{.ednote ...} In our 15 April meeting many revisions were suggested. I have chosen not to implement some, explained with rationale below.
+FHISO's **Type System for Genealogical Standards** standard defines
+various underlying concepts that are used in many genealogical standards,
+and whose definitions do not logically belong in any one particular
+higher-level standard.  Having a single definition of these concepts
+eliminates the possibility of incompatibilities between standards
+arising due to small differences in these basic concepts.
 
-- Provide *datatypes* with the ability to say "this *datatype* *must* only be used with *language-tag* $x$".
-    I could not come up with a problem that this solved,
-    but could see it complicating specifications which then may need to explicitly state a "change the *datatype* to `zxx`" step during parsing.
-    
-    If I find a value tagged both `en-US` and `xsd:integer`, proceeding according to `xsd:integer` without worrying about the contextually-meaningless `en-US` tag seems to be correct to me.
+The abstract notion of an *entity* is used in practically all standards,
+and a standard definition is given in {§entities}
+along with two common representations of *entities*: *terms* and *literals*.
+The notion of a *literal set*, useful for example in translating names, is given in {§literal-sets}.
 
-- Have a *term* for "the *class* the *entity* was introduced to be a *member* of."
-    Intent does not otherwise appear in this document, and I was unable to come up with a problem that its addition would solve.
+The concepts of a *classes* and *properties* are defined in
+{§classes} and {§properties}.  They provide an infrastructure for defining extensions
+to FHISO standards and new, compatible standards in such a way that
+applications can use a *discovery* mechanism to find out about unknown
+components, allowing them to be processed.
+To assist in providing defaults and specialization, notions of *sub*- and *super*-*classes*, *types*, and *properties* are defined in {§inheritance}.
+Two common *class*-constructing tools are also provided: *lists* in {§lists} and *unions* in {§unions}.
+The facilities in these sections will primarily be of use
+to parties defining extensions or implementing *discovery*.
 
-- Keep and refine the notion of a "characteristic property," considering all of
-    - every *entity* of this class has at least one (e.g., *class*'s *superclass*)
-    - every *entity* of this class has exactly one (e.g., person's birth)
-    - every *entity* of this class has exactly one list-valued (e.g., an integer's prime factorization)
-    
-    I was unable to find a problem any of these would solve.
-
-- Include both RDF- and XSD-style datatypes. Upon deeper review, these proved to be identical and to match what I'd already written.
-{/}
+Definitions of standard *entities* and *datatypes*
+which may be useful in many standards
+are given in {§standard-entity} and {§standard-datatype}.
 
 
+## Conventions used
 
-## Entities and their representation
+Where this standard gives a specific technical meaning to a word or
+phrase, that word or phrase is formatted in bold text in its initial
+definition, and in italics when used elsewhere.
+The key words **must**, **must not**, **required**, **shall**, 
+**shall not**, **should**, **should not**, **recommended**,
+**not recommended**, **may** and **optional** in this standard are to be
+interpreted as described in
+&#x5B;[RFC 2119](https://tools.ietf.org/html/rfc2119)].
+
+An application is **conformant** with this standard if and only if it
+obeys all the requirements and prohibitions contained in this
+document, as indicated by use of the words *must*, *must not*,
+*required*, *shall* and *shall not*, and the relevant parts of its
+normative references.  Standards referencing this standard *must not*
+loosen any of the requirements and prohibitions made by this standard,
+nor place additional requirements or prohibitions on the constructs
+defined herein.  
+
+{.note} Derived standards are not allowed to add or remove requirements
+or prohibitions on the facilities defined herein so as to preserve
+interoperability between applications.  Data generated by one
+*conformant* application must always be acceptable to another
+*conformant* application, regardless of what additional standards each
+may conform to. 
+
+If a *conformant* application encounters data that does not conform to
+this standard, it *may* issue a warning or error message, and *may*
+terminate processing of the document or data fragment.
+
+This standard depends on FHISO's **Basic Concepts for Genealogical
+Standards** standard.  To be *conformant* with this standard, an
+application *must* also be *conformant* with [Basic Concepts].  Concepts
+defined in that standard are used here without further definition.
+
+{.note} In particular, precise meaning of *string*, *character*, 
+*term*, *tagged string*, and *language tag* are given in [Basic Concepts].
+
+Indented text in grey or coloured boxes does not form a normative part
+of this standard, and is labelled as either an example or a note.  
+
+{.ednote} Editorial notes, such as this, are used to record outstanding
+issues, or points where there is not yet consensus; they will be
+resolved and removed for the final standard.  Examples and notes will be
+retained in the standard.
+
+This standard uses *prefix notation* when discussing specific *terms*.
+The following *prefix* bindings are assumed in this standard:
+
+------           -----------------------------------------------
+`rdf`            `http://www.w3.org/1999/02/22-rdf-syntax-ns#`
+`rdfs`           `http://www.w3.org/2000/01/rdf-schema#`
+`xsd`            `http://www.w3.org/2001/XMLSchema#`
+`types`          `https://terms.fhiso.org/types/`
+------           -----------------------------------------------
+
+{.note}  The particular *prefix* assigned above have no relevance
+outside this standard document as *prefix notation* is not used in the
+formal type system defined by this standard.  This notation is simply a
+notational convenience to make the standard easier to read.
+
+
+## Entities and their representation {#entities}
 
 An **entity** is a single identifiable concept.
 
@@ -104,7 +160,7 @@ A *datatype* that is not a *language-tagged datatype* is called a
 
 *Terms* form a *non-language-tagged datatype* whose *lexical space* is a subset of IRIs; thus each *term* is a *literal*.
 
-### Literal sets
+### Literal sets {#literal-sets}
 
 A **literal set** is a set of *literals* that are presented together and all identify the same *entity*.
 
@@ -143,7 +199,7 @@ A *datatype* with a *pattern* other than "`.*`" is known as a **structured datat
 while one with no *pattern* or a *pattern* of "`.*`" is known as an **unstructured datatype**.
 
 
-## Classes and their representation
+## Classes and their representation {#classes}
 
 A **class** is an *entity* identifying a set of *entities* defined by a particular context or use the *entities* share.
 An *entity* is said to be a **member** of a *class* if the context or use of the *class* applies to the *entity*.
@@ -152,7 +208,7 @@ The *class* that can be represented by a particular *datatype* is called the **v
 
 A **class name** is a *term* that identifies a *class*.
 
-## Properties and their representations
+## Properties and their representations {#properties}
 
 A **property** of an *entity* is a particular piece of information about that *entity*.
 The *entity* being defined is called the **subject** of the *property*.
@@ -185,7 +241,7 @@ meaning a *property* with that *predicate* *must* be provided when defining a *t
 -->
 
 
-## Sub- and super-classes, datatypes, and properties
+## Sub- and super-classes, datatypes, and properties {#inheritance}
 
 One *class* may be a **subclass** of another *class*.
 The later *class* is called the **superclass** of the former *class*.
@@ -224,7 +280,7 @@ the *property* with the *superproperty* is said to be a **trivial property** of 
 A *property* that is not a *trivial property* is called a **non-trivial property**.
 
 
-## Lists
+## Lists {#lists}
 
 A **list** is an ordered sequence of entities which may contain duplicates.
 Every list has a finite **length**, which is a non-negative integer.
@@ -268,7 +324,7 @@ Failure to do so may result in only a subset of the *item datatype*'s *value spa
 
 
 
-## Unions
+## Unions {#unions}
 
 The **union** of a set of *classes* is a *class* defined to have as a *member* exactly those *entities* that are *members* of at least one *class* in the set.
 
