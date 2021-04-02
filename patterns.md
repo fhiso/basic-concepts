@@ -5,7 +5,7 @@ numbersections: true
 ...
 # The Pattern Datatype
 
-{.ednote ...} This is a **first public draft** of a standard defining
+{.ednote ...} This is a **second public draft** of a standard defining
 a regular expression dialect for use in FHISO standards.
 This document is not endorsed by the FHISO membership, and may be
 updated, replaced or obsoleted by other documents at any time. 
