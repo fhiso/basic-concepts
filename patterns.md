@@ -105,10 +105,13 @@ The following *prefix* bindings are assumed in this standard:
 
 As defined in [Basic Concepts], a *pattern* is a regular expression 
 intended to provides a constraint on the *lexical space* of a *datatype*.
-This document defines both the `types:Pattern` *datatype*
-and the semantics of what it means for a *string* to *match* a *pattern*.
+This document defines
 
-### Matching and Languages
+- the `types:Pattern` *datatype*
+- the semantics of what it means for a *string* to *match* a *pattern*.
+- the operation of *splitting* a *string* on occurances of a *pattern*.
+
+### Matching
 
 A **pattern** is an element of the `types:Pattern` *datatype*.
 Every *pattern* is said to **match** a (possibly-infinite) set of *strings*.
@@ -147,6 +150,27 @@ The set of *strings* that that *pattern* *matches* is {"`a`", "`ac`", "`ad`", "`
 We say that "`[ab][cd]?`" *matches* the *string* "`a`"
 and does *not match* the string "`aa`".
 {/} 
+
+### Splitting
+
+The **longest first match** of a *pattern* and a *string* is a substring of the *string* with all of the following properites:
+
+- The *longest first match* *matches* the *pattern*
+- There is no other *matching* substring that begins earlier in the *string* than the *longest first match*
+- There is no longer *matching* substring that begins at the same character of the *string* as the *longest first match*
+
+{.note} Locating the *longest first match* is commonly implemented as a "search" or "match" operation by regular expression libraries.
+
+{.example} The *longest first match* of *pattern* "` *, *`" and *string* "`one, two , three,`" is the substring "`, `" beginning at the fourth character of the *string*.
+
+The result of **splitting** a source *string* on a *pattern* is a non-empty sequence of *strings*.
+The sequence contains just the source *string* if there is no *longest first match* of the *pattern* and the source *string.
+Otherwise, it contains the substring of the source string that precedes the *longest first match* of the *pattern* and the source *string*, followed by the *strings* in the result of *splitting* the substring following the *lognest first match* on the *pattern*.
+
+{.note} *splitting* a *string* on a *pattern* is commonly implemented as a "split" operation by regular expression libraries.
+
+{.example} The result of *plitting* the *string* "`one, two , three,`" on the *pattern* "` *, *`" is the sequence of four strings ("`one`", "`two`", "`three`", "").
+
 
 ### Hierarchical Definition of Patterns
 
