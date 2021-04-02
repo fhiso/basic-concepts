@@ -90,7 +90,7 @@ defined in that standard are used here without further definition.
 {.note} In particular, the precise meaning of *string*, *character*, 
 *term*, *tagged string*, and *language tag* are given in [Basic Concepts].
 
-This standard depends on FHISO's **The Pattern Datatype* standard.
+This standard depends on FHISO's **The Pattern Datatype** standard.
 To be *conformant* with this standard, an application *must* also be *conformant* with [FHISO Patterns].
 Concepts defined in that standard are used here without further definition.
 
@@ -580,6 +580,15 @@ Domain           `https://terms.fhiso.org/types/DelimitedList`
 
 {.note}  The `xsd:itemType` *term* is defined in §2.5.1.2 of [XSD Pt2].
 
+{.example ...}
+A standard could define a "comma-separated list of integers" datatype by
+
+- stating that the `xsd:itemType` of the *datatype* is `xsd:integer`
+- stating that the `type:delimiter` of the *datatype* is `, ?`
+
+The *string* `1,2, 3,4` would be in the *lexical space* of this *datatype* and represent the four-*item* *list* *entity* that would be represented mathematically by the sequence $(1, 2, 3, 4)$.
+{/}
+
 
 #### Item type of a list
 
@@ -792,6 +801,8 @@ Value Space      the two *entities* *true* and *false*
 
 The *lexical space* of this *datatype* includes four *strings*
 so that the two logical values of the *datatype* each have two alternative lexical representations.
+The set of *strings* *matched* by the *pattern* above is equal to this *lexical space*.
+
 *True* *may* be represented by either "`true`" or "`1`";
 *false* *may* be represented by either "`false`" or "`0`".
 The *canonical representations* are "`true`" and "`false`".
@@ -826,6 +837,8 @@ is the set of all *strings* consisting of a finite-length sequence of one or mor
 (U+0030 to U+0039, inclusive),
 optionally preceded by a `+` or `-` sign
 (U+002B or U+002D, respectively).
+The set of *strings* *matched* by the *pattern* above is equal to this *lexical space*.
+
 
 This *datatype* has several alternative representations of each integer value
 because leading zeros are permitted,
@@ -856,7 +869,11 @@ Value Space      `http://www.w3.org/2000/01/rdf-schema#Resource`
 -->
 
 This *lexical space* of this *datatype* is limited to *strings* which match the `absolute-IRI` production in §2.2 of [RFC 3987].
+The set of *strings* *matched* by the *pattern* above is a superset of this *lexical space*.
+
+
 Other requirements and recommendations regarding *terms* are given in {§terms} and in [Basic Concepts].
+
 
 {.note ...} Those requirements and recommendations include
 
@@ -890,8 +907,8 @@ Pattern          `.*`
 Value Space      all human-readable *strings*
 ------           -----------------------------------------------
 
-
-
+This *lexical space* of this *datatype* is limited to *strings* which can be said to be in the *language* given by their *language tag*.
+The set of *strings* *matched* by the *pattern* above is a superset of this *lexical space*.
 
 
 ## References
@@ -942,3 +959,9 @@ Value Space      all human-readable *strings*
     W3C Recommendation.
     (See <https://www.w3.org/TR/xmlschema11-1/>.)
 
+----
+Copyright © 2019–21, [Family History Information Standards Organisation,
+Inc](https://fhiso.org/).
+The text of this standard is available under the
+[Creative Commons Attribution 4.0 International
+License](https://creativecommons.org/licenses/by/4.0/).

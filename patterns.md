@@ -1,6 +1,9 @@
 ---
 title: The Pattern Datatype
-date: 16 March 2018
+date: 2 April 2021
+author:
+    - Luther Tychonievich
+    - Richard Smith
 numbersections: true
 ...
 # The Pattern Datatype
@@ -28,7 +31,7 @@ to work with as many mainstream regular expression engines and libraries as poss
 In particular, in interest of compatibility, the *pattern* in this document
 
 - each defines a regular language (does not include back references).
-- does not have named or general category classes (`[:alphanum:]`, `\pL`, etc.).
+- does not have named or general category classes ([:alphanum:], `\pL`, etc.).
 - does not define capturing groups, and thus does not need or support lazy quantifiers.
 - does not have partial-string matching, and thus does not need to define if `(a|an)` and `(an|a)` match differently.
 {/}
@@ -483,7 +486,7 @@ XML
     Recommendation.  (See <https://www.w3.org/TR/xml11/>.)
 
 ----
-Copyright © 2017–18, [Family History Information Standards Organisation,
+Copyright © 2017–21, [Family History Information Standards Organisation,
 Inc](https://fhiso.org/).
 The text of this standard is available under the
 [Creative Commons Attribution 4.0 International
