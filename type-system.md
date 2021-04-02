@@ -1,6 +1,6 @@
 ---
 title: Type System for Genealogical Standards
-date: 20 April 2020
+date: 2 April 2021
 author:
     - Luther Tychonievich
     - Richard Smith
@@ -60,8 +60,7 @@ definition, and in italics when used elsewhere.
 The key words **must**, **must not**, **required**, **shall**, 
 **shall not**, **should**, **should not**, **recommended**,
 **not recommended**, **may** and **optional** in this standard are to be
-interpreted as described in
-&#x5B;[RFC 2119](https://tools.ietf.org/html/rfc2119)].
+interpreted as described in [RFC 2119].
 
 An application is **conformant** with this standard if and only if it
 obeys all the requirements and prohibitions contained in this
@@ -88,8 +87,15 @@ Standards** standard.  To be *conformant* with this standard, an
 application *must* also be *conformant* with [Basic Concepts].  Concepts
 defined in that standard are used here without further definition.
 
-{.note} In particular, precise meaning of *string*, *character*, 
+{.note} In particular, the precise meaning of *string*, *character*, 
 *term*, *tagged string*, and *language tag* are given in [Basic Concepts].
+
+This standard depends on FHISO's **The Pattern Datatype* standard.
+To be *conformant* with this standard, an application *must* also be *conformant* with [FHISO Patterns].
+Concepts defined in that standard are used here without further definition.
+
+{.note} In particular, the precise meaning of *pattern*, *match*, and *splitting* are given in [FHISO Patterns].
+
 
 Indented text in grey or coloured boxes does not form a normative part
 of this standard, and is labelled as either an example or a note.  
@@ -158,7 +164,9 @@ A *datatype* whose *lexical space* could contain elements of multiple human lang
 A *datatype* that is not a *language-tagged datatype* is called a
 **non-language-tagged datatype**.
 
-*Terms* form a *non-language-tagged datatype* whose *lexical space* is a subset of IRIs; thus each *term* is a *literal*.
+*Terms* form a *non-language-tagged datatype* whose *lexical space* is a subset of IRIs;
+thus each *term* is a *literal* with *language tag* `zxx`
+and *datatype tag* `types:Term`, as defined in {§Term}.
 
 ### Literal sets {#literal-sets}
 
@@ -220,6 +228,8 @@ In addition to the *subject*, every *property* has both
 The **domain** of a *predicate* is the *class* of *subjects* to which a *property* with that *predicate* may apply.
 
 The **range** of a *predicate* is the *class* of *direct objects* it can be paired with.
+
+{.ednote} Mathematically, *range* indicates the co-domain, not the range, of the function implied by the *predicate*. I doubt most readers will know the difference between those, and those who do are unlikely to be confused by it, so I don't propose making that distinction explicit in the standard.
 
 A **statement** is a representation of a *property*
 using a *term* called the **property name** to identify the *predicate*
@@ -311,11 +321,8 @@ The *value space* of the *delimited list type* is a set of *lists* whose *item t
 A *literal* with a *delimited list type* as its *datatype* is called a **delimited list**.
 
 A *string* in the *lexical space* of a *delimited list type*
-is mapped to an *entity* by splitting the *string* on occurrences of the *delimiter* and mapping the portions of the *string* between *delimiters* into *items* of a *list* using the *item datatype*.
+is mapped to an *entity* by *splitting* the *string* on occurrences of the *delimiter* and mapping the portions of the *string* between *delimiters* into *items* of a *list* using the *item datatype*.
 If the empty *string* is not in the *lexical space* of the *item datatype*, empty *strings* are skipped during this conversion.
-
-{.ednote} TO DO: add "split" as a defined operation in [FHISO Patterns].
-We could add it here, but it has enough nuances that I believe it better belongs there.
 
 *Delimited list types* *should* be defined with a *delimiter* that is not a substring of any string in the *item datatype*'s *lexical space*.
 Failure to do so may result in only a subset of the *item datatype*'s *value space* being representable as *items* of the *list*.
@@ -344,10 +351,32 @@ If the *string* is in the *lexical space* of multiple *items*, the *item* with t
 
 
 
+
+
 ## Standard entities    {#standard-entity}
 
 Several *entities* are defined here for use in FHISO standards.
 Each is given with a canonical *term* that *should* be used to identify the *entity* in preference of other *terms*.
+
+{.note ...} Many of the *entities* in this section are defined 
+in external standards such as [RDF Schema] or [XSD Pt2].
+This standard does not require support for any of the facilities 
+of those standards, nor are parties using these *entities*
+required to do so in a manner compatible with RDF or XML.
+An implementer may safely use these *entities* for the purposes
+of this standard using just the information given in this section
+without reading the defining standards or otherwise being familiar
+with RDF or XML.
+
+The decision use to *entities* and *terms* from external standards
+is due to FHISO's practice of reusing facilities from existing
+standards when they are a good match for our requirements,
+rather than inventing our own versions with similar functionality.
+It also allows future standards and vendor extensions
+the option of reusing existing third-party vocabularies where appropriate,
+as most such vocabularies are also aligned with RDF and XML.
+{/}
+
 
 ### Standard classes        {#standard-class}
 
@@ -364,6 +393,13 @@ Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
 
+{.note} The `rdfs:Class` *class* is defined in §2.2 of [RDF Schema].
+
+{.note}  This can be thought of as a *class* of *classes*.  It is not
+merely an arcane abstraction: it serves a useful role in *discovery*.
+If *discovery* is carried out on the *term name* of a *class*, it is
+useful to be able to indicate that the *term* is a *class*.  This can be
+done by saying the *type* of the *term* is `rdfs:Class`.
 
 #### Datatypes
 
@@ -382,11 +418,12 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `https://terms.fhiso.org/types/pattern`
 ------              -----------------------------------------------------------
 
+{.note}  The `rdfs:Datatype` *term* is defined in §2.4 of [RDF Schema].
 
 Common data formats, including RDF, allow a *datatype name* to be used
 in contexts expecting a *class name*; when so used, these formats implicitly convert the *datatype name* into reference to the *datatype*'s *value space*.
 
-{.note} [RDF Schemas] goes so far as to codify this usage by saying the *superclass* of `rdfs:Datatype` is `rdfs:Class`, despite RDF defining a datatype as a (lexical space, value space, lexical-to-value mapping) tuple and a class as a set of entities.
+{.note} [RDF Schema] goes so far as to codify this usage by saying the *superclass* of `rdfs:Datatype` is `rdfs:Class`, despite RDF defining a datatype as a (lexical space, value space, lexical-to-value mapping) tuple and a class as a set of entities.
 
 {.ednote} To be clear, RDF's "datatype is a subclass of class" claim, if interpreted literally, is the mathematically-invalid claim that a set of tuples is a set of sets:
 $$\big\{(\ell,v,f) \;\big|\; (\ell \subseteq \Sigma^*) \land (v \in C) \land (f:\ell\rightarrow v) \big\} \quad \subseteq \quad C$$
@@ -423,9 +460,13 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
 
+{.note}  The `rdfs:Resource` *class* is defined in §2.1 of [RDF Schema].
 
 `rdfs:Resource` is a *trivial superclass* of every *class*.
 The only *superclass* of `rdfs:Resource` is itself.
+
+{.note}  The `rdfs:Resource` *class* is useful with the `rdfs:subClassOf` 
+*property* when defining a *class* which has no other *superclass*.
 
 
 #### Lists
@@ -446,7 +487,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
 
 {.note} We do not use `rdf:List` because it is instead the class of singly-linked nodes; while a singly-linked node can be used to create a *list*, it can also be used in other ways.
 
-{.note} We do not use `xsd:list` because it is instead the set of *delimited list types*.
+{.note} We do not use `xsd:list` because it is instead a subset of the *delimited list types*, in particular those with `[ \t\n\r]+` as their *delimiter*.
 
 
 
@@ -465,6 +506,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `http://www.w3.org/2000/01/rdf-schema#range`
 ------              -----------------------------------------------------------
 
+{.note}  The `rdf:Property` *term* is defined in §2.8 of [RDF Schema].
 
 
 ### Standard properties     {#standard-property}
@@ -495,6 +537,8 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 ------           -----------------------------------------------
 
+{.note}  The `rdf:domain` *term* is defined in §3.2 of [RDF Schema].
+
 #### Item of a list
 
 The *property term* representing an *item* of a *list* is `rdfs:member`.
@@ -507,6 +551,8 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Resource`
 Domain           `https://terms.fhiso.org/types/List`
 ------           -----------------------------------------------
+
+{.note}  The `rdf:member` *term* is defined in §5.1.6 of [RDF Schema].
 
 The *property term* representing the *k^th^ item* of a *list* is the concatenation of the `rdf:` prefix, an underscore U+005F, and the *canonical representation* of *k* in the `xsd:integer` *datatype*.
 All such *predicates* are *subproperties* of `rdfs:member`
@@ -532,6 +578,9 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Domain           `https://terms.fhiso.org/types/DelimitedList`
 ------           -----------------------------------------------
 
+{.note}  The `xsd:itemType` *term* is defined in §2.5.1.2 of [XSD Pt2].
+
+
 #### Item type of a list
 
 The *property term* representing the *item type* of a *list* is `types:itemType`.
@@ -544,6 +593,11 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `https://terms.fhiso.org/types/List`
 ------           -----------------------------------------------
+
+{.note} A `xsd:itemType` *property* has a *datatype* as its *direct object*;
+A `types:itemType` *property* has a *class* as its *direct object*.
+Thus, `types:itemType` should be used to define *lists* of *entities*
+while `xsd:itemType` should be used to define delimited serializations of such *lists*.
 
 
 #### Length of a list
@@ -558,6 +612,8 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            non-negative integers
 Domain           `https://terms.fhiso.org/types/List`
 ------           -----------------------------------------------
+
+{.note}  The `xsd:length` *term* is defined in §4.3.1 of [XSD Pt2].
 
 {.note} `xsd:length` is defined more broadly in [XSD Pt2] that just the length of lists: it also counts *characters* in a *string*, octets in binary data, etc.
 
@@ -593,6 +649,9 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 ------           -----------------------------------------------
 
+{.note}  The `rdfs:range` *term* is defined in §3.1 of [RDF Schema].
+
+
 #### Required property of a class
 
 A standard may declare a *predicate* to be a **required property** of a *class*,
@@ -624,6 +683,9 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
+{.note}  The `rdfs:subClassOf` *term* is defined in §3.4 of [RDF Schema].
+
+
 #### Superproperty of a predicate
 
 The *property term* representing a *superproperty* of a *predicate* is `rdfs:subPropertyOf`.
@@ -636,6 +698,8 @@ Type             `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Range            `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 Domain           `http://www.w3.org/1999/02/22-rdf-syntax-ns#Property`
 ------           -----------------------------------------------
+
+{.note}  The `rdfs:subPropertyOf` *term* is defined in §3.5 of [RDF Schema].
 
 #### Supertype of a datatype
 
@@ -663,6 +727,8 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Resource`
 ------           -----------------------------------------------
 
+{.note}  The `rdf:type` *term* is defined in §3.3 of [RDF Schema].
+
 #### Union of a list of datatypes
 
 The *property term* representing the *list* of *datatypes* that a *union* *datatype* is constructed from is `xsd:union`.
@@ -676,6 +742,8 @@ Range            `https://terms.fhiso.org/types/List`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Datatype`
 Range Item Type  `http://www.w3.org/2000/01/rdf-schema#Datatype`
 ------           -----------------------------------------------
+
+{.note}  The `xsd:union` *term* is defined in §2.5.1.3 of [XSD Pt2].
 
 {.note} While [XSD Pt1] does not use `xsd:union` as a predicate per se, it does use it as a defining child element in datatype definitions, roughly matching our notion of *property*.
 
@@ -694,6 +762,16 @@ For example, `xsd:integer` is the *datatype* it is whether it was defined as-is 
 
 Several *datatypes* are described here for use in FHISO standards.
 
+{.note ...} Many of the *datatypes* in this section are defined 
+in external standards such as [RDF Schema] or [XSD Pt2].
+This standard does not require support for any of the facilities 
+of those standards, nor are parties using these *datatypes*
+required to do so in a manner compatible with RDF or XML.
+An implementer may safely use these *entities* for the purposes
+of this standard using just the information given in this section
+without reading the defining standards or otherwise being familiar
+with RDF or XML.
+{/}
 
 ### The `xsd:boolean` datatype
 
@@ -822,32 +900,45 @@ Value Space      all human-readable *strings*
 
 [Basic Concepts]
 :   FHISO (Family History Information Standards Organisation).
-    *Basic Concepts for Genealogical Standards*. Richard Smith, ed., 2019.  First public draft.
-
+    *Basic Concepts for Genealogical Standards*. Richard Smith, ed., 2021.
+    Second public draft.
+    (See <https://fhiso.org/TR/basic-concepts>.)
 
 [FHISO Patterns]
 :   FHISO (Family History Information Standards Organisation).
-    *The Pattern Datatype*. Luther Tychonievich and Richard Smith, eds., 2018. First public draft.
+    *The Pattern Datatype*. Luther Tychonievich and Richard Smith, eds., 2021.
+    Second public draft.
+    (See <https://fhiso.org/TR/patterns>.)
+
+[RDF Schema]
+:   W3C (World Wide Web Consortium).
+    *RDF Schema 1.1*. Dan Brickley and R. V. Guha, eds.,  2014. W3C Recommendation.
+    (See <http://www.w3.org/TR/rdf-schema/>.) 
+
+[RFC 2119]
+:   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
+    use in RFCs to Indicate Requirement Levels.*  Scott Bradner, eds., 1997.
+    (See <https://tools.ietf.org/html/rfc2119>.)
 
 [RFC 3987]
 :   IETF (Internet Engineering Task Force).  *RFC 3987:
     Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
-    Michel Suignard, eds., 2005. (See <https://tools.ietf.org/html/rfc3987>.)
+    Michel Suignard, eds., 2005.
+    (See <https://tools.ietf.org/html/rfc3987>.)
 
 [XSD Pt2]
-:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
-    (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
-    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
-    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
+:   W3C (World Wide Web Consortium).
+    *W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes*.
+    David Peterson, Shudi Gao (高殊镝), Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
+    W3C Recommendation.
+    (See <https://www.w3.org/TR/xmlschema11-2/>.)
 
 ### Non-normative references
 
-[RDF Schema]
-:   W3C (World Wide Web Consortium). *RDF Schema 1.1*. Dan Brickley and R. V. Guha, eds.,  2014. W3C Recommendation. (See <http://www.w3.org/TR/rdf-schema/>.) 
-
 [XSD Pt1]
-:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
-    (XSD) 1.1 Part 1: Structures*.  Shudi Gao (高殊镝),
-    C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
-    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-1/>.)
+:   W3C (World Wide Web Consortium).
+    *W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures*.
+    Shudi Gao (高殊镝), C. M. Sperberg-McQueen and Henry S. Thompson, eds., 2012.
+    W3C Recommendation.
+    (See <https://www.w3.org/TR/xmlschema11-1/>.)
 
