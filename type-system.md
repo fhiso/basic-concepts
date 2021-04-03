@@ -202,11 +202,40 @@ while one with no *pattern* or a *pattern* of "`.*`" is known as an **unstructur
 ## Classes and their representation {#classes}
 
 A **class** is an *entity* identifying a set of *entities* defined by a particular context or use the *entities* share.
+Standards defining such contexts *should* define a *class* to represent that context, and *must* do so if the third parties are permitted to define their own *terms* for use in that context.
+
 An *entity* is said to be a **member** of a *class* if the context or use of the *class* applies to the *entity*.
+
+{.note} The word "class" is used in many contexts in computing.
+As used here, a *class* is similar to a datatype of which its *member* *entities* are values,
+or a class of which its *member* *entities* are instances,
+or a named enumeration type of which its *member* *entities* are values.
+FHISO's use of this word does not mean that the other notions associated with the word "class" in object-oriented programming apply here.
 
 The *class* that can be represented by a particular *datatype* is called the **value space** of that *datatype*.
 
 A **class name** is a *term* that identifies a *class*.
+
+{.example ...}  A hypothetical standard might define various *terms*representing events of genealogical interest that occur during a person's lifetime.
+Examples could include:
+
+    https://example.com/events/Baptism  
+    https://example.com/events/Ordination
+    https://example.com/events/Emigration
+    https://example.com/events/Death
+
+The standard *should* provide a *class* to represent the abstract concept of an event type
+and a *class name* for that *class*.
+Perhaps it might be:
+
+    https://example.com/events/EventType
+
+This *class* might be referred to as the *class* of event types.
+{/}
+
+{.example} `https://example.com/events/Baptism` from the previous example
+is a *member* of `https://example.com/events/EventType`.
+
 
 ## Properties and their representations {#properties}
 
@@ -228,6 +257,7 @@ The representation of the *subject* of a *statement* may vary between standards 
 
 A *term* introduced to be a *property name* is called a **property term**.
 
+
 <!--
 ### Characteristic properties
 
@@ -248,6 +278,14 @@ The later *class* is called the **superclass** of the former *class*.
 The defining context of a *subclass* is a more specialised version of the context denoted by its *superclass*.
 Thus, every *member* of the *subclass* is also a *member* of the *superclass*.
 
+{.example} In the example above,
+a hypothetical standard was said to have defined a *class* representing event types.
+The same hypothetical standard might define a *subclass* of this called `IndividualEventType` to represent individual events for those events that are principally about a single person.
+In such a scheme, a baptism would be considered an individual event,
+while a marriage would probably not as it involves two principal participants.
+In a context where a *term* of *type* `EventType` is required, an `IndividualEventType` like `Baptism` *may* be used;
+but in a context where an `IndividualEventType` is required, others sorts of event such as `Marriage` *must not* be used.
+
 One *datatype* may be a **subtype** of another *datatype*.
 The latter *datatype* is called the **supertype** of the former.
 The *value space* of the *subtype* *shall* be a *subclass* of the *value space* of the *supertype*.
@@ -259,6 +297,15 @@ The *domain* of the *subproperty* *shall* be a *subclass* of the *domain* of the
 The *range* of the *subproperty* *shall* be a *subclass* of the *range* of the *superproperty*.
 Each *subject* that has a *property* with the *subproperty* as its *predicate*
 also has a *property* with the *superproperty* as its predicate with the same *direct object* for both *properties*.
+
+The notion of a *subclass* is transitive,
+meaning that if a *class* is a *subclass* of a second *class*,
+and that second *class* is a *subclass* of a third *class*,
+then the first *class* is a *subclass* of the third.
+The notion of a *subclass* is also reflexive,
+meaning that a *class* is by definition a *subclass* of itself.
+The notions of a *superclass*, *subtype*, *supertype*, *subproperty*, and *superproperty* are similarly transitive and reflexive.
+
 
 ### Trivial super-classes, datatypes, and properties
 
@@ -293,7 +340,7 @@ An *entity* is called an **item** of a *list* if it is a *k^th^ item* of the *li
 
 {.ednote} Is "*item*" the best word? Both "element" an "item" are used interchangeably by <https://www.w3.org/TR/xmlschema-2/>; "member" is used <https://www.w3.org/TR/rdf-schema/>
 
-A *list* with length 0 is said to be **empty**.
+A *list* with *length* 0 is said to be **empty**.
 
 A *class* is said to be an **item type** of a *list*
 if every *item* in the *list* is a *member* of a *class*.
@@ -349,6 +396,21 @@ If the *string* is in the *lexical space* of multiple *items*, the *item* with t
 Several *entities* are defined here for use in FHISO standards.
 Each is given with a canonical *term* that *should* be used to identify the *entity* in preference of other *terms*.
 
+{.note ...}
+Although many of the *terms* in this section and its subsections are formally defined in [RDF Schema],
+this standard does not require support for any of the facilities in [RDF Schema],
+nor are parties defining *classes* or *terms* required to do so in a manner compatible with RDF.
+An implementer may safely use these *terms* for the purposes of this standard
+using just the information given in this section without reading [RDF Schema] or otherwise being familiar with RDF.
+
+The decision to use *terms* from [RDF Schema] is due to FHISO's practice
+of reusing facilities from existing standards when they are a good match for our requirements,
+rather than inventing our own versions with similar functionality.
+It also allows future standards and vendor extensions the option of reusing existing third-party vocabularies where appropriate,
+as most such vocabularies are also aligned with RDF.
+{/}
+
+
 ### Standard classes        {#standard-class}
 
 #### Classes
@@ -363,6 +425,16 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Superclass          `http://www.w3.org/2000/01/rdf-schema#Resource`
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
+
+{.note}  This can be thought of as a *class* of *classes*.  It is not
+merely an arcane abstraction: it serves a useful role in *discovery*.
+If *discovery* is carried out on the *term name* of a *class*, it is
+useful to be able to indicate that the *term* is a *class*.  This can be
+done by saying the *type* of the *term* is `rdfs:Class`.
+
+{.note} The `rdfs:Class` *class* is defined in §2.2 of [RDF
+Schema].
+
 
 
 #### Datatypes
@@ -411,7 +483,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
 ------              -----------------------------------------------------------
 
 
-#### Entities
+#### Entities  {#rdfs-resource}
 
 The *class* of all *entities* is `rdfs:Resource`.
 
@@ -423,9 +495,17 @@ Type                `http://www.w3.org/2000/01/rdf-schema#Class`
 Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
 ------              -----------------------------------------------------------
 
+{.note} The `rdfs:Resource` *class* is defined in §2.1 of [RDF
+Schema].
 
-`rdfs:Resource` is a *trivial superclass* of every *class*.
+This *class* is a *trivial superclass* of every *class*.
 The only *superclass* of `rdfs:Resource` is itself.
+
+This *class* has no semantics of its own, other than to be *class* of
+all things that can be expressed in this data model.  
+
+{.note}  The `rdfs:Resource` *class* is useful with the `rdfs:subClassOf` *property*
+when defining a *class* which has no other *superclass*.
 
 
 #### Lists
@@ -465,7 +545,7 @@ Required properties `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`<br/>
                     `http://www.w3.org/2000/01/rdf-schema#range`
 ------              -----------------------------------------------------------
 
-
+{.note} The `rdf:Property` *term* is defined in §2.8 of [RDF Schema].
 
 ### Standard properties     {#standard-property}
 
@@ -624,6 +704,9 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Class`
 ------           -----------------------------------------------
 
+{.note}  The `rdfs:subClassOf` *property term* is defined §3.4 of 
+[RDF Schema].
+
 #### Superproperty of a predicate
 
 The *property term* representing a *superproperty* of a *predicate* is `rdfs:subPropertyOf`.
@@ -663,6 +746,9 @@ Range            `http://www.w3.org/2000/01/rdf-schema#Class`
 Domain           `http://www.w3.org/2000/01/rdf-schema#Resource`
 ------           -----------------------------------------------
 
+{.note} The `rdf:type` *property term* is defined §3.3 of [RDF Schema].
+
+
 #### Union of a list of datatypes
 
 The *property term* representing the *list* of *datatypes* that a *union* *datatype* is constructed from is `xsd:union`.
@@ -694,6 +780,12 @@ For example, `xsd:integer` is the *datatype* it is whether it was defined as-is 
 
 Several *datatypes* are described here for use in FHISO standards.
 
+{.note ...}
+Although many of the *terms* in this section and its subsections are formally defined in [XSD Pt2] and [RDF Schema],
+this standard does not require support for any of the facilities in [XSD Pt2] or [RDF Schema].
+An implementer may safely use these *datatypes* for the purposes of this standard
+using just the information given in this section without reading [XSD Pt2]or [RDF SChema] or otherwise being familiar with XML or RDF.
+{/}
 
 ### The `xsd:boolean` datatype
 
