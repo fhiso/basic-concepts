@@ -266,9 +266,7 @@ intended as a framework for associating arbitrary metadata with a
 
 This standard defines two specific types of *tagged strings*.
 *Language-tagged strings*, which are defined {§lang-tagged-strings},
-have a single *tag* which is a *language tag*.  *Literals*, defined in
-{§literals}, extend this concept by adding a second *tag* which is a
-*datatype name*.
+have a single *tag* which is a *language tag*.
 
 ### Restricted characters                            {#restricted-chars}
 
@@ -332,11 +330,10 @@ components that do not define how *private use characters* are used.  If
 *may* be treated as an error or handled in an implementation-defined
 manner.
 
-{.note} Neither the `und` *language tag* nor the `rdf:langString`
-*datatype*, which are the default *tags* for *language-tagged strings*
-and *literals* as defined in {§lang-tagged-strings} and {§literals},
-define the use of *private use characters*, so explicit *tags* *must* be
-provided if *private use characters* are to be interpreted reliably.
+{.note} The `und` *language tag*,
+which is the default *tag* for *language-tagged strings*,
+does not define the use of *private use characters*,
+so explicit *tags* *must* be provided if *private use characters* are to be interpreted reliably.
 
 ## Language tags                                            {#lang-tags}
 
@@ -484,16 +481,6 @@ name**, paired with a clearly-defined meaning for the concept or idea
 that it represents.  *Term names* *shall* take the form of an IRI
 matching the `IRI` production in §2.2 of
 &#x5B;[RFC 3987](https://tools.ietf.org/html/rfc3987)]. 
-
-{.example ...} This standard uses *terms* to name *datatypes*, as defined in
-{§datatypes} of this standard, and also to name *classes* and *properties*,
-defined in {§classes} and {§properties}.   For example, {§integer} of
-this standard defines a *datatype* for representing integers.  This
-*datatype* is identified by a *term* whose *term name* in *prefix*
-notation is `xsd:integer`.  This is short for the following IRI:
-
-    http://www.w3.org/2001/XMLSchema#integer
-{/}
 
 {.note} IRIs have been chosen in preference to URIs because it is
 recognised that certain culture-specific genealogical concepts may not
@@ -678,7 +665,7 @@ If the *term name* ends with a non-empty fragment identifier, then its
 *namespace name* is formed by removing the fragment identifier, leaving
 an IRI ending with a `#`.
 
-{.example ...}  This standard uses a *datatype* identified by the
+{.example ...}  [FHISO Type System] uses a *datatype* identified by the
 following *term name* IRI:
  
     http://www.w3.org/2001/XMLSchema#integer
@@ -694,7 +681,7 @@ Otherwise, if the *term name* ends with a non-empty path segment,
 then its *namespace name* is formed by removing the path segment,
 leaving an IRI ending with a `/`.
 
-{.example ...}  This standard defines a *property* identified by the
+{.example ...}  [FHISO Type System] defines a *property* identified by the
 following *term name* IRI:
 
     https://terms.fhiso.org/types/pattern
@@ -727,3 +714,183 @@ this in full, if the `xsd` *prefix* is bound to its *namespace name*
 `http://www.w3.org/2001/XMLSchema#`, this IRI can be written in
 *prefix form* as `xsd:string`.
 
+## References
+
+### Normative references
+
+[ISO 639-2]
+:   ISO (International Organization for Standardization).  *ISO
+    639-2:1998.  Codes for the representation of names of languages
+    &mdash; Part 2: Alpha-3 code*.  1998.  (See
+    <http://www.loc.gov/standards/iso639-2/>.)
+
+[RFC 2119]
+:   IETF (Internet Engineering Task Force).  *RFC 2119:  Key words for
+    use in RFCs to Indicate Requirement Levels.*  Scott Bradner, eds., 1997.
+    (See <https://tools.ietf.org/html/rfc2119>.)
+
+[RFC 3987]
+:   IETF (Internet Engineering Task Force).  *RFC 3987:
+    Internationalized Resource Identifiers (IRIs).*  Martin Duerst and
+    Michel Suignard, eds., 2005. (See <https://tools.ietf.org/html/rfc3987>.)
+
+[RFC 5646]
+:   IETF (Internet Engineering Task Force).  *RFC 5646:
+    Tags for Identifying Languages.*  Addison Phillips and Mark Davis,
+    eds., 2009.  (See <https://tools.ietf.org/html/rfc5646>.)
+
+[RFC 7230]
+:   IETF (Internet Engineering Task Force).  *RFC 7230:  Hypertext
+    Transfer Protocol (HTTP/1.1): Message Syntax and Routing.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7230>.)
+
+[RFC 7231]
+:   IETF (Internet Engineering Task Force).  *RFC 7231:  Hypertext
+    Transfer Protocol (HTTP/1.1): Semantics and Content.*  Roy
+    Fielding and Julian Reschke, eds., 2014.  (See
+    <https://tools.ietf.org/html/rfc7231>.)
+
+[Triples Discovery]
+:   FHISO (Family History Information Standards Organisation).
+    *Simple Triples Discovery Mechanism*.  First public draft.
+
+[UAX 15]
+:   The Unicode Consortium.  "Unicode Standard Annex 15: Unicode
+    Normalization Forms".  Revision 48.
+    Mark Davis and Ken Whistler, eds., 2019.  
+    (See <http://unicode.org/reports/tr15/>.)
+
+[Unicode]
+:   The Unicode Consortium.  *The Unicode Standard*, version 12.1.0.
+    2019.  (See <https://www.unicode.org/versions/Unicode12.1.0/>.)
+
+[XML]
+:   W3C (World Wide Web Consortium). *Extensible Markup Language (XML) 1.1*, 
+    2nd edition.  Tim Bray, Jean Paoli, C. M. Sperberg-McQueen, Eve
+    Maler, François Yergeau, and John Cowan eds., 2006.  W3C
+    Recommendation.  (See <https://www.w3.org/TR/xml11/>.)
+
+### Other references
+
+[ANSEL]
+:   NISO (National Information Standards Organization).
+    *ANSI/NISO Z39.47-1993.
+    Extended Latin Alphabet Coded Character Set for Bibliographic Use*.
+    1993.  (See 
+    <http://www.niso.org/apps/group_public/project/details.php?project_id=10>.)
+    Standard withdrawn, 2013.
+
+[FHISO Type System]
+:   FHISO (Family History Information Standards Organisation).
+    *Type System for Genealogical Standards*. Luther Tychonievich and Richard Smith, eds., 2021.
+    First public draft.
+    (See <https://fhiso.org/TR/type-system>.)
+
+[GEDCOM]
+:   The Church of Jesus Christ of Latter-day Saints.
+    *The GEDCOM Standard*, draft release 5.5.1.  2 Oct 1999.
+
+[IANA Lang Subtags]
+:   IANA (Internet Assigned Numbers Authority).  *Language Subtag
+    Registry*.  Online data file.  (See
+    <http://www.iana.org/assignments/language-subtag-registry>.)
+
+[ISO 639-1]
+:   ISO (International Organization for Standardization).  *ISO
+    639-1:2002.  Codes for the representation of names of languages
+    &mdash; Part 1: Alpha-2 code*.  2002.
+
+[ISO 639-3]
+:   ISO (International Organization for Standardization).  *ISO
+    639-3:2007.  Codes for the representation of names of languages
+    &mdash; Part 3: Alpha-3 code for comprehensive coverage of
+    languages*.  2007.  
+
+[ISO 639-5]
+:   ISO (International Organization for Standardization).  *ISO
+    639-5:2007.  Codes for the representation of names of languages
+    &mdash; Part 5: Alpha-3 code for language families and groups*.
+    2008.  
+
+[ISO 3166-1]
+:   ISO (International Organization for Standardization).  *ISO
+    3166-1:2006.  Codes for the representation of names of countries and
+    their subdivisions -- Part 1: Country codes*.  2006.
+    (See <https://www.iso.org/iso-3166-country-codes.html>.)
+
+[ISO 15924]
+:   ISO (International Organization for Standardization).  *ISO
+    15924:2004.  Codes for the representation of names of scripts.*
+    2004.
+
+[Linked Data]
+:   Tom Heath and Christian Bizer.
+    *Linked Data: Evolving the Web into a Global Data Space*, 1st edition.
+    Synthesis Lectures on the Semantic Web: Theory and Technology, 1:1, 1-136. Morgan & Claypool.  2011.
+    (See <http://linkeddatabook.com/editions/1.0/>)
+
+[MUFI]
+:   Medieval Unicode Font Initiative (MUFI).  *MUFI character
+    recommendation*, version 4.0.  2015.
+    (See <http://bora.uib.no/handle/1956/10699>.)
+
+[N-Triples]
+:   W3C (World Wide Web Consortium).  *RDF 1.1 N-Triples.*  David
+    Becket, 2014.  W3C Recommendation.
+    (See <https://www.w3.org/TR/n-triples/>.)
+
+[RFC 2046]
+:   IETF (Internet Engineering Task Force).  *Multipurpose Internet Mail
+    Extensions (MIME) Part Two: Media Types*.  
+    N. Freed and N.  Borenstein, 1996.
+    (See <https://tools.ietf.org/html/rfc2046>.)
+
+[RFC 4122]
+:   IETF (Internet Engineering Task Force).  *A Universally Unique
+    IDentifier (UUID) URN Namespace*.  P. Leach, M. Mealling and R.
+    Salz, ed., 2005.  (See <https://tools.ietf.org/html/rfc4122>.)
+
+[RFC 4648]
+:   IETF (Internet Engineering Task Force).  *RFC 4648:  The Base16,
+    Base32, and Base64 Data Encodings*.   S. Josefsson, ed., 2006.
+    (See <https://tools.ietf.org/html/rfc4648>.)
+
+[RFC 7159]
+:   IETF (Internet Engineering Task Force).  *RFC 7159:  The JavaScript
+    Object Notation (JSON) Data Interchange Format*.  T. Bray, ed., 2014.
+    (See <https://tools.ietf.org/html/rfc7159>.)
+
+[RFC 7469]
+:   IETF (Internet Engineering Task Force).  *Public Key Pinning
+    Extension for HTTP*.  C. Evans, C. Palmer and R. Sleevi, ed., 2015.
+    (See <https://tools.ietf.org/html/rfc7469>.)
+
+[UAX 14]
+:   The Unicode Consortium.  "Unicode Standard Annex 14: Unicode
+    Line Breaking Algorithm".  Revision 43.
+    Andy Heninger, ed., 2019. 
+    (See <http://unicode.org/reports/tr14/>.)
+
+[UN M.49]
+:   United Nations, Statistics Division.  *Standard Country or Area
+    Codes for Statistical Use*, revision 4.  United Nations publication,
+    Sales No. 98.XVII.9, 1999.
+
+[XML Names]
+:   W3C (World Wide Web Consortium). *Namespaces in XML 1.1*, 2nd edition.
+    Tim Bray, Dave Hollander, Andrew Layman and Richard Tobin, ed., 2006. 
+    W3C Recommendation.  (See <https://www.w3.org/TR/xml-names11/>.)
+
+[XSD Pt2]
+:   W3C (World Wide Web Consortium). *W3C XML Schema Definition Language 
+    (XSD) 1.1 Part 2: Datatypes*.  David Peterson, Shudi Gao (高殊镝),
+    Ashok Malhotra, C. M. Sperberg-McQueen and Henry S. Thompson, ed., 2012.
+    W3C Recommendation.  (See <https://www.w3.org/TR/xmlschema11-2/>.)
+
+----
+Copyright © 2017–21, [Family History Information Standards Organisation,
+Inc](https://fhiso.org/).  
+The text of this standard is available under the
+[Creative Commons Attribution 4.0 International
+License](https://creativecommons.org/licenses/by/4.0/).
