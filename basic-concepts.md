@@ -472,6 +472,15 @@ have a default *language tag* which implicitly applies to all
 *strings* in a document or section of a document.  XML does this by
 making the `xml:lang` attribute apply to all child elements.
 
+A *string* that does not contain linguistic content in any language
+*may* be represented as a *language-tagged string*:
+if it is, the *language tag* of `zxx` *should* be used.
+This is defined in 
+&#x5B;[ISO 639-2](http://www.loc.gov/standards/iso639-2/)] to mean no linguistic content.
+
+{.note} The use of `zxx` is a recommendation, not a requirement, as there are cases where it may be appropriate to provide a different language tag for non-linguistic data.
+One example might be an application that stored different kinds of personal names in distinct fields and wishes to use a language-tagged empty string to represent that an individual does not have a partuclar name kind in the given language.
+
 ## Terms                                                        {#terms}
 
 A **term** is a form of identifier used in FHISO standards to represent
