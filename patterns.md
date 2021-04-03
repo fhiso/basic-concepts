@@ -447,7 +447,7 @@ with "`\1(?:`".
 Some libraries lack a split function, but do support iteration through all matching substrings (notably those based on boost::regex, including C++11's std::regex).
 Any of the following can be used to simulate splitting:
 
-- Use each match's "prefix" (provided it is just the text between the last match and this match; this is the case for boost:regex and its derivatives) and the last match's "suffix".
+- Use each match's "prefix" (provided it is just the text between the previous match and current match; this is the case for boost::regex and its derivatives) and the last match's "suffix".
 
 - Get the starting index and length of each matching substring; the elements of the sequence are the substring prior to the first starting index; between each (starting index + length) and the next starting index; and after the last (starting index + length).
 {/}
