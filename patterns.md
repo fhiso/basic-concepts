@@ -408,61 +408,49 @@ Abstract         `false`
 
 ## Dialect Guide
 
-{.note} This entire section is non-normative.
+This entire section is non-normative, providing informative notes for those wishing to match and split strings against *patterns* using common programming language regular expression engines.
 
-{.ednote} This section is incomplete, and mostly added to as a sanity-check to see if engines I use can handle these regexs. It should probably either be removed or completed.
+{.note ...}
+Some libraries say that "`.`" matches any character except a line break.
+Any of the following can be used to force "`.`" to mean any character:
 
-Following are some suggestions for making regular expressions in the above dialect work with various regular expression engines.
+- Add the library's "dot all" flag: if flags are function arguments this is often named either "`S`" or "`DOT_ALL`"; if regular expressions are delimited by "`/`" it is usually a "`s`" after the closing "`/`".
 
-C++11 std::regex
-:   Use the `ECMAScript` variety and `regex_match` (not `regex_search`).
-    Replace non-escaped `.` with `(.|\s)`.
+- Add the dialect's "dot all" flag, typically by surround expression with "`(?s`...`)`".
 
-C++ boost::regex
-:   Use the `ECMAScript` variety.
-    How to ensure full match not known to the author of this document.
-
-ECMAScript
-:   Surround expression with `^(`...`)$`.
-    Replace non-escaped `.` with `(.|\s)`.
-
-Java
-:   Surround expression with `^(?s`...`)$`.
-
-.NET
-:   Use the `RegexOptions.Multiline` option or replace non-escaped `.` with `(.|\n)`.
-    Surround expression with `^(`...`)$`.
-
-Perl
-:   Use `m/^(`...`)$/s`. 
-
-
-PCRE
-:   Use the `PCRE_UTF8` option.
-    Surround expression with `^(`...`)$`.
-
-PCRE2
-:   Use the `PCRE2_UTF` and `PCRE2_DOTALL` options.
-    Surround expression with `^(`...`)$`.
-
-PHP
-:   Surround expression with `/^(`...`)$/us` with the `preg_`... functions.
-
-POSIX
-:   Requires extensive modifications.
-    Basic mode required escaping metacharacters.
-    Things that do not require escaping may forbid escaping and require pre-processing to strip `\`s.
-
-Python
-:   Use the `re.DOTALL` option.
-    In Python 3.4 and later, use the `fullmatch` function; otherwise use `match` and surround the expression with `(`...`)$`.
-
-Ruby
-:   Surround expression with `/\A(`...`)\Z$/m`.
+- Replace any non-escaped "`.`" that is not part of a character class with "`(.|\s)`" or "`(.|[\n\r])`" or "`[\s\S]`"
     
-XML
-:   Replace non-escaped `.` with `[\s\S]`.
+    In many dialects, this transformation can be performed by a regular expression find-and-replace,
+    replacing "`((?:^|\])(?:\\.|[^\[\\])*)\.`"
+    with "`\1[\s\S]`" (or "`\1`" followed by the correct replacement for the dialect in question).
+{/}
 
+{.note ...}
+Some libraries lack a full-string-match operation, having only a substring-match operation.
+Any of the following can be used to force full-string matching:
+
+- Prepend the "start of string" marker for the regex dialect (often "`\A`" or "`^`") and append the "end of string" marker (often "`\z`", "`\Z`", or "`$`"). Dialects that use "`^`" and "`$`" may also require a flag to make them match the beginning and end of the string instead of the beginning and end of a line.
+
+- Compare the length of the matched substring to the length of the original string.
+{/}
+
+{.note ...}
+Libraries with split functions sometimes return different results if there are parentheses in the expression than if there are not (notably, all those based on ECMAScript).
+If this is the case, it can be solved by replacing each start-of-group "`(`" with "`(?:`".
+
+In these dialects, this transformation can typically be performed by a regular expression find-and-replace,
+replacing "`((?:^|\])(?:\\.|[^\[\\])*)\(`"
+with "`\1(?:`".
+{/}
+
+{.note ...}
+Some libraries lack a split function, but do support iteration through all matching substrings (notably those based on boost::regex, including C++11's std::regex).
+Any of the following can be used to simulate splitting:
+
+- Use each match's "prefix" (provided it is just the text between the last match and this match; this is the case for boost:regex and its derivatives) and the last match's "suffix".
+
+- Get the starting index and length of each matching substring; the elements of the sequence are the substring prior to the first starting index; between each (starting index + length) and the next starting index; and after the last (starting index + length).
+{/}
 
 
 ## References
